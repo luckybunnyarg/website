@@ -543,7 +543,7 @@
             <a href="store.html" data-lang="nav_store">Tienda</a>
             <a href="about.html" class="active" data-lang="nav_about">Nosotros</a>
             <a href="index.html#game-section" data-lang="nav_arcade">Arcade</a>
-            <a href="index.html#final-cta" data-lang="nav_connect">Contacto</a>
+            <a href="contacto.html" data-lang="nav_connect">Contacto</a>
             <button id="lang-toggle"><span class="active-lang">ES</span><span class="sep">/</span>EN</button>
         </div>
         <button id="hamburger" aria-label="Menu">
@@ -1024,6 +1024,114 @@
 
                 if (isMobileBG) container.style.opacity = '0.2';
             }
+
+            /* ── Rain ── */
+            function initRain(canvasId, layers) {
+                const canvas = $(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                let w, h, drops = [], splashes = [], rafId;
+
+                function resize() {
+                    const pw = canvas.parentElement.clientWidth;
+                    const ph = canvas.parentElement.clientHeight;
+                    w = pw; h = ph;
+                    canvas.width = pw * dpr;
+                    canvas.height = ph * dpr;
+                    canvas.style.width = pw + 'px';
+                    canvas.style.height = ph + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                }
+                resize();
+                window.addEventListener('resize', resize, { passive: true });
+
+                layers.forEach(layer => {
+                    for (let i = 0; i < layer.count; i++) {
+                        drops.push({
+                            x: Math.random() * (w + 200),
+                            y: Math.random() * (h + 100) - 100,
+                            speed: layer.speed + Math.random() * layer.speed * 0.4,
+                            len: layer.minLen + Math.random() * (layer.maxLen - layer.minLen),
+                            headR: layer.headR + Math.random() * 1.2,
+                            wind: layer.wind,
+                            opacity: layer.opacityBase + Math.random() * 0.12,
+                            color: layer.color
+                        });
+                    }
+                });
+
+                function drawTeardrop(d) {
+                    const tailTipX = d.x - d.wind * d.len * 0.08;
+                    const tailTipY = d.y - d.len;
+                    ctx.beginPath();
+                    ctx.moveTo(d.x, d.y - d.headR);
+                    ctx.lineTo(tailTipX, tailTipY);
+                    ctx.strokeStyle = d.color;
+                    ctx.lineWidth = d.headR * 1.4;
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(d.x, d.y - d.len * 0.4);
+                    ctx.lineTo(tailTipX, tailTipY);
+                    ctx.strokeStyle = d.color;
+                    ctx.lineWidth = d.headR * 0.45;
+                    ctx.stroke();
+                    const hx = d.x;
+                    const hy = d.y - d.headR * 0.3;
+                    ctx.beginPath();
+                    ctx.arc(hx, hy, d.headR, 0, Math.PI * 2);
+                    ctx.fillStyle = d.color;
+                    ctx.fill();
+                    if (d.headR > 1.4) {
+                        ctx.shadowColor = d.color;
+                        ctx.shadowBlur = d.headR * 2;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+
+                function drawRain() {
+                    ctx.clearRect(0, 0, w, h);
+                    for (let i = splashes.length - 1; i >= 0; i--) {
+                        const s = splashes[i];
+                        s.opacity -= 0.012;
+                        s.radius += 0.5;
+                        if (s.opacity <= 0) { splashes.splice(i, 1); continue; }
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                        ctx.strokeStyle = s.color;
+                        ctx.globalAlpha = s.opacity;
+                        ctx.lineWidth = 0.6;
+                        ctx.stroke();
+                    }
+                    for (const d of drops) {
+                        d.x += d.wind;
+                        d.y += d.speed;
+                        if (d.y > h + 20) {
+                            d.y = -20 - Math.random() * 100;
+                            d.x = Math.random() * (w + 100);
+                            if (Math.random() < 0.25) {
+                                splashes.push({
+                                    x: d.x, y: h - 3 - Math.random() * 12,
+                                    radius: 1 + Math.random() * 2.5,
+                                    opacity: 0.25 + Math.random() * 0.3,
+                                    color: d.color
+                                });
+                            }
+                        }
+                        if (d.x > w + 20) d.x = -20 - Math.random() * 100;
+                        ctx.globalAlpha = d.opacity;
+                        drawTeardrop(d);
+                    }
+                    rafId = requestAnimationFrame(drawRain);
+                }
+                drawRain();
+            }
+            initRain('#rain-canvas', [
+                { count: 45, speed: 3.2, wind: 1.0, minLen: 6, maxLen: 14, headR: 1.0, opacityBase: 0.04, color: '#65B6ED' },
+                { count: 55, speed: 4.8, wind: 1.3, minLen: 10, maxLen: 20, headR: 1.6, opacityBase: 0.07, color: '#7DC4B9' },
+                { count: 35, speed: 6.5, wind: 1.7, minLen: 14, maxLen: 26, headR: 2.2, opacityBase: 0.10, color: '#8ad0ff' }
+            ]);
 
         })();
     </script>

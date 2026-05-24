@@ -215,6 +215,10 @@
             background: radial-gradient(ellipse at 50% 50%, rgba(125,196,185,0.04) 0%, transparent 60%);
             pointer-events: none;
         }
+        #rain-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 2; pointer-events: none; opacity: 0.35;
+        }
         #hero .brand-mark {
             font-family: 'Anton', sans-serif; font-size: clamp(4rem, 14vw, 10rem);
             line-height: 0.85; letter-spacing: 0.05em; text-transform: uppercase;
@@ -238,10 +242,25 @@
         }
         .social-proof-bar {
             position: absolute; bottom: 5rem; left: 50%; transform: translateX(-50%);
-            z-index: 2; display: flex; gap: 2rem; font-size: 0.65rem;
-            color: rgba(255,255,255,0.25); letter-spacing: 0.1em;
+            z-index: 2; display: flex; gap: 1.5rem; font-size: 0.62rem;
+            letter-spacing: 0.08em;
+            background: rgba(2,2,2,0.6); backdrop-filter: blur(8px);
+            border: 1px solid rgba(125,196,185,0.08);
+            border-radius: 2rem; padding: 0.4rem 1.2rem;
         }
-        .social-proof-bar span { display: flex; align-items: center; gap: 0.4rem; }
+        .social-proof-bar .proof-item {
+            display: flex; align-items: center; gap: 0.4rem;
+            color: rgba(255,255,255,0.35);
+        }
+        .social-proof-bar .proof-dot {
+            width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+            background: var(--mint); opacity: 0.6;
+        }
+        .social-proof-bar .proof-dot.live {
+            background: var(--mint); opacity: 1;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+        @keyframes livePulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
         .scroll-indicator {
             position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
@@ -749,7 +768,7 @@
             <a href="store.html" class="active" data-lang="nav_store">Tienda</a>
             <a href="about.html" data-lang="nav_about">Nosotros</a>
             <a href="index.html#game-section" data-lang="nav_arcade">Arcade</a>
-            <a href="index.html#final-cta" data-lang="nav_connect">Contacto</a>
+            <a href="contacto.html" data-lang="nav_connect">Contacto</a>
             <div class="nav-right">
                 <div id="cart-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
@@ -773,6 +792,7 @@
     <div class="sticker-banner" data-lang="store_sticker_banner">🎁 Llevate un sticker gratis con tu primer compra</div>
 
     <section id="hero">
+        <canvas id="rain-canvas"></canvas>
         <div class="brand-mark glitch-text" data-text="PRENDAS CON SUERTE">
             PRENDAS<br>
             <span class="mint-highlight">CON SUERTE</span>
@@ -780,8 +800,8 @@
         <p class="tagline" data-lang="hero_tagline">Be your own luck. // Tu eres tu propia suerte.</p>
         <p class="hero-sub" data-lang="store_hero_tag">Drop 001 // Colección Otoño</p>
         <div class="social-proof-bar">
-            <span data-lang="store_social_proof">● <span id="buyer-count">189</span> personas compraron este drop</span>
-            <span>● <span id="live-count">12</span> en línea ahora</span>
+            <div class="proof-item"><span class="proof-dot live"></span><strong id="buyer-count">189</strong> <span data-lang="store_social_proof">personas compraron</span></div>
+            <div class="proof-item"><span class="proof-dot live"></span><strong id="live-count">12</strong> en línea</div>
         </div>
         <div class="scroll-indicator"><span></span></div>
     </section>
@@ -984,7 +1004,7 @@
                 nav_connect: { es: 'Contacto', en: 'Connect' },
                 hero_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
                 store_hero_tag: { es: 'Drop 001 // Colección Otoño', en: 'Drop 001 // Fall Collection' },
-                store_social_proof: { es: '\u25CF {n} personas compraron este drop', en: '\u25CF {n} people bought this drop' },
+                store_social_proof: { es: 'personas compraron', en: 'people bought' },
                 store_sticker_banner: { es: '\uD83C\uDF81 Llevate un sticker gratis con tu primer compra', en: '\uD83C\uDF81 Free sticker with your first purchase' },
                 store_filter_all: { es: 'Todo', en: 'All' },
                 store_sort_best: { es: 'Más vendido', en: 'Best Seller' },
@@ -1620,6 +1640,112 @@
 
                 if (isMobileBG) webglContainer.style.opacity = '0.2';
             }
+
+            /* ── Rain ── */
+            function initRain(canvasId, layers) {
+                const canvas = $(canvasId);
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                let w, h, drops = [], splashes = [], rafId;
+
+                function resize() {
+                    const pw = canvas.parentElement.clientWidth;
+                    const ph = canvas.parentElement.clientHeight;
+                    w = pw; h = ph;
+                    canvas.width = pw * dpr;
+                    canvas.height = ph * dpr;
+                    canvas.style.width = pw + 'px';
+                    canvas.style.height = ph + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                }
+                resize();
+                window.addEventListener('resize', resize, { passive: true });
+
+                layers.forEach(layer => {
+                    for (let i = 0; i < layer.count; i++) {
+                        drops.push({
+                            x: Math.random() * (w + 200),
+                            y: Math.random() * (h + 100) - 100,
+                            speed: layer.speed + Math.random() * layer.speed * 0.4,
+                            len: layer.minLen + Math.random() * (layer.maxLen - layer.minLen),
+                            headR: layer.headR + Math.random() * 1.2,
+                            wind: layer.wind,
+                            opacity: layer.opacityBase + Math.random() * 0.12,
+                            color: layer.color
+                        });
+                    }
+                });
+
+                function drawTeardrop(d) {
+                    const tailTipX = d.x - d.wind * d.len * 0.08;
+                    const tailTipY = d.y - d.len;
+                    ctx.beginPath();
+                    ctx.moveTo(d.x, d.y - d.headR);
+                    ctx.lineTo(tailTipX, tailTipY);
+                    ctx.strokeStyle = d.color;
+                    ctx.lineWidth = d.headR * 1.4;
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(d.x, d.y - d.len * 0.4);
+                    ctx.lineTo(tailTipX, tailTipY);
+                    ctx.strokeStyle = d.color;
+                    ctx.lineWidth = d.headR * 0.45;
+                    ctx.stroke();
+                    const hx = d.x;
+                    const hy = d.y - d.headR * 0.3;
+                    ctx.beginPath();
+                    ctx.arc(hx, hy, d.headR, 0, Math.PI * 2);
+                    ctx.fillStyle = d.color;
+                    ctx.fill();
+                    if (d.headR > 1.4) {
+                        ctx.shadowColor = d.color;
+                        ctx.shadowBlur = d.headR * 2;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
+                }
+
+                function drawRain() {
+                    ctx.clearRect(0, 0, w, h);
+                    for (let i = splashes.length - 1; i >= 0; i--) {
+                        const s = splashes[i];
+                        s.opacity -= 0.012;
+                        s.radius += 0.5;
+                        if (s.opacity <= 0) { splashes.splice(i, 1); continue; }
+                        ctx.beginPath();
+                        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                        ctx.strokeStyle = s.color;
+                        ctx.globalAlpha = s.opacity;
+                        ctx.lineWidth = 0.6;
+                        ctx.stroke();
+                    }
+                    for (const d of drops) {
+                        d.x += d.wind;
+                        d.y += d.speed;
+                        if (d.y > h + 20) {
+                            d.y = -20 - Math.random() * 100;
+                            d.x = Math.random() * (w + 100);
+                            if (Math.random() < 0.25) {
+                                splashes.push({
+                                    x: d.x, y: h - 3 - Math.random() * 12,
+                                    radius: 1 + Math.random() * 2.5,
+                                    opacity: 0.25 + Math.random() * 0.3,
+                                    color: d.color
+                                });
+                            }
+                        }
+                        if (d.x > w + 20) d.x = -20 - Math.random() * 100;
+                        ctx.globalAlpha = d.opacity;
+                        drawTeardrop(d);
+                    }
+                    rafId = requestAnimationFrame(drawRain);
+                }
+                drawRain();
+            }
+            initRain('#rain-canvas', [
+                { count: 30, speed: 2.5, wind: 0.8, minLen: 5, maxLen: 12, headR: 0.9, opacityBase: 0.04, color: '#7DC4B9' }
+            ]);
 
         })();
     </script>

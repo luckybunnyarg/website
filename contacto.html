@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Política de Privacidad | Lucky Bunny Skatewear Argentina</title>
-    <meta name="description" content="Política de privacidad de Lucky Bunny. Conocé cómo recopilamos, usamos y protegemos tu información personal. Transparencia y confianza. Be your own luck.">
-    <link rel="canonical" href="https://luckybunny.arg/privacidad.html">
+    <title>Contacto | Lucky Bunny Skatewear Argentina</title>
+    <meta name="description" content="Contactá a Lucky Bunny. Escribinos por email, Instagram, TikTok o WhatsApp. Mendoza, Argentina. Be your own luck.">
+    <link rel="canonical" href="https://luckybunny.arg/contacto.html">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://luckybunny.arg/privacidad.html">
-    <meta property="og:title" content="Política de Privacidad | Lucky Bunny Skatewear Argentina">
-    <meta property="og:description" content="Política de privacidad de Lucky Bunny. Conocé cómo recopilamos, usamos y protegemos tu información personal.">
+    <meta property="og:url" content="https://luckybunny.arg/contacto.html">
+    <meta property="og:title" content="Contacto | Lucky Bunny Skatewear Argentina">
+    <meta property="og:description" content="Contactá a Lucky Bunny. Escribinos por email, Instagram, TikTok o WhatsApp.">
     <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://luckybunny.arg/privacidad.html">
-    <meta property="twitter:title" content="Política de Privacidad | Lucky Bunny Skatewear Argentina">
-    <meta property="twitter:description" content="Política de privacidad de Lucky Bunny. Conocé cómo recopilamos, usamos y protegemos tu información personal.">
+    <meta property="twitter:url" content="https://luckybunny.arg/contacto.html">
+    <meta property="twitter:title" content="Contacto | Lucky Bunny Skatewear Argentina">
+    <meta property="twitter:description" content="Contactá a Lucky Bunny. Escribinos por email, Instagram, TikTok o WhatsApp.">
     <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,10 +95,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             gap: 1.5rem; opacity: 1; transition: opacity 0.6s, transform 0.6s;
         }
-        #load-logo {
-            width: 60px; height: 60px;
-            animation: lbBreathe 2s ease-in-out infinite;
-        }
+        #load-logo { width: 60px; height: 60px; animation: lbBreathe 2s ease-in-out infinite; }
         #load-title {
             font-family: 'Anton', sans-serif; font-size: 1.4rem;
             letter-spacing: 0.2em; text-transform: uppercase; color: var(--chalk);
@@ -149,6 +146,7 @@
             color: var(--chalk); opacity: 0.5; transition: opacity 0.3s;
         }
         nav .nav-links a:hover { opacity: 1; }
+        nav .nav-links a.active { opacity: 1; color: var(--mint); }
         #lang-toggle {
             font-family: 'Inter', sans-serif; font-size: 0.6rem;
             font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
@@ -184,55 +182,92 @@
             color: var(--chalk); opacity: 0.5; text-decoration: none;
         }
 
-        #privacy-content {
+        #contact-content {
             position: relative; z-index: 10;
-            max-width: 720px; margin: 0 auto; padding: 7rem 2rem 4rem;
+            max-width: 800px; margin: 0 auto; padding: 7rem 2rem 4rem;
         }
-        #privacy-content h1 {
+        #contact-content h1 {
             font-family: 'Anton', sans-serif; font-size: clamp(2rem, 5vw, 3rem);
             letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.5rem;
+            text-align: center;
         }
-        #privacy-content .updated {
-            font-size: 0.65rem; color: var(--mint); opacity: 0.5;
+        #contact-content .subtitle {
+            text-align: center; font-size: 0.7rem; color: var(--mint); opacity: 0.5;
             letter-spacing: 0.1em; margin-bottom: 3rem;
         }
-        #privacy-content section {
-            margin-bottom: 2.5rem; padding-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
+        .contact-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+            margin-bottom: 3rem;
         }
-        #privacy-content section:last-child { border-bottom: none; }
-        #privacy-content section h2 {
-            font-family: 'Anton', sans-serif; font-size: 1.2rem;
+        .contact-card {
+            background: rgba(10,10,10,0.6); backdrop-filter: blur(12px);
+            border: 1px solid rgba(125,196,185,0.06);
+            border-radius: 12px; padding: 2rem; text-align: center;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        .contact-card:hover {
+            border-color: rgba(125,196,185,0.2);
+            box-shadow: 0 0 30px rgba(125,196,185,0.06);
+        }
+        .contact-card .icon {
+            font-size: 1.8rem; margin-bottom: 1rem;
+        }
+        .contact-card h3 {
+            font-family: 'Anton', sans-serif; font-size: 0.9rem;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            margin-bottom: 0.6rem; color: var(--chalk);
+        }
+        .contact-card a, .contact-card p {
+            font-size: 0.8rem; color: rgba(255,255,255,0.4);
+            text-decoration: none; line-height: 1.6;
+            transition: color 0.3s;
+        }
+        .contact-card a:hover { color: var(--mint); }
+
+        #contact-form-section {
+            background: rgba(10,10,10,0.4); backdrop-filter: blur(8px);
+            border: 1px solid rgba(125,196,185,0.06);
+            border-radius: 12px; padding: 2.5rem;
+        }
+        #contact-form-section h2 {
+            font-family: 'Anton', sans-serif; font-size: 1.3rem;
             letter-spacing: 0.05em; text-transform: uppercase;
-            color: var(--chalk); margin-bottom: 1rem;
+            margin-bottom: 1.5rem; text-align: center;
         }
-        #privacy-content section h3 {
-            font-family: 'Inter', sans-serif; font-size: 0.8rem;
-            font-weight: 700; letter-spacing: 0.05em;
-            color: var(--mint); margin: 1rem 0 0.5rem;
+        .form-group {
+            margin-bottom: 1.2rem;
         }
-        #privacy-content section p, #privacy-content section li {
-            font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.5);
-            margin-bottom: 0.5rem;
+        .form-group label {
+            display: block; font-size: 0.65rem; letter-spacing: 0.1em;
+            text-transform: uppercase; color: rgba(255,255,255,0.25);
+            margin-bottom: 0.4rem;
         }
-        #privacy-content section ul {
-            list-style: none; padding-left: 0;
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.8rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px; color: var(--chalk);
+            font-family: 'Inter', sans-serif; font-size: 0.85rem;
+            transition: border-color 0.3s;
         }
-        #privacy-content section ul li {
-            padding-left: 1.2rem; position: relative;
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none; border-color: var(--mint);
         }
-        #privacy-content section ul li::before {
-            content: '→'; position: absolute; left: 0;
-            color: var(--mint); opacity: 0.3;
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .btn-submit {
+            width: 100%; padding: 0.9rem;
+            font-family: 'Anton', sans-serif; font-size: 0.85rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            background: transparent; color: var(--chalk);
+            border: 2px solid var(--mint); border-radius: 8px;
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
         }
-        #privacy-content .contact-links {
-            margin-top: 1rem;
+        .btn-submit:hover { background: var(--mint); color: var(--void); }
+        .form-success {
+            display: none; text-align: center; padding: 2rem;
+            color: var(--mint); font-size: 0.85rem;
         }
-        #privacy-content .contact-links a {
-            color: var(--mint); text-decoration: none; opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        #privacy-content .contact-links a:hover { opacity: 1; }
+        .form-success.visible { display: block; }
 
         footer {
             position: relative; z-index: 10;
@@ -267,13 +302,15 @@
             nav .nav-links, nav #lang-toggle { display: none; }
             #hamburger { display: block; }
             #page-progress { top: 28px; }
+            .contact-grid { grid-template-columns: 1fr; }
             footer .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
-            #privacy-content { padding: 6rem 1.5rem 3rem; }
+            #contact-content { padding: 6rem 1.5rem 3rem; }
         }
         @media (max-width: 480px) {
             footer .footer-grid { grid-template-columns: 1fr; }
-            #privacy-content { padding: 5.5rem 1rem 2rem; }
-            #privacy-content h1 { font-size: 1.6rem; }
+            #contact-content { padding: 5.5rem 1rem 2rem; }
+            #contact-content h1 { font-size: 1.6rem; }
+            #contact-form-section { padding: 1.5rem; }
         }
     </style>
 </head>
@@ -305,7 +342,7 @@
             <a href="store.html" data-lang="nav_store">Tienda</a>
             <a href="about.html" data-lang="nav_about">Nosotros</a>
             <a href="index.html#game-section" data-lang="nav_arcade">Arcade</a>
-            <a href="contacto.html" data-lang="nav_connect">Contacto</a>
+            <a href="contacto.html" class="active" data-lang="nav_connect">Contacto</a>
         </div>
         <button id="lang-toggle" aria-label="Toggle language"><span class="active-lang" id="lang-es">ES</span><span class="sep">/</span><span id="lang-en">EN</span></button>
         <button id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
@@ -316,92 +353,61 @@
         <a href="store.html" data-lang="nav_store">Tienda</a>
         <a href="about.html" data-lang="nav_about">Nosotros</a>
         <a href="index.html#game-section" data-lang="nav_arcade">Arcade</a>
-        <a href="index.html#final-cta" data-lang="nav_connect">Contacto</a>
+        <a href="contacto.html" data-lang="nav_connect">Contacto</a>
     </div>
 
-    <main id="privacy-content">
-        <h1 data-lang="priv_title">Política de Privacidad</h1>
-        <p class="updated" data-lang="priv_updated">Última actualización: 24 de mayo, 2026 — 5:55</p>
+    <main id="contact-content">
+        <h1 data-lang="contact_title">Contacto</h1>
+        <p class="subtitle" data-lang="contact_sub">Estamos a un mensaje de distancia. Sin vueltas. — 5:55</p>
 
-        <section id="sec-1">
-            <h2 data-lang="priv_1_title">1. Información que recopilamos</h2>
-            <h3 data-lang="priv_1a_title">Información Personal</h3>
-            <ul>
-                <li data-lang="priv_1a_1">Datos que nos compartís al hacer un pedido o contactarnos: nombre, email, teléfono.</li>
-                <li data-lang="priv_1a_2">No recolectamos datos que no sean necesarios para que la suerte funcione.</li>
-            </ul>
-            <h3 data-lang="priv_1b_title">Información de Uso</h3>
-            <ul>
-                <li data-lang="priv_1b_1">Dirección IP y tipo de navegador.</li>
-                <li data-lang="priv_1b_2">Páginas visitadas y tiempo de navegación.</li>
-                <li data-lang="priv_1b_3">Información de cookies y tecnologías similares.</li>
-            </ul>
-        </section>
-
-        <section id="sec-2">
-            <h2 data-lang="priv_2_title">2. Cómo utilizamos tu información</h2>
-            <h3 data-lang="priv_2a_title">Para procesar pedidos</h3>
-            <ul>
-                <li data-lang="priv_2a_1">Procesar y enviar tus prendas con suerte.</li>
-                <li data-lang="priv_2a_2">Confirmar y actualizar el estado de tus pedidos.</li>
-                <li data-lang="priv_2a_3">Gestionar pagos y devoluciones.</li>
-            </ul>
-            <h3 data-lang="priv_2b_title">Para comunicarnos</h3>
-            <ul>
-                <li data-lang="priv_2b_1">Enviarte actualizaciones y promociones (solo si nos decís que sí).</li>
-                <li data-lang="priv_2b_2">Responder a tus consultas con buena onda.</li>
-            </ul>
-            <h3 data-lang="priv_2c_title">Para mejorar nuestro servicio</h3>
-            <ul>
-                <li data-lang="priv_2c_1">Analizar cómo usás el sitio para hacerlo mejor.</li>
-                <li data-lang="priv_2c_2">Mejorar la experiencia de navegación.</li>
-            </ul>
-        </section>
-
-        <section id="sec-3">
-            <h2 data-lang="priv_3_title">3. Cómo protegemos tu información</h2>
-            <p data-lang="priv_3_body">Usamos medidas de seguridad para mantener tu info a salvo. Esto incluye encriptación SSL para proteger la transmisión de datos, acceso restringido a tu información personal, y evaluaciones periódicas de nuestras prácticas. La suerte se cuida.</p>
-        </section>
-
-        <section id="sec-4">
-            <h2 data-lang="priv_4_title">4. Compartir tu información</h2>
-            <p data-lang="priv_4_body">No vendemos, comerciamos ni transferimos tu información personal a terceros. Las únicas excepciones: proveedores de servicios que nos ayudan a operar el sitio (y que también protegen tus datos), o cuando la ley nos obligue. Simple.</p>
-        </section>
-
-        <section id="sec-5">
-            <h2 data-lang="priv_5_title">5. Tus derechos</h2>
-            <h3 data-lang="priv_5a_title">Acceso y actualización</h3>
-            <p data-lang="priv_5a_body">Podés acceder y actualizar tu información en cualquier momento contactándonos.</p>
-            <h3 data-lang="priv_5b_title">Eliminación</h3>
-            <p data-lang="priv_5b_body">Podés pedir que borremos tus datos — lo hacemos, salvo cuando la ley nos obligue a guardarlos.</p>
-            <h3 data-lang="priv_5c_title">Oposición y restricción</h3>
-            <p data-lang="priv_5c_body">Podés oponerte al uso de tu información o pedir que limitemos su procesamiento.</p>
-        </section>
-
-        <section id="sec-6">
-            <h2 data-lang="priv_6_title">6. Cookies y tecnologías similares</h2>
-            <p data-lang="priv_6_body">Usamos cookies para mejorar tu experiencia en el sitio. Podés configurar tu navegador para rechazarlas, aunque algunas funciones pueden no andar igual de bien. Nada raro, nada invasivo.</p>
-        </section>
-
-        <section id="sec-7">
-            <h2 data-lang="priv_7_title">7. Enlaces a sitios de terceros</h2>
-            <p data-lang="priv_7_body">Nuestro sitio puede tener enlaces a redes sociales u otros services. No somos responsables de las prácticas de privacidad de esos sitios. Cada uno con su propia suerte.</p>
-        </section>
-
-        <section id="sec-8">
-            <h2 data-lang="priv_8_title">8. Cambios a esta política</h2>
-            <p data-lang="priv_8_body">Podemos actualizar esta política cuando sea necesario. Publicaremos los cambios acá y vas a ver la fecha actualizada al tope. Si son cambios grandes, te avisamos.</p>
-        </section>
-
-        <section id="sec-9">
-            <h2 data-lang="priv_9_title">9. Contacto</h2>
-            <p data-lang="priv_9_body">Si tenés preguntas sobre esta política o sobre cómo manejamos tus datos, hablanos sin drama:</p>
-            <div class="contact-links">
-                <p><strong data-lang="priv_9_email">Email:</strong> <a href="mailto:luckybunny.arg@gmail.com">luckybunny.arg@gmail.com</a></p>
-                <p><strong data-lang="priv_9_phone">Teléfono:</strong> 2616886484</p>
-                <p data-lang="priv_9_signoff">Gracias por confiar en Lucky Bunny. Todo sale bien. — 5:55</p>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="icon">📧</div>
+                <h3 data-lang="contact_email_title">Email</h3>
+                <a href="mailto:luckybunny.arg@gmail.com">luckybunny.arg@gmail.com</a>
+                <p data-lang="contact_email_desc" style="font-size:0.65rem;margin-top:0.4rem;">Respondemos en menos de 24hs.</p>
             </div>
-        </section>
+            <div class="contact-card">
+                <div class="icon">📱</div>
+                <h3 data-lang="contact_social_title">Redes Sociales</h3>
+                <a href="https://www.instagram.com/LUCKYBUNNY.ARG" target="_blank" rel="noopener">@LUCKYBUNNY.ARG</a>
+                <a href="https://www.tiktok.com/@luckybunny.ar?_r=1&_t=ZS-96dYMLuPPOx" target="_blank" rel="noopener" style="display:block;margin-top:0.3rem;">@luckybunny.ar</a>
+            </div>
+            <div class="contact-card">
+                <div class="icon">📞</div>
+                <h3 data-lang="contact_phone_title">WhatsApp</h3>
+                <a href="https://wa.me/542616886484">+54 261 688-6484</a>
+                <p data-lang="contact_phone_desc" style="font-size:0.65rem;margin-top:0.4rem;">Lun a Vie, 10 a 18 hs.</p>
+            </div>
+            <div class="contact-card">
+                <div class="icon">📍</div>
+                <h3 data-lang="contact_location_title">Ubicación</h3>
+                <p data-lang="contact_location">Mendoza, Argentina</p>
+                <p data-lang="contact_location_desc" style="font-size:0.65rem;margin-top:0.4rem;">Envíos a todo el país. La suerte viaja.</p>
+            </div>
+        </div>
+
+        <div id="contact-form-section">
+            <h2 data-lang="contact_form_title">Escribinos</h2>
+            <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                <div class="form-group">
+                    <label data-lang="form_name">Nombre</label>
+                    <input type="text" id="form-name" placeholder="Tu nombre" required>
+                </div>
+                <div class="form-group">
+                    <label data-lang="form_email">Email</label>
+                    <input type="email" id="form-email" placeholder="tu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label data-lang="form_message">Mensaje</label>
+                    <textarea id="form-message" placeholder="Contanos qué necesitás..." required></textarea>
+                </div>
+                <button type="submit" class="btn-submit" data-lang="form_submit">Enviar Mensaje</button>
+            </form>
+            <div class="form-success" id="form-success">
+                <p data-lang="form_success">Mensaje enviado. Te respondemos pronto. Todo sale bien. — 5:55</p>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -450,7 +456,7 @@
             nav_store: { es: 'Tienda', en: 'Store' },
             nav_about: { es: 'Nosotros', en: 'About' },
             nav_arcade: { es: 'Arcade', en: 'Arcade' },
-            nav_connect: { es: 'Contacto', en: 'Connect' },
+            nav_connect: { es: 'Contacto', en: 'Contact' },
             footer_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
             footer_shop: { es: 'Tienda', en: 'Shop' },
             footer_all: { es: 'Todos los Lanzamientos', en: 'All Drops' },
@@ -461,49 +467,22 @@
             footer_returns: { es: 'Devoluciones', en: 'Returns' },
             footer_privacy: { es: 'Privacidad', en: 'Privacy' },
             footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
-            priv_title: { es: 'Política de Privacidad', en: 'Privacy Policy' },
-            priv_updated: { es: 'Última actualización: 24 de mayo, 2026 — 5:55', en: 'Last updated: May 24, 2026 — 5:55' },
-            priv_1_title: { es: '1. Información que recopilamos', en: '1. Information We Collect' },
-            priv_1a_title: { es: 'Información Personal', en: 'Personal Information' },
-            priv_1a_1: { es: 'Datos que nos compartís al hacer un pedido o contactarnos: nombre, email, teléfono.', en: 'Data you share when placing an order or contacting us: name, email, phone.' },
-            priv_1a_2: { es: 'No recolectamos datos que no sean necesarios para que la suerte funcione.', en: 'We don\'t collect data beyond what\'s needed for the luck to work.' },
-            priv_1b_title: { es: 'Información de Uso', en: 'Usage Information' },
-            priv_1b_1: { es: 'Dirección IP y tipo de navegador.', en: 'IP address and browser type.' },
-            priv_1b_2: { es: 'Páginas visitadas y tiempo de navegación.', en: 'Pages visited and browsing time.' },
-            priv_1b_3: { es: 'Información de cookies y tecnologías similares.', en: 'Cookie information and similar technologies.' },
-            priv_2_title: { es: '2. Cómo utilizamos tu información', en: '2. How We Use Your Information' },
-            priv_2a_title: { es: 'Para procesar pedidos', en: 'To Process Orders' },
-            priv_2a_1: { es: 'Procesar y enviar tus prendas con suerte.', en: 'Process and ship your lucky gear.' },
-            priv_2a_2: { es: 'Confirmar y actualizar el estado de tus pedidos.', en: 'Confirm and update your order status.' },
-            priv_2a_3: { es: 'Gestionar pagos y devoluciones.', en: 'Manage payments and returns.' },
-            priv_2b_title: { es: 'Para comunicarnos', en: 'To Communicate' },
-            priv_2b_1: { es: 'Enviarte actualizaciones y promociones (solo si nos decís que sí).', en: 'Send you updates and promotions (only if you say yes).' },
-            priv_2b_2: { es: 'Responder a tus consultas con buena onda.', en: 'Respond to your inquiries with good vibes.' },
-            priv_2c_title: { es: 'Para mejorar nuestro servicio', en: 'To Improve Our Service' },
-            priv_2c_1: { es: 'Analizar cómo usás el sitio para hacerlo mejor.', en: 'Analyze how you use the site to make it better.' },
-            priv_2c_2: { es: 'Mejorar la experiencia de navegación.', en: 'Improve the browsing experience.' },
-            priv_3_title: { es: '3. Cómo protegemos tu información', en: '3. How We Protect Your Information' },
-            priv_3_body: { es: 'Usamos medidas de seguridad para mantener tu info a salvo. Esto incluye encriptación SSL para proteger la transmisión de datos, acceso restringido a tu información personal, y evaluaciones periódicas de nuestras prácticas. La suerte se cuida.', en: 'We use security measures to keep your info safe. This includes SSL encryption to protect data transmission, restricted access to your personal information, and periodic reviews of our practices. Luck is protected.' },
-            priv_4_title: { es: '4. Compartir tu información', en: '4. Sharing Your Information' },
-            priv_4_body: { es: 'No vendemos, comerciamos ni transferimos tu información personal a terceros. Las únicas excepciones: proveedores de servicios que nos ayudan a operar el sitio (y que también protegen tus datos), o cuando la ley nos obligue. Simple.', en: 'We don\'t sell, trade, or transfer your personal information to third parties. Only exceptions: service providers that help us run the site (who also protect your data), or when required by law. Simple.' },
-            priv_5_title: { es: '5. Tus derechos', en: '5. Your Rights' },
-            priv_5a_title: { es: 'Acceso y actualización', en: 'Access and Update' },
-            priv_5a_body: { es: 'Podés acceder y actualizar tu información en cualquier momento contactándonos.', en: 'You can access and update your information at any time by contacting us.' },
-            priv_5b_title: { es: 'Eliminación', en: 'Deletion' },
-            priv_5b_body: { es: 'Podés pedir que borremos tus datos — lo hacemos, salvo cuando la ley nos obligue a guardarlos.', en: 'You can request we delete your data — we will, unless the law requires us to keep it.' },
-            priv_5c_title: { es: 'Oposición y restricción', en: 'Objection and Restriction' },
-            priv_5c_body: { es: 'Podés oponerte al uso de tu información o pedir que limitemos su procesamiento.', en: 'You can object to the use of your information or request we limit its processing.' },
-            priv_6_title: { es: '6. Cookies y tecnologías similares', en: '6. Cookies and Similar Technologies' },
-            priv_6_body: { es: 'Usamos cookies para mejorar tu experiencia en el sitio. Podés configurar tu navegador para rechazarlas, aunque algunas funciones pueden no andar igual de bien. Nada raro, nada invasivo.', en: 'We use cookies to improve your experience on the site. You can set your browser to reject them, though some features may not work as well. Nothing weird, nothing invasive.' },
-            priv_7_title: { es: '7. Enlaces a sitios de terceros', en: '7. Third-Party Links' },
-            priv_7_body: { es: 'Nuestro sitio puede tener enlaces a redes sociales u otros services. No somos responsables de las prácticas de privacidad de esos sitios. Cada uno con su propia suerte.', en: 'Our site may contain links to social media or other services. We\'re not responsible for the privacy practices of those sites. Each with their own luck.' },
-            priv_8_title: { es: '8. Cambios a esta política', en: '8. Changes to This Policy' },
-            priv_8_body: { es: 'Podemos actualizar esta política cuando sea necesario. Publicaremos los cambios acá y vas a ver la fecha actualizada al tope. Si son cambios grandes, te avisamos.', en: 'We may update this policy when needed. We\'ll publish the changes here and you\'ll see the updated date at the top. If changes are major, we\'ll let you know.' },
-            priv_9_title: { es: '9. Contacto', en: '9. Contact' },
-            priv_9_body: { es: 'Si tenés preguntas sobre esta política o sobre cómo manejamos tus datos, hablanos sin drama:', en: 'If you have questions about this policy or how we handle your data, hit us up — no drama:' },
-            priv_9_email: { es: 'Email:', en: 'Email:' },
-            priv_9_phone: { es: 'Teléfono:', en: 'Phone:' },
-            priv_9_signoff: { es: 'Gracias por confiar en Lucky Bunny. Todo sale bien. — 5:55', en: 'Thanks for trusting Lucky Bunny. Everything always works out. — 5:55' }
+            contact_title: { es: 'Contacto', en: 'Contact' },
+            contact_sub: { es: 'Estamos a un mensaje de distancia. Sin vueltas. — 5:55', en: 'We\'re a message away. No BS. — 5:55' },
+            contact_email_title: { es: 'Email', en: 'Email' },
+            contact_email_desc: { es: 'Respondemos en menos de 24hs.', en: 'We reply within 24 hours.' },
+            contact_social_title: { es: 'Redes Sociales', en: 'Social Media' },
+            contact_phone_title: { es: 'WhatsApp', en: 'WhatsApp' },
+            contact_phone_desc: { es: 'Lun a Vie, 10 a 18 hs.', en: 'Mon–Fri, 10 AM–6 PM' },
+            contact_location_title: { es: 'Ubicación', en: 'Location' },
+            contact_location: { es: 'Mendoza, Argentina', en: 'Mendoza, Argentina' },
+            contact_location_desc: { es: 'Envíos a todo el país. La suerte viaja.', en: 'Shipping nationwide. Luck travels.' },
+            contact_form_title: { es: 'Escribinos', en: 'Write Us' },
+            form_name: { es: 'Nombre', en: 'Name' },
+            form_email: { es: 'Email', en: 'Email' },
+            form_message: { es: 'Mensaje', en: 'Message' },
+            form_submit: { es: 'Enviar Mensaje', en: 'Send Message' },
+            form_success: { es: 'Mensaje enviado. Te respondemos pronto. Todo sale bien. — 5:55', en: 'Message sent. We\'ll get back to you soon. Everything always works out. — 5:55' }
         };
 
         function setLang(lang) {
@@ -518,7 +497,7 @@
             localStorage.setItem('lb-lang', lang);
         }
 
-        let mobile = window.innerWidth <= 768;
+        const mobile = window.innerWidth <= 768;
 
         function isMobileDevice() { return window.innerWidth <= 768 || ('ontouchstart' in window && window.innerWidth <= 1024); }
 
@@ -526,15 +505,12 @@
             const container = $('#webgl-bg');
             const scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x020202, mobile ? 0.00015 : 0.00008);
-
             const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 100);
             camera.position.z = 15;
-
             const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !mobile });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, mobile ? 1.5 : 2));
             renderer.setSize(container.clientWidth, container.clientHeight);
             container.appendChild(renderer.domElement);
-
             const particles = new THREE.BufferGeometry();
             const count = mobile ? 300 : 1200;
             const positions = new Float32Array(count * 3);
@@ -544,16 +520,13 @@
                 positions[i+2] = (Math.random() - 0.5) * 20;
             }
             particles.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
             const mat = new THREE.PointsMaterial({
                 color: 0x7DC4B9, size: 0.04,
                 transparent: true, opacity: mobile ? 0.2 : 0.35,
                 blending: THREE.AdditiveBlending, depthWrite: false
             });
-
             const points = new THREE.Points(particles, mat);
             scene.add(points);
-
             function animate() {
                 requestAnimationFrame(animate);
                 points.rotation.y += 0.0002;
@@ -561,7 +534,6 @@
                 renderer.render(scene, camera);
             }
             animate();
-
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
                 camera.updateProjectionMatrix();
@@ -618,9 +590,14 @@
             });
         }
 
+        window.handleContactSubmit = function(e) {
+            e.preventDefault();
+            $('#contact-form').style.display = 'none';
+            $('#form-success').classList.add('visible');
+        };
+
         $('#lang-es').addEventListener('click', () => setLang('es'));
         $('#lang-en').addEventListener('click', () => setLang('en'));
-
         const savedLang = localStorage.getItem('lb-lang') || 'es';
         setLang(savedLang);
 

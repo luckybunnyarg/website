@@ -316,16 +316,16 @@
         }
         .product-card {
             position: relative; aspect-ratio: 3/4;
-            border-radius: 8px; overflow: hidden;
-            background: var(--surface);
+            border-radius: 12px; overflow: hidden;
+            background: rgba(10,10,10,0.5); backdrop-filter: blur(10px);
             border: 1px solid rgba(255,255,255,0.04);
             transition: all 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
             cursor: pointer; display: flex; flex-direction: column;
         }
         .product-card:hover {
-            border-color: rgba(125,196,185,0.3);
-            box-shadow: 0 0 30px rgba(125,196,185,0.08);
-            transform: translateY(-4px);
+            border-color: rgba(125,196,185,0.25);
+            box-shadow: 0 8px 40px rgba(125,196,185,0.1);
+            transform: translateY(-6px);
         }
         .product-card .card-visual {
             flex: 1; display: flex; align-items: center; justify-content: center;
@@ -751,7 +751,7 @@
             <a href="store.html" data-lang="nav_store">Tienda</a>
             <a href="about.html" data-lang="nav_about">Nosotros</a>
             <a href="#game-section" data-lang="nav_arcade">Arcade</a>
-            <a href="#final-cta" data-lang="nav_connect">Contacto</a>
+            <a href="contacto.html" data-lang="nav_connect">Contacto</a>
             <button id="lang-toggle"><span class="active-lang">ES</span><span class="sep">/</span>EN</button>
         </div>
         <button id="hamburger" aria-label="Menu">
@@ -851,6 +851,9 @@
                     </div>
                 </div>
             </div>
+            <div style="text-align:center;margin-top:2rem;">
+                <a href="store.html" class="btn-ghost reveal reveal-d3" style="display:inline-flex;font-size:0.75rem;padding:0.7rem 2rem;" data-lang="drops_cta">Ver Tienda Completa →</a>
+            </div>
         </div>
     </section>
 
@@ -942,8 +945,8 @@
                         <div style="display:flex;gap:0.5rem;">
                             <input type="text" id="player-name" maxlength="3" placeholder="AAA" style="background:transparent;border:2px solid var(--chalk);color:var(--chalk);text-align:center;font-size:1.5rem;font-family:'Anton',sans-serif;text-transform:uppercase;width:80px;padding:0.5rem;outline:none;">
                             <button id="save-score-btn" style="background:var(--chalk);color:var(--void);font-weight:700;text-transform:uppercase;padding:0.5rem 1rem;border:2px solid transparent;cursor:pointer;font-family:'Anton',sans-serif;letter-spacing:0.1em;" data-lang="game_save">Guardar</button>
-                        </div>
-                    </div>
+            </div>
+        </div>
                     <button id="start-game-btn" style="font-family:'Anton',sans-serif;font-size:1.2rem;letter-spacing:0.15em;text-transform:uppercase;padding:1rem 3rem;background:var(--mint);color:var(--void);border:2px solid var(--mint);cursor:pointer;border-radius:8px;box-shadow:0 0 30px rgba(125,196,185,0.3);transition:all 0.3s;" data-lang="game_start">COMENZAR</button>
                 </div>
             </div>
@@ -1034,6 +1037,7 @@
                 drops_label: { es: 'Últimos Lanzamientos', en: 'Latest Drops' },
                 drops_title: { es: 'Nueva <span class="text-mint">Colección</span>', en: 'New <span class="text-mint">Collection</span>' },
                 drops_desc: { es: 'Equipo fresco. Lanzamientos limitados. Cuando se acaba, se acaba.', en: 'Fresh gear. Limited drops. When it\'s gone, it\'s gone.' },
+                drops_cta: { es: 'Ver Tienda Completa →', en: 'See Full Store →' },
                 cat_outerwear: { es: 'Ropa Exterior', en: 'Outerwear' },
                 cat_tops: { es: 'Camisetas', en: 'Tops' },
                 cat_accessories: { es: 'Accesorios', en: 'Accessories' },
@@ -1198,55 +1202,124 @@
             }
 
             /* ── Rain ── */
-            function initRain(canvasId, dropCount, speedBase, wind) {
+            function initRain(canvasId, layers) {
                 const canvas = $(canvasId);
                 if (!canvas) return;
                 const ctx = canvas.getContext('2d');
-                let w, h, drops = [], rafId;
-                const rainColors = ['#65B6ED', '#7DC4B9', '#8ad0ff', '#FF3366'];
+                const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                let w, h, drops = [], splashes = [], rafId;
+
                 function resize() {
-                    w = canvas.width = canvas.parentElement.clientWidth;
-                    h = canvas.height = canvas.parentElement.clientHeight;
+                    const pw = canvas.parentElement.clientWidth;
+                    const ph = canvas.parentElement.clientHeight;
+                    w = pw; h = ph;
+                    canvas.width = pw * dpr;
+                    canvas.height = ph * dpr;
+                    canvas.style.width = pw + 'px';
+                    canvas.style.height = ph + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
                 }
                 resize();
                 window.addEventListener('resize', resize, { passive: true });
-                for (let i = 0; i < dropCount; i++) {
-                    drops.push({
-                        x: Math.random() * 2000, y: Math.random() * (h + 100) - 100,
-                        len: 12 + Math.random() * 20,
-                        speed: speedBase + Math.random() * speedBase * 0.6,
-                        opacity: 0.06 + Math.random() * 0.2,
-                        color: rainColors[Math.floor(Math.random() * rainColors.length)],
-                        thick: 0.5 + Math.random() * 1.2
-                    });
+
+                layers.forEach(layer => {
+                    for (let i = 0; i < layer.count; i++) {
+                        drops.push({
+                            x: Math.random() * (w + 200),
+                            y: Math.random() * (h + 100) - 100,
+                            speed: layer.speed + Math.random() * layer.speed * 0.4,
+                            len: layer.minLen + Math.random() * (layer.maxLen - layer.minLen),
+                            headR: layer.headR + Math.random() * 1.2,
+                            wind: layer.wind,
+                            opacity: layer.opacityBase + Math.random() * 0.12,
+                            color: layer.color
+                        });
+                    }
+                });
+
+                function drawTeardrop(d) {
+                    const tailTipX = d.x - d.wind * d.len * 0.08;
+                    const tailTipY = d.y - d.len;
+                    // Tail — main stroke
+                    ctx.beginPath();
+                    ctx.moveTo(d.x, d.y - d.headR);
+                    ctx.lineTo(tailTipX, tailTipY);
+                    ctx.strokeStyle = d.color;
+                    ctx.lineWidth = d.headR * 1.4;
+                    ctx.stroke();
+                    // Tail overlay — thinner taper
+                    ctx.beginPath();
+                    ctx.moveTo(d.x, d.y - d.len * 0.4);
+                    ctx.lineTo(tailTipX, tailTipY);
+                    ctx.strokeStyle = d.color;
+                    ctx.lineWidth = d.headR * 0.45;
+                    ctx.stroke();
+                    // Head
+                    const hx = d.x;
+                    const hy = d.y - d.headR * 0.3;
+                    ctx.beginPath();
+                    ctx.arc(hx, hy, d.headR, 0, Math.PI * 2);
+                    ctx.fillStyle = d.color;
+                    ctx.fill();
+                    // Head glow on medium/large drops
+                    if (d.headR > 1.4) {
+                        ctx.shadowColor = d.color;
+                        ctx.shadowBlur = d.headR * 2;
+                        ctx.fill();
+                        ctx.shadowBlur = 0;
+                    }
                 }
+
                 function drawRain() {
                     ctx.clearRect(0, 0, w, h);
-                    for (const d of drops) {
-                        d.x += wind;
-                        d.y += d.speed;
-                        if (d.y > h + 20) { d.y = -20; d.x = Math.random() * (w + 100); }
-                        if (d.x > w + 20) d.x = -20;
-                        ctx.globalAlpha = d.opacity;
-                        ctx.strokeStyle = d.color;
-                        ctx.lineWidth = d.thick;
+                    // Splashes
+                    for (let i = splashes.length - 1; i >= 0; i--) {
+                        const s = splashes[i];
+                        s.opacity -= 0.012;
+                        s.radius += 0.5;
+                        if (s.opacity <= 0) { splashes.splice(i, 1); continue; }
                         ctx.beginPath();
-                        ctx.moveTo(d.x, d.y);
-                        ctx.lineTo(d.x - wind * 0.3, d.y - d.len);
+                        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                        ctx.strokeStyle = s.color;
+                        ctx.globalAlpha = s.opacity;
+                        ctx.lineWidth = 0.6;
                         ctx.stroke();
-                        if (d.thick > 1.2) {
-                            ctx.shadowColor = d.color;
-                            ctx.shadowBlur = 4;
-                            ctx.stroke();
-                            ctx.shadowBlur = 0;
+                    }
+                    // Drops
+                    for (const d of drops) {
+                        d.x += d.wind;
+                        d.y += d.speed;
+                        if (d.y > h + 20) {
+                            d.y = -20 - Math.random() * 100;
+                            d.x = Math.random() * (w + 100);
+                            if (Math.random() < 0.25) {
+                                splashes.push({
+                                    x: d.x, y: h - 3 - Math.random() * 12,
+                                    radius: 1 + Math.random() * 2.5,
+                                    opacity: 0.25 + Math.random() * 0.3,
+                                    color: d.color
+                                });
+                            }
                         }
+                        if (d.x > w + 20) d.x = -20 - Math.random() * 100;
+                        ctx.globalAlpha = d.opacity;
+                        drawTeardrop(d);
                     }
                     rafId = requestAnimationFrame(drawRain);
                 }
                 drawRain();
             }
-            initRain('#rain-canvas', 180, 4, 1.2);
-            initRain('#rain-canvas-game', 40, 2, 0.5);
+
+            // Hero — 3 depth layers
+            initRain('#rain-canvas', [
+                { count: 60, speed: 3.2, wind: 1.0, minLen: 6, maxLen: 14, headR: 1.0, opacityBase: 0.04, color: '#65B6ED' },
+                { count: 70, speed: 4.8, wind: 1.3, minLen: 10, maxLen: 20, headR: 1.6, opacityBase: 0.07, color: '#7DC4B9' },
+                { count: 40, speed: 6.5, wind: 1.7, minLen: 14, maxLen: 26, headR: 2.2, opacityBase: 0.10, color: '#8ad0ff' }
+            ]);
+            // Game rain
+            initRain('#rain-canvas-game', [
+                { count: 35, speed: 2, wind: 0.5, minLen: 5, maxLen: 12, headR: 0.9, opacityBase: 0.06, color: '#7DC4B9' }
+            ]);
 
             /* ── Mobile Nav ── */
             const hamburger = $('#hamburger');
