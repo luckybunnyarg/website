@@ -1132,40 +1132,41 @@
             let currentFilter = 'all';
             let currentSort = 'best';
 
-            const GAS_URL = 'https://script.google.com/macros/s/AKfycbwpacBbmBSexllEbh8C8Bme93_ULk9phkSCnsRHQlgD69WyZvlwpOElZo8DVbpTSPdQ8g/exec';
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbzMIMrh7kiiHNqXTvFwlKHiKVxjghKAQybRi1KxqjYCB7DVEMYadE8he_jQ4OaLeTSXzg/exec';
 
             /* ── Fetch or Load Products ── */
             function loadProducts() {
-                const stored = localStorage.getItem('lb-products');
-                if (stored) {
-                    try {
-                        const p = JSON.parse(stored);
-                        if (Array.isArray(p) && p.length > 0) {
-                            products = p;
-                            loadSettings();
-                            initStore();
-                            return;
-                        }
-                    } catch(e) {}
-                }
                 if (GAS_URL) {
                     fetch(GAS_URL)
                         .then(r => r.json())
                         .then(data => {
-                            products = data;
+                            if (Array.isArray(data) && data.length > 0) {
+                                products = data;
+                                localStorage.setItem('lb-products', JSON.stringify(data));
+                            } else {
+                                products = loadFromLocalOrFallback();
+                            }
                             loadSettings();
                             initStore();
                         })
                         .catch(() => {
-                            products = FALLBACK_PRODUCTS;
+                            products = loadFromLocalOrFallback();
                             loadSettings();
                             initStore();
                         });
                 } else {
-                    products = FALLBACK_PRODUCTS;
+                    products = loadFromLocalOrFallback();
                     loadSettings();
                     initStore();
                 }
+            }
+
+            function loadFromLocalOrFallback() {
+                try {
+                    const stored = localStorage.getItem('lb-products');
+                    if (stored) { const p = JSON.parse(stored); if (Array.isArray(p) && p.length > 0) return p; }
+                } catch(e) {}
+                return FALLBACK_PRODUCTS;
             }
 
             let storeSettings = { storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' };

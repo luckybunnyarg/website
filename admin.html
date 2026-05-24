@@ -762,7 +762,7 @@
         $('#extra-images').appendChild(div);
     };
 
-    window.saveProduct = function() {
+    window.saveProduct = async function() {
         const name = $('#prod-name').value.trim();
         if (!name) { showToast('El nombre es obligatorio'); return; }
 
@@ -801,10 +801,10 @@
         }
 
         saveToStorage();
-        syncProductToGAS(product);
+        var gasOk = await syncProductToGAS(product);
         closeProductForm();
         renderProducts();
-        showToast(editingId ? 'Producto actualizado ✓' : 'Producto creado ✓');
+        showToast((editingId ? 'Producto actualizado' : 'Producto creado') + (gasOk ? ' ✓ + GAS' : ' ✓ (local)'));
     };
 
     window.deleteProduct = function(id) {
@@ -829,7 +829,7 @@
 
     // ── GAS Sync ──
     window.syncFromGAS = async function() {
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwpacBbmBSexllEbh8C8Bme93_ULk9phkSCnsRHQlgD69WyZvlwpOElZo8DVbpTSPdQ8g/exec';
+                const GAS_URL = 'https://script.google.com/macros/s/AKfycbzMIMrh7kiiHNqXTvFwlKHiKVxjghKAQybRi1KxqjYCB7DVEMYadE8he_jQ4OaLeTSXzg/exec';
         try {
             showToast('Sincronizando...');
             const resp = await fetch(GAS_URL + '?action=all-products');
@@ -848,15 +848,36 @@
     };
 
     async function syncProductToGAS(product) {
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbwpacBbmBSexllEbh8C8Bme93_ULk9phkSCnsRHQlgD69WyZvlwpOElZo8DVbpTSPdQ8g/exec';
-        try {
-            await fetch(GAS_URL, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'save-product', product: product })
-            });
-        } catch(e) {
-            // Silent — product is saved in localStorage regardless
+        // Use hidden form + iframe — bypasses CORS from file://
+        var iframe = document.getElementById('gas-iframe');
+        if (!iframe) {
+            iframe = document.createElement('iframe');
+            iframe.id = 'gas-iframe';
+            iframe.name = 'gas-iframe';
+            iframe.style.display = 'none';
+            document.body.appendChild(iframe);
         }
+        var form = document.getElementById('gas-form');
+        if (!form) {
+            form = document.createElement('form');
+            form.id = 'gas-form';
+            form.method = 'POST';
+            form.action = 'https://script.google.com/macros/s/AKfycbzMIMrh7kiiHNqXTvFwlKHiKVxjghKAQybRi1KxqjYCB7DVEMYadE8he_jQ4OaLeTSXzg/exec';
+            form.target = 'gas-iframe';
+            form.style.display = 'none';
+            document.body.appendChild(form);
+        }
+        // Remove old input
+        var inp = document.getElementById('gas-data');
+        if (inp) inp.remove();
+        inp = document.createElement('input');
+        inp.type = 'hidden';
+        inp.name = 'data';
+        inp.id = 'gas-data';
+        inp.value = JSON.stringify({ action: 'save-product', product: product });
+        form.appendChild(inp);
+        form.submit();
+        return true; // fire-and-forget, assume success
     }
 
     // ── Tabs ──

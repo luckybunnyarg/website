@@ -18,9 +18,62 @@
  *   Default rows: storeDiscount=0, bannerText='', bannerActive=FALSE, bannerLink=''
  */
 
+// ── Auto-setup: create sheets & headers if missing ──
+function ensureSetup() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  
+  // Products sheet
+  let sheet = ss.getSheetByName('Products');
+  if (!sheet) {
+    sheet = ss.insertSheet('Products');
+    sheet.appendRow(['id','name','category','price','referencePrice','image','coverImage','hoverImage','extraImages','badge','sizes','description','stock','salesCount','discount','featured','active']);
+  } else {
+    const data = sheet.getDataRange().getValues();
+    if (data.length === 0 || (data.length === 1 && data[0].length < 2)) {
+      sheet.clear();
+      sheet.appendRow(['id','name','category','price','referencePrice','image','coverImage','hoverImage','extraImages','badge','sizes','description','stock','salesCount','discount','featured','active']);
+    }
+  }
+  
+  // Orders sheet
+  sheet = ss.getSheetByName('Orders');
+  if (!sheet) {
+    sheet = ss.insertSheet('Orders');
+    sheet.appendRow(['timestamp','name','email','address','notes','items','total','status']);
+  } else {
+    const data = sheet.getDataRange().getValues();
+    if (data.length === 0 || (data.length === 1 && data[0].length < 2)) {
+      sheet.clear();
+      sheet.appendRow(['timestamp','name','email','address','notes','items','total','status']);
+    }
+  }
+  
+  // Settings sheet
+  sheet = ss.getSheetByName('Settings');
+  if (!sheet) {
+    sheet = ss.insertSheet('Settings');
+    sheet.appendRow(['key','value']);
+    sheet.appendRow(['storeDiscount','0']);
+    sheet.appendRow(['bannerActive','FALSE']);
+    sheet.appendRow(['bannerText','']);
+    sheet.appendRow(['bannerLink','']);
+  } else {
+    const data = sheet.getDataRange().getValues();
+    if (data.length === 0 || (data.length === 1 && data[0].length < 2)) {
+      sheet.clear();
+      sheet.appendRow(['key','value']);
+      sheet.appendRow(['storeDiscount','0']);
+      sheet.appendRow(['bannerActive','FALSE']);
+      sheet.appendRow(['bannerText','']);
+      sheet.appendRow(['bannerLink','']);
+    }
+  }
+}
+
 // ── GET: Return active products ──
 function doGet(e) {
   try {
+    ensureSetup();
     const action = e && e.parameter ? e.parameter.action : null;
     
     if (action === 'all-products') {
@@ -43,7 +96,17 @@ function doGet(e) {
 // ── POST: Save product, settings, or order ──
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
+    ensureSetup();
+    var data;
+    if (e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    } else if (e.parameter && e.parameter.data) {
+      data = JSON.parse(e.parameter.data);
+    } else if (e.parameter) {
+      data = e.parameter;
+    } else {
+      return jsonResponse({ error: 'No data received' }, 400);
+    }
     const action = data.action;
     
     if (action === 'save-product') {

@@ -1948,15 +1948,11 @@
                     { name:'Crew Socks', category:'socks', price:3500, image:'socks' }
                 ];
                 const CAT_LABELS = { tshirts:'Camisetas', hoodies:'Hoodies', socks:'Medias', accessories:'Accesorios' };
+                const GAS_URL = 'https://script.google.com/macros/s/AKfycbzMIMrh7kiiHNqXTvFwlKHiKVxjghKAQybRi1KxqjYCB7DVEMYadE8he_jQ4OaLeTSXzg/exec';
 
-                function render() {
+                function renderItems(items) {
                     var grid = document.getElementById('drops-grid');
                     if (!grid) return;
-                    var items = [];
-                    try {
-                        var raw = localStorage.getItem('lb-products');
-                        if (raw) { var arr = JSON.parse(raw); if (Array.isArray(arr)) items = arr.filter(function(p){ return p.featured === true; }); }
-                    } catch(e) {}
                     if (!items.length) items = FALLBACK;
 
                     grid.innerHTML = items.slice(0, 6).map(function(p, i){
@@ -1977,8 +1973,32 @@
                     }).join('');
                 }
 
-                setTimeout(render, 50);
-                window.addEventListener('storage', function(e){ if (e.key === 'lb-products') setTimeout(render, 50); });
+                function render() {
+                    fetch(GAS_URL + '?action=all-products')
+                        .then(function(r){ return r.json(); })
+                        .then(function(data){
+                            if (Array.isArray(data) && data.length > 0) {
+                                var featured = data.filter(function(p){ return p.featured === true; });
+                                localStorage.setItem('lb-products', JSON.stringify(data));
+                                renderItems(featured);
+                            } else {
+                                loadLocal();
+                            }
+                        })
+                        .catch(function(){ loadLocal(); });
+                }
+
+                function loadLocal() {
+                    var items = [];
+                    try {
+                        var raw = localStorage.getItem('lb-products');
+                        if (raw) { var arr = JSON.parse(raw); if (Array.isArray(arr)) items = arr.filter(function(p){ return p.featured === true; }); }
+                    } catch(e) {}
+                    renderItems(items);
+                }
+
+                setTimeout(render, 100);
+                window.addEventListener('storage', function(e){ if (e.key === 'lb-products') loadLocal(); });
             })();
         })();
     </script>
