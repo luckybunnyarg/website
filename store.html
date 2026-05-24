@@ -268,8 +268,17 @@
         }
         .scroll-indicator span {
             display: block; width: 1px; height: 40px;
-            background: linear-gradient(180deg, var(--chalk), transparent);
+            background: rgba(255,255,255,0.15);
+            margin: 0 auto; animation: none;
         }
+        #store-banner {
+            font-family: 'Anton', sans-serif; font-size: 0.8rem;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            background: rgba(255,51,102,0.12); color: var(--pink);
+            border: 1px solid rgba(255,51,102,0.2); border-radius: 8px;
+            padding: 0.6rem 1.5rem; display: inline-block;
+        }
+        #store-banner a { color: var(--chalk); text-decoration: underline; }
         @keyframes scrollBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
 
         .sticker-banner {
@@ -337,6 +346,18 @@
         }
         .product-card .card-visual svg { width: 60%; height: 60%; opacity: 0.15; transition: opacity 0.5s; }
         .product-card:hover .card-visual svg { opacity: 0.3; }
+        .card-images { position: absolute; inset: 0; }
+        .card-images img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 0.4s ease; }
+        .card-images .cover-img { opacity: 1; z-index: 1; }
+        .card-images .hover-img { opacity: 0; z-index: 2; }
+        .product-card:hover .card-images .hover-img { opacity: 1; }
+        .discount-badge {
+            position: absolute; top: 0.75rem; left: 0.75rem; z-index: 2;
+            font-family: 'Inter', sans-serif; font-size: 0.5rem;
+            font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+            padding: 0.25rem 0.6rem; border-radius: 6px;
+            background: var(--pink); color: var(--chalk);
+        }
         .product-card .card-badge {
             position: absolute; top: 0.75rem; right: 0.75rem;
             font-family: 'Inter', sans-serif; font-size: 0.5rem;
@@ -799,6 +820,7 @@
         </div>
         <p class="tagline" data-lang="hero_tagline">Be your own luck. // Tu eres tu propia suerte.</p>
         <p class="hero-sub" data-lang="store_hero_tag">Drop 001 // Colección Otoño</p>
+        <div id="store-banner" style="display:none;margin-top:1rem;"></div>
         <div class="social-proof-bar">
             <div class="proof-item"><span class="proof-dot live"></span><strong id="buyer-count">189</strong> <span data-lang="store_social_proof">personas compraron</span></div>
             <div class="proof-item"><span class="proof-dot live"></span><strong id="live-count">12</strong> en línea</div>
@@ -1109,24 +1131,58 @@
             let currentFilter = 'all';
             let currentSort = 'best';
 
-            const GAS_URL = ''; // SET YOUR GOOGLE APPS SCRIPT URL HERE
+            const GAS_URL = 'https://script.google.com/macros/s/AKfycbwpacBbmBSexllEbh8C8Bme93_ULk9phkSCnsRHQlgD69WyZvlwpOElZo8DVbpTSPdQ8g/exec';
 
             /* ── Fetch or Load Products ── */
             function loadProducts() {
+                const stored = localStorage.getItem('lb-products');
+                if (stored) {
+                    try {
+                        const p = JSON.parse(stored);
+                        if (Array.isArray(p) && p.length > 0) {
+                            products = p;
+                            loadSettings();
+                            initStore();
+                            return;
+                        }
+                    } catch(e) {}
+                }
                 if (GAS_URL) {
                     fetch(GAS_URL)
                         .then(r => r.json())
                         .then(data => {
                             products = data;
+                            loadSettings();
                             initStore();
                         })
                         .catch(() => {
                             products = FALLBACK_PRODUCTS;
+                            loadSettings();
                             initStore();
                         });
                 } else {
                     products = FALLBACK_PRODUCTS;
+                    loadSettings();
                     initStore();
+                }
+            }
+
+            let storeSettings = { storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' };
+
+            function loadSettings() {
+                const raw = localStorage.getItem('lb-settings');
+                if (raw) {
+                    try { storeSettings = JSON.parse(raw); } catch(e) {}
+                } else {
+                    fetch(GAS_URL + '?action=settings')
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data && data.storeDiscount !== undefined) {
+                                storeSettings = data;
+                                localStorage.setItem('lb-settings', JSON.stringify(data));
+                            }
+                        })
+                        .catch(() => {});
                 }
             }
 
@@ -1198,17 +1254,33 @@
 
                 grid.innerHTML = filtered.map(p => {
                     const badgeHtml = p.badge ? `<span class="card-badge ${p.badge}">${getBadgeLabel(p.badge)}</span>` : '';
-                    const refHtml = p.referencePrice ? `<span class="product-price-ref">${formatPrice(p.referencePrice)}</span>` : '';
-                    const svg = SVG_SHAPES[p.image] || SVG_SHAPES.hoodie;
+
+                    const discountPct = p.discount || storeSettings.storeDiscount || 0;
+                    const finalPrice = discountPct ? Math.round(p.price * (1 - discountPct / 100)) : p.price;
+                    const discountBadge = discountPct ? `<span class="discount-badge">-${discountPct}%</span>` : '';
+
+                    const refPrice = p.referencePrice ? Math.round(p.referencePrice * (discountPct ? (1 - discountPct / 100) : 1)) : null;
+                    const refHtml = p.referencePrice ? `<span class="product-price-ref">${formatPrice(refPrice || p.referencePrice)}</span>` : '';
+
+                    let imageHtml = SVG_SHAPES[p.image] || SVG_SHAPES.hoodie;
+                    if (p.coverImage || p.hoverImage) {
+                        imageHtml = `<div class="card-images">`;
+                        if (p.coverImage) imageHtml += `<img src="${p.coverImage}" class="cover-img" alt="${p.name}" loading="lazy">`;
+                        if (p.hoverImage) imageHtml += `<img src="${p.hoverImage}" class="hover-img" alt="${p.name}" loading="lazy">`;
+                        imageHtml += `</div>`;
+                    } else {
+                        imageHtml = SVG_SHAPES[p.image] || SVG_SHAPES.hoodie;
+                    }
+
                     const stockHtml = p.stock !== undefined && p.stock <= 10 ? `<span class="product-stock low">${t('store_low_stock', p.stock)}</span>` : '';
                     const sizesHtml = p.sizes ? p.sizes.map(s => `<button class="size-pill" data-size="${s}">${s}</button>`).join('') : '';
                     const socialHtml = p.salesCount ? `<div class="social-mini">${currentLang === 'es' ? p.salesCount + ' vendidos' : p.salesCount + ' sold'}</div>` : '';
                     return `<div class="product-card" data-id="${p.id}">
-                        <div class="card-visual">${badgeHtml}${svg}</div>
+                        <div class="card-visual">${badgeHtml}${discountBadge}${imageHtml}</div>
                         <div class="card-body">
                             <div class="product-category">${getCategoryLabel(p.category)}</div>
                             <div class="product-name">${p.name}</div>
-                            <div class="product-price-row">${refHtml}<span class="product-price">${formatPrice(p.price)}</span></div>
+                            <div class="product-price-row">${refHtml}<span class="product-price">${formatPrice(finalPrice)}</span></div>
                             <div class="product-desc">${p.desc || ''}</div>
                             ${p.stock !== undefined && p.stock <= 3 ? `<div class="product-stock low">⚠️ ${t('store_low_stock', p.stock)}</div>` : stockHtml}
                             ${sizesHtml ? `<div class="size-pills" data-product="${p.id}">${sizesHtml}</div>` : ''}
@@ -1470,8 +1542,22 @@
                 document.getElementById('checkout-form-view').style.display = 'none';
                 document.getElementById('checkout-confirm-view').style.display = 'block';
                 document.getElementById('conf-order-id').textContent = id;
+                decrementStock();
                 cart = [];
                 saveCart();
+            }
+
+            function decrementStock() {
+                const stored = localStorage.getItem('lb-products');
+                if (!stored) return;
+                try {
+                    const prods = JSON.parse(stored);
+                    cart.forEach(item => {
+                        const p = prods.find(p => p.id === item.id);
+                        if (p && p.stock !== undefined) p.stock = Math.max(0, p.stock - 1);
+                    });
+                    localStorage.setItem('lb-products', JSON.stringify(prods));
+                } catch(e) {}
             }
 
             if (confContinue) {
@@ -1524,11 +1610,27 @@
                 renderProducts();
                 renderCart();
                 startToastRotation();
+                showBanner();
 
                 document.getElementById('buyer-count').textContent = products.reduce((s,p) => s + (p.salesCount || 0), 0);
                 document.getElementById('live-count').textContent = Math.floor(Math.random() * 20) + 5;
 
                 updateAllText();
+            }
+
+            function showBanner() {
+                const banner = $('#store-banner');
+                if (!banner) return;
+                if (storeSettings.bannerActive && storeSettings.bannerText) {
+                    if (storeSettings.bannerLink) {
+                        banner.innerHTML = `<a href="${storeSettings.bannerLink}">${storeSettings.bannerText}</a>`;
+                    } else {
+                        banner.textContent = storeSettings.bannerText;
+                    }
+                    banner.style.display = 'inline-block';
+                } else {
+                    banner.style.display = 'none';
+                }
             }
 
             loadProducts();
