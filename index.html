@@ -888,8 +888,8 @@
                         <div style="display:flex;gap:0.5rem;">
                             <input type="text" id="player-name" maxlength="3" placeholder="AAA" style="background:transparent;border:2px solid var(--chalk);color:var(--chalk);text-align:center;font-size:1.5rem;font-family:'Anton',sans-serif;text-transform:uppercase;width:80px;padding:0.5rem;outline:none;">
                             <button id="save-score-btn" style="background:var(--chalk);color:var(--void);font-weight:700;text-transform:uppercase;padding:0.5rem 1rem;border:2px solid transparent;cursor:pointer;font-family:'Anton',sans-serif;letter-spacing:0.1em;" data-lang="game_save">Guardar</button>
-            </div>
-        </div>
+                        </div>
+                    </div>
                     <button id="start-game-btn" style="font-family:'Anton',sans-serif;font-size:1.2rem;letter-spacing:0.15em;text-transform:uppercase;padding:1rem 3rem;background:var(--mint);color:var(--void);border:2px solid var(--mint);cursor:pointer;border-radius:8px;box-shadow:0 0 30px rgba(125,196,185,0.3);transition:all 0.3s;" data-lang="game_start">COMENZAR</button>
                 </div>
             </div>
@@ -1985,7 +1985,9 @@
                 }).join('');
             }
 
-            renderDrops();
+            try { renderDrops(); } catch(e) {}
+            window.addEventListener('storage', (e) => { if (e.key === 'lb-products') { try { renderDrops(); } catch(_) {} } });
+
         })();
     </script>
 
