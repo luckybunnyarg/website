@@ -321,7 +321,6 @@
             <button class="side-link active" data-tab="tab-products">Productos</button>
             <button class="side-link" data-tab="tab-discounts">Descuentos</button>
             <button class="side-link" data-tab="tab-orders">Pedidos</button>
-            <button class="side-link" data-tab="tab-home">Home Page</button>
             <a class="side-link" href="store.html" target="_blank" style="text-decoration:none;">Ver Tienda ↗</a>
         </div>
         <div class="dash-main">
@@ -341,6 +340,7 @@
                                 <th>Cat</th>
                                 <th>Precio</th>
                                 <th>Stock</th>
+                                <th>★</th>
                                 <th>Desc%</th>
                                 <th>Activo</th>
                                 <th></th>
@@ -511,6 +511,12 @@
                     </div>
                     <div class="form-group">
                         <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
+                            <input type="checkbox" id="prod-featured">
+                            ★ Mostrar en Home (Nueva Colección)
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;">
                             <input type="checkbox" id="prod-active" checked>
                             Producto Activo
                         </label>
@@ -561,6 +567,7 @@
                 <div id="orders-list">
                     <p style="color:rgba(255,255,255,0.2);">Cargando pedidos...</p>
                 </div>
+            </div>
             </div>
 
         </div>
@@ -655,18 +662,20 @@
     function renderProducts() {
         const tbody = $('#product-tbody');
         if (products.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.15);">No hay productos. Creá el primero.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.15);">No hay productos. Creá el primero.</td></tr>';
             return;
         }
         tbody.innerHTML = products.map(p => {
             const finalPrice = p.discount ? p.price - (p.price * p.discount / 100) : p.price;
             const stockClass = p.stock <= 3 ? 'stock-low' : '';
+            const starHtml = p.featured ? '<span style="color:var(--gold);">★</span>' : '<span style="color:rgba(255,255,255,0.08);">☆</span>';
             return `
                 <tr>
                     <td><strong style="color:var(--chalk);">${esc(p.name)}</strong></td>
                     <td>${esc(p.category)}</td>
                     <td>$${finalPrice.toLocaleString('es-AR')}</td>
                     <td class="${stockClass}">${p.stock}</td>
+                    <td style="font-size:1rem;">${starHtml}</td>
                     <td>${p.discount || 0}%</td>
                     <td><span class="badge-sm ${p.active !== false ? 'active' : 'inactive'}">${p.active !== false ? 'Activo' : 'Inactivo'}</span></td>
                     <td class="product-actions">
@@ -722,6 +731,7 @@
         $('#prod-stock').value = p.stock || 0;
         $('#prod-discount').value = p.discount || 0;
         $('#prod-desc').value = p.desc || '';
+        $('#prod-featured').checked = p.featured === true;
         $('#prod-active').checked = p.active !== false;
 
         // Sizes
@@ -779,6 +789,7 @@
             stock: Number($('#prod-stock').value) || 0,
             salesCount: editingId ? (products.find(p => p.id === editingId)?.salesCount || 0) : 0,
             discount: Number($('#prod-discount').value) || 0,
+            featured: $('#prod-featured').checked,
             active: $('#prod-active').checked
         };
 
@@ -858,43 +869,17 @@
             if (target) target.classList.add('active');
             $('#product-form-panel').style.display = 'none';
             if (link.dataset.tab === 'tab-orders') loadOrders();
-            if (link.dataset.tab === 'tab-home') loadHomeSettings();
         });
     });
 
     // ── Helpers ──
-    const HOME_KEY = 'lb-home-settings';
-
-    function loadHomeSettings() {
-        const raw = localStorage.getItem(HOME_KEY);
-        const data = raw ? (() => { try { return JSON.parse(raw); } catch(e) { return {}; } })() : {};
-        const fields = ['hero_tagline','drops_label','drops_desc','drops_cta','ethos_label','ethos_p1','ethos_cta'];
-        fields.forEach(f => {
-            const elEs = $('#home-' + f.replace(/_/g, '-') + '-es');
-            const elEn = $('#home-' + f.replace(/_/g, '-') + '-en');
-            if (elEs && data[f]) elEs.value = data[f].es || '';
-            if (elEn && data[f]) elEn.value = data[f].en || '';
-        });
-    }
-
-    window.saveHomeSettings = function() {
-        const fields = ['hero_tagline','drops_label','drops_desc','drops_cta','ethos_label','ethos_p1','ethos_cta'];
-        const data = {};
-        fields.forEach(f => {
-            const es = $('#home-' + f.replace(/_/g, '-') + '-es')?.value?.trim();
-            const en = $('#home-' + f.replace(/_/g, '-') + '-en')?.value?.trim();
-            if (es || en) data[f] = { es: es || '', en: en || '' };
-        });
-        localStorage.setItem(HOME_KEY, JSON.stringify(data));
-        showToast('Home Page actualizada ✓');
-    };
-
     function clearForm() {
         ['prod-name','prod-cover','prod-hover','prod-desc'].forEach(id => $('#'+id).value = '');
         ['prod-price','prod-ref-price','prod-stock','prod-discount'].forEach(id => $('#'+id).value = '0');
         $('#prod-category').value = 'tshirts';
         $('#prod-badge').value = '';
         $('#prod-active').checked = true;
+        $('#prod-featured').checked = false;
         $$('#size-checks input[type=checkbox]').forEach(cb => cb.checked = false);
         $('#extra-images').innerHTML = '<div class="img-row"><input type="text" class="extra-img-input" placeholder="https://i.ibb.co/..."></div>';
     }

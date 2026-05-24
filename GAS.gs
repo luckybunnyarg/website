@@ -8,7 +8,7 @@
  * 4. Copy Web App URL into store.html → GAS_URL and admin.html → GAS_URL
  * 
  * PRODUCTS sheet columns (row 1):
- *   id | name | category | price | referencePrice | image | coverImage | hoverImage | extraImages | badge | sizes | description | stock | salesCount | discount | active
+ *   id | name | category | price | referencePrice | image | coverImage | hoverImage | extraImages | badge | sizes | description | stock | salesCount | discount | featured | active
  * 
  * ORDERS sheet columns (row 1):
  *   timestamp | name | email | address | notes | items | total | status
@@ -157,6 +157,9 @@ function parseProductRow(headers, row) {
       if (h === 'active' && typeof val === 'string') {
         val = val.toUpperCase() === 'TRUE';
       }
+      if (h === 'featured' && typeof val === 'string') {
+        val = val.toUpperCase() === 'TRUE';
+      }
       obj[h] = val;
     }
   });
@@ -170,6 +173,7 @@ function productToRow(headers, product) {
     if (h === 'sizes' && Array.isArray(val)) val = val.join(', ');
     if (h === 'extraImages' && Array.isArray(val)) val = val.join(', ');
     if (h === 'active') val = val === true || val === 'TRUE' ? 'TRUE' : 'FALSE';
+    if (h === 'featured') val = val === true || val === 'TRUE' ? 'TRUE' : 'FALSE';
     return val;
   });
 }

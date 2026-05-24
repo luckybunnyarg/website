@@ -793,64 +793,7 @@
             <p class="section-label reveal" data-lang="drops_label">Últimos Lanzamientos</p>
             <h2 class="section-title reveal reveal-d1" data-lang-html="drops_title">Nueva <span class="text-mint">Colección</span></h2>
             <p class="section-desc reveal reveal-d2" data-lang="drops_desc">Equipo fresco. Lanzamientos limitados. Cuando se acaba, se acaba.</p>
-            <div class="product-grid">
-                <div class="product-card reveal reveal-d3">
-                    <div class="card-visual">
-                        <svg class="placeholder-svg" viewBox="0 0 100 120" fill="none">
-                            <rect x="20" y="20" width="60" height="80" rx="4" stroke="#7DC4B9" stroke-width="0.5" opacity="0.3"/>
-                            <circle cx="50" cy="50" r="15" stroke="#7DC4B9" stroke-width="0.5" opacity="0.2"/>
-                            <path d="M35 75 L50 60 L65 75" stroke="#7DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/>
-                        </svg>
-                    </div>
-                    <div class="card-info">
-                        <div class="product-name">Hoodie Void</div>
-                        <div class="product-category" data-lang="cat_outerwear">Ropa Exterior</div>
-                        <div class="product-price">$89</div>
-                    </div>
-                </div>
-                <div class="product-card reveal reveal-d4">
-                    <div class="card-visual">
-                        <svg class="placeholder-svg" viewBox="0 0 100 120" fill="none">
-                            <rect x="20" y="20" width="60" height="80" rx="4" stroke="#65B6ED" stroke-width="0.5" opacity="0.3"/>
-                            <rect x="35" y="35" width="30" height="40" rx="2" stroke="#65B6ED" stroke-width="0.5" opacity="0.2"/>
-                            <line x1="40" y1="55" x2="60" y2="55" stroke="#65B6ED" stroke-width="0.5" opacity="0.2"/>
-                        </svg>
-                    </div>
-                    <div class="card-info">
-                        <div class="product-name">Tee Raw Cut</div>
-                        <div class="product-category" data-lang="cat_tops">Camisetas</div>
-                        <div class="product-price">$42</div>
-                    </div>
-                </div>
-                <div class="product-card reveal reveal-d1">
-                    <div class="card-visual">
-                        <svg class="placeholder-svg" viewBox="0 0 100 120" fill="none">
-                            <rect x="20" y="20" width="60" height="80" rx="4" stroke="#F4D05C" stroke-width="0.5" opacity="0.3"/>
-                            <rect x="30" y="30" width="40" height="60" rx="8" stroke="#F4D05C" stroke-width="0.5" opacity="0.2"/>
-                            <circle cx="50" cy="55" r="8" stroke="#F4D05C" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                    </div>
-                    <div class="card-info">
-                        <div class="product-name">Cap Distressed</div>
-                        <div class="product-category" data-lang="cat_accessories">Accesorios</div>
-                        <div class="product-price">$38</div>
-                    </div>
-                </div>
-                <div class="product-card reveal reveal-d2">
-                    <div class="card-visual">
-                        <svg class="placeholder-svg" viewBox="0 0 100 120" fill="none">
-                            <rect x="20" y="20" width="60" height="80" rx="4" stroke="#FF3366" stroke-width="0.5" opacity="0.3"/>
-                            <path d="M30 70 L50 35 L70 70" stroke="#FF3366" stroke-width="0.5" opacity="0.2" fill="none"/>
-                            <line x1="40" y1="60" x2="60" y2="60" stroke="#FF3366" stroke-width="0.5" opacity="0.15"/>
-                        </svg>
-                    </div>
-                    <div class="card-info">
-                        <div class="product-name">Pants Cargo</div>
-                        <div class="product-category" data-lang="cat_bottoms">Pantalones</div>
-                        <div class="product-price">$72</div>
-                    </div>
-                </div>
-            </div>
+            <div class="product-grid" id="drops-grid"></div>
             <div style="text-align:center;margin-top:2rem;">
                 <a href="store.html" class="btn-ghost reveal reveal-d3" style="display:inline-flex;font-size:0.75rem;padding:0.7rem 2rem;" data-lang="drops_cta">Ver Tienda Completa →</a>
             </div>
@@ -1081,17 +1024,6 @@
                 footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
                 load_sub: { es: 'Skateware', en: 'Skatewear' }
             };
-
-            // Merge admin Home Page overrides
-            try {
-                const home = JSON.parse(localStorage.getItem('lb-home-settings') || '{}');
-                Object.keys(home).forEach(key => {
-                    if (i18n[key] && home[key]) {
-                        if (home[key].es) i18n[key].es = home[key].es;
-                        if (home[key].en) i18n[key].en = home[key].en;
-                    }
-                });
-            } catch(e) {}
 
             function setLang(lang) {
                 currentLang = lang;
@@ -1998,6 +1930,50 @@
             }, { passive: false });
             gameContainer.addEventListener('touchend', (e) => { e.preventDefault(); touchStartY = 0; standUp(); }, { passive: false });
             gameContainer.addEventListener('touchcancel', () => { touchStartY = 0; standUp(); }, { passive: true });
+
+            /* ── Render Featured Drops ── */
+            const DROPS_SVG = {
+                hoodie: `<svg viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="%237DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="35" y="50" width="30" height="35" rx="2" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/></svg>`,
+                tshirts: `<svg viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="%2365B6ED" stroke-width="0.5" opacity="0.3"/><path d="M30 30 L22 20 L50 8 L78 20 L70 30" stroke="%2365B6ED" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="40" y="50" width="20" height="25" rx="2" stroke="%2365B6ED" stroke-width="0.5" opacity="0.15"/></svg>`,
+                socks: `<svg viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M30 65 Q25 80 35 80 Q40 80 48 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/><path d="M52 65 Q47 80 57 80 Q62 80 70 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/></svg>`,
+                accessories: `<svg viewBox="0 0 100 120" fill="none"><circle cx="50" cy="40" r="22" stroke="%23F4D05C" stroke-width="0.5" opacity="0.25"/><rect x="36" y="55" width="28" height="35" rx="4" stroke="%23F4D05C" stroke-width="0.5" opacity="0.2"/><line x1="40" y1="68" x2="60" y2="68" stroke="%23F4D05C" stroke-width="0.5" opacity="0.15"/></svg>`
+            };
+
+            function catLabelHome(cat) {
+                const m = { tshirts: currentLang==='es'?'Camisetas':'T-Shirts', hoodies: currentLang==='es'?'Hoodies':'Hoodies', socks: currentLang==='es'?'Medias':'Socks', accessories: currentLang==='es'?'Accesorios':'Accessories' };
+                return m[cat] || cat;
+            }
+
+            function renderDrops() {
+                const grid = $('#drops-grid');
+                if (!grid) return;
+                let drops = [];
+                try {
+                    const stored = localStorage.getItem('lb-products');
+                    if (stored) {
+                        const p = JSON.parse(stored);
+                        if (Array.isArray(p)) drops = p;
+                    }
+                } catch(e) {}
+                drops = drops.filter(p => p.featured === true);
+                if (!drops.length) return; // keep empty, no fallback cards
+
+                grid.innerHTML = drops.map((p, i) => {
+                    const imageHtml = p.coverImage
+                        ? `<img src="${p.coverImage}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">`
+                        : (DROPS_SVG[p.image] || DROPS_SVG[p.category] || DROPS_SVG.hoodie);
+                    return `<a href="store.html" class="product-card reveal reveal-d${(i%4)+1}" style="text-decoration:none;color:inherit;">
+                        <div class="card-visual">${imageHtml}</div>
+                        <div class="card-info">
+                            <div class="product-name">${p.name}</div>
+                            <div class="product-category">${catLabelHome(p.category)}</div>
+                            <div class="product-price">$${(p.price||0).toLocaleString('es-AR')}</div>
+                        </div>
+                    </a>`;
+                }).join('');
+            }
+
+            renderDrops();
 
         })();
     </script>
