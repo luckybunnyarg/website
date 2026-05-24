@@ -126,8 +126,16 @@
             transition: width 0.1s ease-out;
         }
 
+        .sticker-banner {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 45;
+            height: 28px; display: flex; align-items: center; justify-content: center;
+            background: var(--void);
+            border-bottom: 1px solid rgba(125,196,185,0.15);
+            font-size: 0.6rem; letter-spacing: 0.1em; color: var(--mint);
+            pointer-events: none;
+        }
         nav {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 40;
+            position: fixed; top: 28px; left: 0; width: 100%; z-index: 40;
             padding: 1.2rem 2rem;
             display: flex; justify-content: space-between; align-items: center;
         }
@@ -186,7 +194,7 @@
             position: relative; width: 100%; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center; z-index: 10; overflow: hidden;
-            padding: 6rem 2rem 4rem;
+            padding: 6.5rem 2rem 4rem;
         }
         #hero::before {
             content: ''; position: absolute; inset: 0;
@@ -695,6 +703,8 @@
 
     <div id="page-progress"><div id="page-progress-bar"></div></div>
 
+    <div class="sticker-banner" data-lang="store_sticker_banner">🎁 Llevate un sticker gratis con tu primer compra</div>
+
     <nav>
         <div class="logo">
             <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="LB">
@@ -702,7 +712,8 @@
         </div>
         <div class="nav-links">
             <a href="#drops" data-lang="nav_drops">Lanzamientos</a>
-            <a href="#ethos" data-lang="nav_story">Historia</a>
+            <a href="store.html" data-lang="nav_store">Tienda</a>
+            <a href="about.html" data-lang="nav_about">Nosotros</a>
             <a href="#game-section" data-lang="nav_arcade">Arcade</a>
             <a href="#final-cta" data-lang="nav_connect">Contacto</a>
             <button id="lang-toggle"><span class="active-lang">ES</span><span class="sep">/</span>EN</button>
@@ -713,7 +724,8 @@
     </nav>
     <div id="mobile-drawer">
         <a href="#drops" data-lang="nav_drops">Lanzamientos</a>
-        <a href="#ethos" data-lang="nav_story">Historia</a>
+        <a href="store.html" data-lang="nav_store">Tienda</a>
+        <a href="about.html" data-lang="nav_about">Nosotros</a>
         <a href="#game-section" data-lang="nav_arcade">Arcade</a>
         <a href="#final-cta" data-lang="nav_connect">Contacto</a>
     </div>
@@ -967,7 +979,10 @@
 
             let currentLang = 'es';
             const i18n = {
+                store_sticker_banner: { es: '🎁 Llevate un sticker gratis con tu primer compra', en: '🎁 Free sticker with your first purchase' },
                 nav_drops: { es: 'Lanzamientos', en: 'Drops' },
+                nav_store: { es: 'Tienda', en: 'Store' },
+                nav_about: { es: 'Nosotros', en: 'About' },
                 nav_story: { es: 'Historia', en: 'Story' },
                 nav_arcade: { es: 'Arcade', en: 'Arcade' },
                 nav_connect: { es: 'Contacto', en: 'Connect' },

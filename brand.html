@@ -82,13 +82,21 @@
             border: 1px solid rgba(255,255,255,0.04);
         }
 
+        .sticker-banner {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 45;
+            height: 28px; display: flex; align-items: center; justify-content: center;
+            background: var(--void);
+            border-bottom: 1px solid rgba(125,196,185,0.15);
+            font-size: 0.6rem; letter-spacing: 0.1em; color: var(--mint);
+            pointer-events: none;
+        }
         #app-layout {
-            display: flex; gap: 0; width: 100%; height: 100vh; padding: 0;
+            display: flex; gap: 0; width: 100%; height: calc(100vh - 28px); margin-top: 28px; padding: 0;
             position: relative; z-index: 10;
         }
 
         aside {
-            width: 260px; height: 100vh; flex-shrink: 0;
+            width: 260px; height: 100%; flex-shrink: 0;
             display: flex; flex-direction: column;
             border-right: 1px solid rgba(255,255,255,0.04);
             background: rgba(2,2,2,0.8);
@@ -158,7 +166,7 @@
         }
 
         main {
-            flex: 1; height: 100vh; overflow: hidden; position: relative;
+            flex: 1; height: 100%; overflow: hidden; position: relative;
             background: rgba(0,0,0,0.3);
         }
 
@@ -182,7 +190,7 @@
         }
 
         #scroll-content {
-            height: 100vh; overflow-y: auto; overflow-x: hidden;
+            height: 100%; overflow-y: auto; overflow-x: hidden;
             position: relative; z-index: 1;
         }
         #scroll-content::-webkit-scrollbar { width: 0; }
@@ -479,6 +487,8 @@
     <div class="film-grain"></div>
     <div class="bg-vignette"></div>
     <div id="cursor-glow" class="is-hidden"></div>
+
+    <div class="sticker-banner" data-lang="store_sticker_banner">🎁 Llevate un sticker gratis con tu primer compra</div>
 
     <div id="app-layout">
 
@@ -793,7 +803,8 @@
                 voice_nocorp_title: { es: 'Sin Corporate Speak', en: 'No Corporate Speak' },
                 voice_nocorp_text: { es: 'Nunca decimos "Shop now" o "Link in bio". Hablamos en suerte. Cada mensaje es una página de un diario íntimo, no un anuncio.', en: 'We never say "Shop now" or "Link in bio." We speak in luck. Every post feels like a page from a diary, not an advertisement.' },
                 voice_numbers_title: { es: 'Números de la Suerte', en: 'Lucky Numbers' },
-                voice_numbers_text: { es: '2:22, 3:33, 4:44, 5:55 — cada uno es un sello de que la suerte está de tu lado. Úsalos como firma en cada pieza de comunicación.', en: '2:22, 3:33, 4:44, 5:55 — each one is a stamp that luck is on your side. Use them as signatures in every piece of communication.' }
+                voice_numbers_text: { es: '2:22, 3:33, 4:44, 5:55 — cada uno es un sello de que la suerte está de tu lado. Úsalos como firma en cada pieza de comunicación.', en: '2:22, 3:33, 4:44, 5:55 — each one is a stamp that luck is on your side. Use them as signatures in every piece of communication.' },
+                store_sticker_banner: { es: '🎁 Llevate un sticker gratis con tu primer compra', en: '🎁 Free sticker with your first purchase' }
             };
 
             function setLang(lang) {
