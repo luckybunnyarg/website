@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>LUCKY BUNNY | Documentación de Marca</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,6 +24,8 @@
             font-family: 'Inter', sans-serif; overflow: hidden;
             width: 100vw; height: 100vh;
             -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
         }
 
         a { color: inherit; text-decoration: none; }
@@ -46,6 +48,14 @@
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,200,0.025) 2px, rgba(0,255,200,0.025) 4px);
         }
 
+        button, #start-game-btn, #save-score-btn, .nav-link {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        button:active, #start-game-btn:active, #save-score-btn:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
         .cursor-dot {
             position: fixed; pointer-events: none; z-index: 9998;
             width: 5px; height: 5px; border-radius: 50%;
@@ -294,6 +304,26 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 25; pointer-events: none;
         }
+        .mobile-game-btn {
+            display: none; position: absolute; bottom: 50px; z-index: 22;
+            width: 72px; height: 72px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+            color: var(--chalk); font-family: 'Anton', sans-serif;
+            font-size: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.08em; cursor: pointer;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+            flex-direction: column; align-items: center;
+            justify-content: center; gap: 1px; line-height: 1;
+            transition: transform 0.1s, background 0.1s;
+        }
+        .mobile-game-btn:active {
+            transform: scale(0.88);
+            background: rgba(125,196,185,0.25);
+            border-color: var(--mint);
+        }
+        #btn-jump { left: 12px; }
+        #btn-duck { right: 12px; }
         #game-ground {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
             background: #1a1a1a; z-index: 5; border-top: 2px solid #333;
@@ -419,6 +449,27 @@
             .nav-link::after { content: attr(data-short); font-size: 0.6rem; }
             .nav-link.active::before { left: 50%; transform: translateX(-50%); top: 0.3rem; }
             .sidebar-footer { display: none; }
+            #game-container.game-active .mobile-game-btn { display: flex; }
+        }
+        @media (max-width: 480px) {
+            .game-controls { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+            .game-controls > div:last-child { text-align: center; }
+            #game-container { height: clamp(200px, 35vh, 300px); }
+            #start-game-btn { padding: 0.75rem 1.5rem; font-size: 1rem; width: 90%; max-width: 280px; }
+            #overlay-title { font-size: clamp(1.4rem, 6vw, 2rem) !important; }
+            #player-name { width: 64px !important; font-size: 1.2rem !important; }
+            #save-score-btn { padding: 0.4rem 0.75rem !important; font-size: 0.8rem !important; }
+            .voice-card-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 374px) {
+            aside { width: 44px; }
+            .nav-link { padding: 0.6rem; }
+            .nav-link::after { font-size: 0.5rem; }
+            .mobile-game-btn { width: 60px; height: 60px; bottom: 40px; }
+        }
+        @media (orientation: landscape) and (max-height: 500px) {
+            #game-container { height: clamp(160px, 70vh, 280px); }
+            .mobile-game-btn { bottom: 28px; width: 56px; height: 56px; }
         }
     </style>
 </head>
@@ -444,13 +495,14 @@
                 <button data-target="tab-anatomy" class="nav-link" data-short="02" data-lang="nav_anatomia">02. Anatomía Vector</button>
                 <button data-target="tab-color" class="nav-link" data-short="03" data-lang="nav_color">03. Matriz de Color</button>
                 <button data-target="tab-rules" class="nav-link" data-short="04" data-lang="nav_rules">04. Reglas de Marca</button>
-                <button data-target="tab-game" class="nav-link game-link" data-short="05" data-lang="nav_game">05. El Skate 404</button>
+                <button data-target="tab-voice" class="nav-link" data-short="05" data-lang="nav_voice">05. La Voz</button>
+                <button data-target="tab-game" class="nav-link game-link" data-short="06" data-lang="nav_game">06. El Skate 404</button>
                 <button id="lang-toggle"><span class="active-lang">ES</span><span class="sep">/</span>EN</button>
             </nav>
 
             <div class="sidebar-footer">
                 Mendoza, Arg.<br>
-                <span data-lang="footer_motto">Todo sale bien.</span>
+                <span data-lang="footer_motto">Everything always works out. // Todo sale bien.</span>
             </div>
         </aside>
 
@@ -476,9 +528,8 @@
                 <section id="tab-ethos" class="tab-panel" style="min-height:100vh;padding:4rem;justify-content:center;">
                     <div class="tab-label"><div class="line"></div><span data-lang="ethos_label">01 // El Alma</span></div>
                     <h2 class="text-display" style="margin-bottom:2rem;" data-lang="ethos_title">El Feliz<br>Accidente.</h2>
-                    <div style="max-width:700px;display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
-                        <p class="text-body" data-lang="ethos_p1">Lucky Bunny no nació en una sala de juntas. Apareció al fondo de un aula en Mendoza en 2014.</p>
-                        <p class="text-body" data-lang="ethos_p2">Un error creó un protagonista. La suerte no es el destino, sino lo que sucede cuando aceptas un desliz.</p>
+                    <div style="max-width:700px;">
+                        <p class="text-body" data-lang="ethos_p1">Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte ocurre cuando decides que el universo está de tu lado.</p>
                     </div>
                 </section>
 
@@ -555,6 +606,41 @@
 
                 <div class="neon-divider"><span class="neon-divider-inner" data-lang="d5">Arcade</span></div>
 
+                <!-- Voice -->
+                <section id="tab-voice" class="tab-panel" style="min-height:100vh;padding:4rem;justify-content:center;">
+                    <div class="tab-label"><div class="line"></div><span data-lang="voice_label">05 // La Voz</span></div>
+                    <h2 class="text-display" style="margin-bottom:3rem;" data-lang="voice_title">El Filósofo<br>Literal</h2>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:800px;">
+                        <div style="background:rgba(0,0,0,0.4);padding:1.5rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04);" class="hover-lift">
+                            <p style="font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mint);margin-bottom:0.5rem;" data-lang="voice_mantra_title">El Mantra</p>
+                            <p style="font-family:'Anton',sans-serif;font-size:1.2rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--gold);" data-lang="voice_mantra_text">Be your own luck. // Tu eres tu propia suerte.</p>
+                            <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;font-family:'Inter',sans-serif;">5:55</p>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.4);padding:1.5rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04);" class="hover-lift">
+                            <p style="font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mint);margin-bottom:0.5rem;" data-lang="voice_picardia_title">Picardía Argentina</p>
+                            <p class="text-body" style="font-size:0.85rem;" data-lang="voice_picardia_text">Lucky Bunny habla con una mezcla de picardía argentina y sofisticación global. Tomamos las metáforas literalmente para exponer el "spice" de la vida.</p>
+                            <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;font-family:'Inter',sans-serif;">3:33</p>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.4);padding:1.5rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04);" class="hover-lift">
+                            <p style="font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mint);margin-bottom:0.5rem;" data-lang="voice_spanglish_title">Alma Spanglish</p>
+                            <p class="text-body" style="font-size:0.85rem;" data-lang="voice_spanglish_text">Honramos nuestras raíces mezclando inglés y español. Es el idioma de la calle, la tabla y el sueño.</p>
+                            <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;font-family:'Inter',sans-serif;">4:44</p>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.4);padding:1.5rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04);" class="hover-lift">
+                            <p style="font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mint);margin-bottom:0.5rem;" data-lang="voice_nocorp_title">Sin Corporate Speak</p>
+                            <p class="text-body" style="font-size:0.85rem;" data-lang="voice_nocorp_text">Nunca decimos "Shop now" o "Link in bio". Hablamos en suerte. Cada mensaje es una página de un diario íntimo, no un anuncio.</p>
+                            <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;font-family:'Inter',sans-serif;">2:22</p>
+                        </div>
+                        <div style="background:rgba(0,0,0,0.4);padding:1.5rem;border-radius:8px;border:1px solid rgba(255,255,255,0.04);" class="hover-lift">
+                            <p style="font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mint);margin-bottom:0.5rem;" data-lang="voice_numbers_title">Números de la Suerte</p>
+                            <p class="text-body" style="font-size:0.85rem;" data-lang="voice_numbers_text">2:22, 3:33, 4:44, 5:55 — cada uno es un sello de que la suerte está de tu lado. Úsalos como firma en cada pieza de comunicación.</p>
+                            <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-top:0.5rem;font-family:'Inter',sans-serif;">6:06</p>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="neon-divider"><span class="neon-divider-inner" data-lang="d6">La Voz</span></div>
+
                 <!-- Game -->
                 <section id="tab-game" class="tab-panel" style="min-height:100vh;padding:4rem;">
                     <div style="display:grid;grid-template-columns:1fr 3fr;gap:2rem;align-items:start;">
@@ -566,13 +652,13 @@
                             <div id="leaderboard-container" style="font-size:0.8rem;"></div>
                         </div>
                         <div>
-                            <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;">
+                            <div class="game-controls" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;">
                                 <p style="font-family:'Anton',sans-serif;font-size:1.3rem;text-transform:uppercase;" data-lang="game_title">El Skate 404</p>
                                 <div style="font-family:'Inter',sans-serif;font-size:1rem;font-weight:700;">
                                     <span data-lang="game_score">PUNTOS</span>: <span id="score-display" style="color:var(--mint);">0000</span>
                                 </div>
                             </div>
-                            <div style="display:flex;gap:0.8rem;font-size:0.55rem;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;">
+                            <div class="game-controls" style="display:flex;gap:0.8rem;font-size:0.55rem;color:rgba(255,255,255,0.25);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:0.5rem;">
                                 <span style="border:1px solid rgba(255,255,255,0.08);padding:0.2rem 0.5rem;border-radius:4px;" data-lang="game_ctrl1">[ESPACIO / ARRIBA] SALTAR</span>
                                 <span style="border:1px solid rgba(255,255,255,0.08);padding:0.2rem 0.5rem;border-radius:4px;" data-lang="game_ctrl2">[ABAJO] AGACHARSE</span>
                             </div>
@@ -602,6 +688,15 @@
                                 <div id="obstacles-container"></div>
 
                                 <canvas id="vfx-canvas"></canvas>
+
+                                <button id="btn-jump" class="mobile-game-btn" aria-label="Saltar">
+                                    <span style="font-size:1.4rem;line-height:1;">▲</span>
+                                    <span data-lang="game_ctrl1_short">SALTAR</span>
+                                </button>
+                                <button id="btn-duck" class="mobile-game-btn" aria-label="Agacharse">
+                                    <span style="font-size:1.4rem;line-height:1;">▼</span>
+                                    <span data-lang="game_ctrl2_short">AGACHARSE</span>
+                                </button>
 
                                 <div id="game-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;">
                                     <h3 id="overlay-title" style="font-family:'Anton',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:1.5rem;" data-lang="game_ready">¿Listo para Arriesgarte?</h3>
@@ -639,8 +734,9 @@
                 nav_anatomia: { es: '02. Anatomía Vector', en: '02. Vector Anatomy' },
                 nav_color: { es: '03. Matriz de Color', en: '03. Color Matrix' },
                 nav_rules: { es: '04. Reglas de Marca', en: '04. Brand Rules' },
-                nav_game: { es: '05. El Skate 404', en: '05. The 404 Skate' },
-                footer_motto: { es: 'Todo sale bien.', en: 'Everything works out.' },
+                nav_voice: { es: '05. La Voz', en: '05. The Voice' },
+                nav_game: { es: '06. El Skate 404', en: '06. The 404 Skate' },
+                footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
                 cover_title: { es: 'El Archivo.', en: 'The Archive.' },
                 cover_sub: { es: 'Documentación de Marca', en: 'Brand Documentation' },
                 d1: { es: 'Esencia', en: 'Ethos' },
@@ -650,8 +746,7 @@
                 d5: { es: 'Arcade', en: 'Arcade' },
                 ethos_label: { es: '01 // El Alma', en: '01 // The Soul' },
                 ethos_title: { es: 'El Feliz<br>Accidente.', en: 'The Happy<br>Accident.' },
-                ethos_p1: { es: 'Lucky Bunny no nació en una sala de juntas. Apareció al fondo de un aula en Mendoza en 2014.', en: 'Lucky Bunny wasn\'t born in a boardroom. It appeared at the back of a classroom in Mendoza in 2014.' },
-                ethos_p2: { es: 'Un error creó un protagonista. La suerte no es el destino, sino lo que sucede cuando aceptas un desliz.', en: 'A mistake created a protagonist. Luck isn\'t destiny — it\'s what happens when you embrace a slip.' },
+                ethos_p1: { es: 'Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte ocurre cuando decides que el universo está de tu lado.', en: 'Lucky Bunny wasn\'t born in a corporate boardroom. It appeared from a mistake in 2014, when a hand slipped trying to draw a universal peace symbol and brought our protagonist to life. It went from being the silent companion of exams and late nights in Mendoza, to becoming a real good luck charm: the living proof that luck happens when you decide the universe is on your side.' },
                 anatomy_label: { es: '02 // El Protagonista', en: '02 // The Protagonist' },
                 anatomy_title: { es: 'Anatomía<br>Vector', en: 'Vector<br>Anatomy' },
                 anatomia_secret: { es: 'La Conexión Secreta', en: 'The Secret Connection' },
@@ -674,13 +769,31 @@
                 rules_2_desc: { es: 'Mantenga una tasa de venta del 100% en todas las caídas inesperadas.', en: 'Maintain a 100% sell-through rate on all unexpected drops.' },
                 game_leaderboard: { es: 'Mejores Puntajes', en: 'Live Records' },
                 game_title: { es: 'El Skate 404', en: 'The 404 Skate' },
-                game_score: { es: 'PUNTOS', en: 'SCORE' },
+                game_score: { es: 'SUERTE', en: 'LUCK' },
                 game_ctrl1: { es: '[ESPACIO / ARRIBA] SALTAR', en: '[SPACE / UP] JUMP' },
                 game_ctrl2: { es: '[ABAJO] AGACHARSE', en: '[DOWN] DUCK' },
-                game_ready: { es: '¿Listo para Arriesgarte?', en: 'Ready to Drop?' },
-                game_record: { es: '¡Nuevo Récord!', en: 'New Record!' },
+                game_ctrl1_short: { es: 'SALTAR', en: 'JUMP' },
+                game_ctrl2_short: { es: 'AGACHARSE', en: 'DUCK' },
+                game_ready: { es: 'La suerte te espera.', en: 'Luck is waiting.' },
+                game_crash: { es: 'La suerte se fue.', en: 'Luck slipped.' },
+                game_retry: { es: 'Otra chance', en: 'Another roll' },
+                game_playagain: { es: 'Jugar de nuevo', en: 'Play again' },
+                game_record: { es: 'La suerte es tuya. Ingresá tu nombre.', en: 'The luck is yours. Enter your name.' },
                 game_save: { es: 'Guardar', en: 'Save' },
-                game_start: { es: 'COMENZAR', en: 'START GAME' }
+                game_start: { es: 'PROBAR SUERTE', en: 'TEST YOUR LUCK' },
+                d6: { es: 'La Voz', en: 'The Voice' },
+                voice_label: { es: '05 // La Voz', en: '05 // The Voice' },
+                voice_title: { es: 'El Filósofo<br>Literal', en: 'The Literal<br>Philosopher' },
+                voice_mantra_title: { es: 'El Mantra', en: 'The Mantra' },
+                voice_mantra_text: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
+                voice_picardia_title: { es: 'Picardía Argentina', en: 'Argentine Picardia' },
+                voice_picardia_text: { es: 'Lucky Bunny habla con una mezcla de picardía argentina y sofisticación global. Tomamos las metáforas literalmente para exponer el "spice" de la vida.', en: 'Lucky Bunny speaks with a mix of Argentine picardia and global sophistication. We take metaphors literally to expose the "spice" of life.' },
+                voice_spanglish_title: { es: 'Alma Spanglish', en: 'Spanglish Soul' },
+                voice_spanglish_text: { es: 'Honramos nuestras raíces mezclando inglés y español. Es el idioma de la calle, la tabla y el sueño.', en: 'We honor our roots by mixing English and Spanish. It is the language of the street, the board, and the dream.' },
+                voice_nocorp_title: { es: 'Sin Corporate Speak', en: 'No Corporate Speak' },
+                voice_nocorp_text: { es: 'Nunca decimos "Shop now" o "Link in bio". Hablamos en suerte. Cada mensaje es una página de un diario íntimo, no un anuncio.', en: 'We never say "Shop now" or "Link in bio." We speak in luck. Every post feels like a page from a diary, not an advertisement.' },
+                voice_numbers_title: { es: 'Números de la Suerte', en: 'Lucky Numbers' },
+                voice_numbers_text: { es: '2:22, 3:33, 4:44, 5:55 — cada uno es un sello de que la suerte está de tu lado. Úsalos como firma en cada pieza de comunicación.', en: '2:22, 3:33, 4:44, 5:55 — each one is a stamp that luck is on your side. Use them as signatures in every piece of communication.' }
             };
 
             function setLang(lang) {
@@ -1416,7 +1529,7 @@
                 gameContainer.classList.add('shake-board');
                 setTimeout(() => {
                     overlay.style.display = 'flex';
-                    overlayTitle.innerHTML = i18n['game_ready']?.[currentLang] || '¿Listo para Arriesgarte?';
+                    overlayTitle.innerHTML = i18n['game_crash']?.[currentLang] || 'La suerte se fue.';
                     const lowest = leaderboard.length < 3 ? 0 : (leaderboard[leaderboard.length - 1]?.score ?? 0);
                     if (g.score > lowest) {
                         startBtn.style.display = 'none';
@@ -1425,7 +1538,7 @@
                         nameInput.focus();
                     } else {
                         startBtn.style.display = 'block';
-                        startBtn.textContent = i18n['game_start']?.[currentLang] === 'START GAME' ? 'TRY AGAIN' : 'INTENTAR DE NUEVO';
+                        startBtn.textContent = i18n['game_retry']?.[currentLang] || 'Otra chance';
                     }
                 }, 600);
             }
@@ -1443,10 +1556,43 @@
                     renderLeaderboard();
                     hsForm.style.display = 'none';
                     startBtn.style.display = 'block';
-                    startBtn.textContent = i18n['game_start']?.[currentLang] === 'COMENZAR' ? 'JUGAR DE NUEVO' : 'PLAY AGAIN';
+                    startBtn.textContent = i18n['game_playagain']?.[currentLang] || 'Jugar de nuevo';
                 });
                 nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveBtn.click(); });
                 startBtn.addEventListener('click', startGame);
+
+                /* ── Mobile game buttons ── */
+                const btnJump = document.getElementById('btn-jump');
+                const btnDuck = document.getElementById('btn-duck');
+
+                if (btnJump) {
+                    btnJump.addEventListener('touchstart', (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        if (g.st === ST.PLAYING) jump();
+                    }, { passive: false });
+                    btnJump.addEventListener('mousedown', (e) => {
+                        e.stopPropagation();
+                        if (g.st === ST.PLAYING) jump();
+                    });
+                }
+
+                if (btnDuck) {
+                    const duckDown = (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        if (g.st === ST.PLAYING) { g.holdDown = true; duck(); }
+                    };
+                    const duckUp = (e) => {
+                        e.preventDefault(); e.stopPropagation();
+                        if (g.st === ST.PLAYING) { g.holdDown = false; standUp(); }
+                    };
+                    btnDuck.addEventListener('touchstart', duckDown, { passive: false });
+                    btnDuck.addEventListener('touchend', duckUp, { passive: false });
+                    btnDuck.addEventListener('touchcancel', (e) => { e.stopPropagation(); g.holdDown = false; standUp(); }, { passive: true });
+                    btnDuck.addEventListener('mousedown', duckDown);
+                    btnDuck.addEventListener('mouseup', duckUp);
+                    btnDuck.addEventListener('mouseleave', () => { if (g.st === ST.PLAYING) { g.holdDown = false; standUp(); } });
+                }
+
                 document.addEventListener('keydown', (e) => {
                     if (e.code === 'Space' || e.code === 'ArrowUp') {
                         e.preventDefault();

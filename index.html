@@ -2,7 +2,7 @@
     <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>LUCKY BUNNY | Skateware</title>
     <link rel="icon" type="image/png" href="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,6 +24,8 @@
             background: var(--void); color: var(--chalk);
             font-family: 'Inter', sans-serif; overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
         }
 
         a { color: inherit; text-decoration: none; }
@@ -51,6 +53,14 @@
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,200,0.025) 2px, rgba(0,255,200,0.025) 4px);
         }
 
+        button, #start-game-btn, #save-score-btn, #hamburger, .btn-primary, .nav-link {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        button:active, #start-game-btn:active, #save-score-btn:active, .btn-primary:active {
+            transform: scale(0.95);
+            transition: transform 0.1s;
+        }
         .cursor-dot {
             position: fixed; pointer-events: none; z-index: 9998;
             width: 5px; height: 5px; border-radius: 50%;
@@ -504,6 +514,26 @@
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 25; pointer-events: none;
         }
+        .mobile-game-btn {
+            display: none; position: absolute; bottom: 50px; z-index: 22;
+            width: 72px; height: 72px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.1);
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+            color: var(--chalk); font-family: 'Anton', sans-serif;
+            font-size: 0.5rem; text-transform: uppercase;
+            letter-spacing: 0.08em; cursor: pointer;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+            flex-direction: column; align-items: center;
+            justify-content: center; gap: 1px; line-height: 1;
+            transition: transform 0.1s, background 0.1s;
+        }
+        .mobile-game-btn:active {
+            transform: scale(0.88);
+            background: rgba(125,196,185,0.25);
+            border-color: var(--mint);
+        }
+        #btn-jump { left: 12px; }
+        #btn-duck { right: 12px; }
         #game-ground {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
             background: #1a1a1a; z-index: 5;
@@ -622,9 +652,30 @@
             .cursor-dot { display: none; }
             section { padding: 4rem 1.5rem; }
             #hero-city { height: 150px; opacity: 0.08; }
+            #game-container.game-active .mobile-game-btn { display: flex; }
         }
         @media (max-width: 480px) {
             .product-grid { grid-template-columns: 1fr; }
+            .game-controls { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+            .game-controls > div:last-child { text-align: center; }
+            #game-container { height: clamp(240px, 40vh, 340px); }
+            #start-game-btn { padding: 0.75rem 1.5rem; font-size: 1rem; width: 90%; max-width: 280px; }
+            #overlay-title { font-size: clamp(1.4rem, 6vw, 2rem) !important; }
+            #player-name { width: 64px !important; font-size: 1.2rem !important; }
+            #save-score-btn { padding: 0.4rem 0.75rem !important; font-size: 0.8rem !important; }
+        }
+        @media (max-width: 374px) {
+            section { padding: 3rem 1rem; }
+            .brand-mark { font-size: clamp(3rem, 12vw, 5rem) !important; }
+            #game-container { height: clamp(200px, 35vh, 280px); }
+            .game-controls span { font-size: 0.55rem !important; }
+            #game-container .neon-divider { margin: 10vh auto; }
+            .mobile-game-btn { width: 60px; height: 60px; bottom: 40px; }
+        }
+        @media (orientation: landscape) and (max-height: 500px) {
+            #game-container { height: clamp(180px, 70vh, 320px); }
+            section { padding: 2rem 1.5rem; }
+            .mobile-game-btn { bottom: 28px; width: 56px; height: 56px; }
         }
     </style>
 </head>
@@ -766,16 +817,14 @@
                     <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" class="mascot" alt="LB Mascot">
                 </div>
                 <div>
-                    <p class="section-label reveal" data-lang="ethos_label">Nuestra Historia</p>
-                    <h2 class="section-title reveal reveal-d1" data-lang-html="ethos_title">Hecho para el <span class="text-mint">Concreto</span></h2>
+                    <p class="section-label reveal" data-lang="ethos_label">El Origen</p>
+                    <h2 class="section-title reveal reveal-d1" data-lang-html="ethos_title">El Feliz<br>Accidente.</h2>
                     <p class="section-desc reveal reveal-d2" style="max-width: none;" data-lang="ethos_p1">
-                        Lucky Bunny nació en el pavimento, en callejones y bajo pasos a desnivel. 
-                        Hacemos equipo que aguanta golpes y vuelve por más. Sin trucos. 
-                        Sin excesos. Solo skateware honesto que se mueve con vos.
-                    </p>
-                    <p class="section-desc reveal reveal-d3" style="max-width: none; margin-top: 1rem;" data-lang="ethos_p2">
-                        Cada corte, cada puntada — diseñado por skaters, para skaters. Porque la 
-                        calle no le importa tu marca. Le importa lo que rodás.
+                        Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, 
+                        cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida 
+                        a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches 
+                        en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte 
+                        ocurre cuando decides que el universo está de tu lado.
                     </p>
                 </div>
             </div>
@@ -790,13 +839,13 @@
             <h2 class="section-title reveal reveal-d1" data-lang-html="game_title">El <span class="text-pink">Drop</span> Game</h2>
             <p class="section-desc reveal reveal-d2" style="margin-bottom:2rem;" data-lang="game_desc">Esquiva los obstáculos. ¿Qué tan lejos podés llegar?</p>
 
-            <div class="flex justify-between items-end" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;">
+            <div class="game-controls flex justify-between items-end" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;">
                 <div style="display:flex;gap:1rem;font-size:0.65rem;font-family:'Inter',sans-serif;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.15em;">
                     <span style="border:1px solid rgba(255,255,255,0.1);padding:0.25rem 0.5rem;" data-lang="game_ctrl1">[ESPACIO / ARRIBA] SALTAR</span>
                     <span style="border:1px solid rgba(255,255,255,0.1);padding:0.25rem 0.5rem;" data-lang="game_ctrl2">[ABAJO] AGACHARSE</span>
                 </div>
                 <div style="font-family:'Inter',sans-serif;font-size:1.2rem;font-weight:700;">
-                    <span data-lang="game_score">PUNTOS</span>: <span id="score-display" style="color:var(--mint);">0000</span>
+                    <span data-lang="game_score">SUERTE</span>: <span id="score-display" style="color:var(--mint);">0000</span>
                 </div>
             </div>
 
@@ -827,6 +876,15 @@
                 <div id="obstacles-container"></div>
 
                 <canvas id="vfx-canvas"></canvas>
+
+                <button id="btn-jump" class="mobile-game-btn" aria-label="Saltar">
+                    <span style="font-size:1.4rem;line-height:1;">▲</span>
+                    <span data-lang="game_ctrl1_short">SALTAR</span>
+                </button>
+                <button id="btn-duck" class="mobile-game-btn" aria-label="Agacharse">
+                    <span style="font-size:1.4rem;line-height:1;">▼</span>
+                    <span data-lang="game_ctrl2_short">AGACHARSE</span>
+                </button>
 
                 <div id="game-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;">
                     <h3 id="overlay-title" style="font-family:'Anton',sans-serif;font-size:clamp(2rem,4vw,3rem);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:1.5rem;text-shadow:0 0 30px rgba(125,196,185,0.2);" data-lang="game_ready">¿Listo para Arriesgarte?</h3>
@@ -895,7 +953,7 @@
         </div>
         <div class="footer-bottom">
             <span>&copy; 2026 Lucky Bunny. Todos los derechos reservados.</span>
-            <span data-lang="footer_motto">Patina o muere</span>
+            <span data-lang="footer_motto">Everything always works out. // Todo sale bien.</span>
         </div>
     </footer>
 
@@ -913,11 +971,11 @@
                 nav_story: { es: 'Historia', en: 'Story' },
                 nav_arcade: { es: 'Arcade', en: 'Arcade' },
                 nav_connect: { es: 'Contacto', en: 'Connect' },
-                hero_tagline: { es: 'Skateware para los inquietos', en: 'Skatewear for the restless' },
-                hero_shop: { es: 'Comprar Colección', en: 'Shop Collection' },
-                hero_story: { es: 'Nuestra Historia', en: 'Our Story' },
+                hero_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
+                hero_shop: { es: 'Prendas con Suerte', en: 'Lucky Gear' },
+                hero_story: { es: 'El Accidente', en: 'The Accident' },
                 divider1: { es: 'Entra', en: 'Drop In' },
-                divider2: { es: 'Nacido del Concreto', en: 'Concrete Born' },
+                divider2: { es: 'El Feliz Accidente', en: 'The Happy Accident' },
                 divider3: { es: 'Arcade', en: 'Arcade' },
                 divider4: { es: 'Mantente Gold', en: 'Stay Gold' },
                 drops_label: { es: 'Últimos Lanzamientos', en: 'Latest Drops' },
@@ -927,26 +985,31 @@
                 cat_tops: { es: 'Camisetas', en: 'Tops' },
                 cat_accessories: { es: 'Accesorios', en: 'Accessories' },
                 cat_bottoms: { es: 'Pantalones', en: 'Bottoms' },
-                ethos_label: { es: 'Nuestra Historia', en: 'Our Story' },
-                ethos_title: { es: 'Hecho para el <span class="text-mint">Concreto</span>', en: 'Built for the <span class="text-mint">Concrete</span>' },
-                ethos_p1: { es: 'Lucky Bunny nació en el pavimento, en callejones y bajo pasos a desnivel. Hacemos equipo que aguanta golpes y vuelve por más. Sin trucos. Sin excesos. Solo skateware honesto que se mueve con vos.', en: 'Lucky Bunny was born on pavement, in alleys, and under overpasses. We make gear that takes a beating and comes back for more. No gimmicks. No overproduced fluff. Just raw, honest skatewear that moves with you.' },
-                ethos_p2: { es: 'Cada corte, cada puntada — diseñado por skaters, para skaters. Porque la calle no le importa tu marca. Le importa lo que rodás.', en: 'Every cut, every stitch — designed by skaters, for skaters. Because the streets don\'t care about your label. They care about what you roll.' },
+                ethos_label: { es: 'El Origen', en: 'The Origin' },
+                ethos_title: { es: 'El Feliz<br>Accidente.', en: 'The Happy<br>Accident.' },
+                ethos_p1: { es: 'Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte ocurre cuando decides que el universo está de tu lado.', en: 'Lucky Bunny wasn\'t born in a corporate boardroom. It appeared from a mistake in 2014, when a hand slipped trying to draw a universal peace symbol and brought our protagonist to life. It went from being the silent companion of exams and late nights in Mendoza, to becoming a real good luck charm: the living proof that luck happens when you decide the universe is on your side.' },
                 game_label: { es: 'Prueba Tu Suerte', en: 'Prove Your Luck' },
                 game_title: { es: 'El <span class="text-pink">Drop</span> Game', en: 'The <span class="text-pink">Drop</span> Game' },
                 game_desc: { es: 'Esquiva los obstáculos. ¿Qué tan lejos podés llegar?', en: 'Dodge the obstacles. How far can you roll?' },
                 game_ctrl1: { es: '[ESPACIO / ARRIBA] SALTAR', en: '[SPACE / UP] JUMP' },
                 game_ctrl2: { es: '[ABAJO] AGACHARSE', en: '[DOWN] DUCK' },
-                game_score: { es: 'PUNTOS', en: 'SCORE' },
-                game_ready: { es: '¿Listo para Arriesgarte?', en: 'Ready to Drop?' },
-                game_record: { es: '¡Nuevo Récord!', en: 'New Record!' },
+                game_ctrl1_short: { es: 'SALTAR', en: 'JUMP' },
+                game_ctrl2_short: { es: 'AGACHARSE', en: 'DUCK' },
+                game_score: { es: 'SUERTE', en: 'LUCK' },
+                game_ready: { es: 'La suerte te espera.', en: 'Luck is waiting.' },
+                game_crash: { es: 'La suerte se fue.', en: 'Luck slipped.' },
+                game_retry: { es: 'Otra chance', en: 'Another roll' },
+                game_playagain: { es: 'Jugar de nuevo', en: 'Play again' },
+                game_record: { es: 'La suerte es tuya. Ingresá tu nombre.', en: 'The luck is yours. Enter your name.' },
                 game_save: { es: 'Guardar', en: 'Save' },
-                game_start: { es: 'COMENZAR', en: 'START GAME' },
+                game_start: { es: 'PROBAR SUERTE', en: 'TEST YOUR LUCK' },
+                game_placeholder: { es: 'AAA', en: 'AAA' },
                 game_leaderboard: { es: 'Mejores Puntajes', en: 'Live Records' },
-                cta_label: { es: 'Mantente al Tanto', en: 'Stay in the Loop' },
-                cta_title: { es: 'Únete al <span class="text-gold">Equipo</span>', en: 'Join the <span class="text-gold">Crew</span>' },
-                cta_desc: { es: 'Primer acceso a lanzamientos. Equipo exclusivo. El underground — directo a tu bandeja.', en: 'First access to drops. Exclusive gear. The underground — straight to your inbox.' },
-                cta_btn: { es: 'Suscribirse', en: 'Subscribe' },
-                footer_tagline: { es: 'Skateware para los inquietos. Nacido en concreto, hecho para durar.', en: 'Skatewear for the restless. Born on concrete, built to last.' },
+                cta_label: { es: 'La Cábala', en: 'The Cábala' },
+                cta_title: { es: 'Únete a la <span class="text-gold">Cábala</span>', en: 'Join the <span class="text-gold">Cábala</span>' },
+                cta_desc: { es: 'Sé el primero en recibir los drops. La suerte llega sola — directo a tu bandeja.', en: 'First to know. First to drop. Let luck find you — straight to your inbox.' },
+                cta_btn: { es: 'Unirse', en: 'Join' },
+                footer_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
                 footer_shop: { es: 'Tienda', en: 'Shop' },
                 footer_all: { es: 'Todos los Lanzamientos', en: 'All Drops' },
                 footer_tees: { es: 'Camisetas', en: 'Tees' },
@@ -956,7 +1019,7 @@
                 footer_ship: { es: 'Envíos', en: 'Shipping' },
                 footer_returns: { es: 'Devoluciones', en: 'Returns' },
                 footer_size: { es: 'Guía de Tallas', en: 'Size Guide' },
-                footer_motto: { es: 'Patina o muere', en: 'Skate or die' },
+                footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
                 load_sub: { es: 'Skateware', en: 'Skatewear' }
             };
 
@@ -1151,11 +1214,12 @@
             if (container && typeof THREE !== 'undefined') {
                 const scene = new THREE.Scene();
                 scene.fog = new THREE.FogExp2(0x020202, 0.02);
+                const isMobileBG = window.innerWidth < 768;
                 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
                 camera.position.set(0, 2, 12);
                 camera.lookAt(0, 0, 0);
-                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobileBG });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobileBG ? 1 : 1.5));
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 renderer.setClearColor(0x000000, 0);
                 container.append(renderer.domElement);
@@ -1166,7 +1230,7 @@
                 grid.material.transparent = true;
                 scene.add(grid);
 
-                const PARTICLE_COUNT = 1200;
+                const PARTICLE_COUNT = isMobileBG ? 300 : 1200;
                 const geo = new THREE.BufferGeometry();
                 const pos = new Float32Array(PARTICLE_COUNT * 3);
                 const sizes = new Float32Array(PARTICLE_COUNT);
@@ -1203,29 +1267,36 @@
                 light.position.set(5, 10, 5);
                 scene.add(light);
 
-                const wireMat = new THREE.MeshBasicMaterial({ color: 0x7DC4B9, wireframe: true, transparent: true, opacity: 0.04 });
                 const shapes = [];
-                for (let i = 0; i < 5; i++) {
-                    const isTorus = Math.random() > 0.5;
-                    const mesh = isTorus
-                        ? new THREE.Mesh(new THREE.TorusGeometry(0.5 + Math.random() * 0.5, 0.15, 8, 16), wireMat)
-                        : new THREE.Mesh(new THREE.IcosahedronGeometry(0.5 + Math.random() * 0.3, 0), wireMat);
-                    mesh.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 4, -3 - Math.random() * 6);
-                    mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
-                    mesh.userData = { rotSpeed: 0.1 + Math.random() * 0.3, floatAmp: 0.1 + Math.random() * 0.2 };
-                    scene.add(mesh); shapes.push(mesh);
+                if (!isMobileBG) {
+                    const wireMat = new THREE.MeshBasicMaterial({ color: 0x7DC4B9, wireframe: true, transparent: true, opacity: 0.04 });
+                    for (let i = 0; i < 5; i++) {
+                        const isTorus = Math.random() > 0.5;
+                        const mesh = isTorus
+                            ? new THREE.Mesh(new THREE.TorusGeometry(0.5 + Math.random() * 0.5, 0.15, 8, 16), wireMat)
+                            : new THREE.Mesh(new THREE.IcosahedronGeometry(0.5 + Math.random() * 0.3, 0), wireMat);
+                        mesh.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 4, -3 - Math.random() * 6);
+                        mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+                        mesh.userData = { rotSpeed: 0.1 + Math.random() * 0.3, floatAmp: 0.1 + Math.random() * 0.2 };
+                        scene.add(mesh); shapes.push(mesh);
+                    }
                 }
 
                 const mouse = new THREE.Vector2(0, 0);
-                window.addEventListener('mousemove', (e) => {
-                    mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                    mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                }, { passive: true });
+                if (!isMobileBG) {
+                    window.addEventListener('mousemove', (e) => {
+                        mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                        mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                    }, { passive: true });
+                }
                 window.addEventListener('resize', () => {
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
                     renderer.setSize(window.innerWidth, window.innerHeight);
                 }, { passive: true });
+
+                const fogDensity = isMobileBG ? 0.008 : 0.015;
+                scene.fog = new THREE.FogExp2(0x020202, fogDensity);
 
                 const clock = new THREE.Clock();
                 function animate() {
@@ -1704,7 +1775,7 @@
                 gameContainer.classList.add('shake-board');
                 setTimeout(() => {
                     overlay.style.display = 'flex';
-                    overlayTitle.textContent = '¡CAÍDA!';
+                    overlayTitle.innerHTML = i18n['game_crash']?.[currentLang] || 'La suerte se fue.';
                     const lowest = leaderboard.length < 3 ? 0 : (leaderboard[leaderboard.length - 1]?.score ?? 0);
                     if (g.score > lowest) {
                         startBtn.style.display = 'none';
@@ -1713,7 +1784,7 @@
                         nameInput.focus();
                     } else {
                         startBtn.style.display = 'block';
-                        startBtn.textContent = 'Intentar de Nuevo';
+                        startBtn.textContent = i18n['game_retry']?.[currentLang] || 'Otra chance';
                     }
                 }, 600);
             }
@@ -1724,11 +1795,43 @@
                 renderLeaderboard();
                 hsForm.style.display = 'none';
                 startBtn.style.display = 'block';
-                startBtn.textContent = 'Jugar de Nuevo';
+                startBtn.textContent = i18n['game_playagain']?.[currentLang] || 'Jugar de nuevo';
             });
 
             nameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') saveBtn.click(); });
             startBtn.addEventListener('click', startGame);
+
+            /* ── Mobile game buttons ── */
+            const btnJump = document.getElementById('btn-jump');
+            const btnDuck = document.getElementById('btn-duck');
+
+            if (btnJump) {
+                btnJump.addEventListener('touchstart', (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    if (g.st === ST.PLAYING) jump();
+                }, { passive: false });
+                btnJump.addEventListener('mousedown', (e) => {
+                    e.stopPropagation();
+                    if (g.st === ST.PLAYING) jump();
+                });
+            }
+
+            if (btnDuck) {
+                const duckDown = (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    if (g.st === ST.PLAYING) { g.holdDown = true; duck(); }
+                };
+                const duckUp = (e) => {
+                    e.preventDefault(); e.stopPropagation();
+                    if (g.st === ST.PLAYING) { g.holdDown = false; standUp(); }
+                };
+                btnDuck.addEventListener('touchstart', duckDown, { passive: false });
+                btnDuck.addEventListener('touchend', duckUp, { passive: false });
+                btnDuck.addEventListener('touchcancel', (e) => { e.stopPropagation(); g.holdDown = false; standUp(); }, { passive: true });
+                btnDuck.addEventListener('mousedown', duckDown);
+                btnDuck.addEventListener('mouseup', duckUp);
+                btnDuck.addEventListener('mouseleave', () => { if (g.st === ST.PLAYING) { g.holdDown = false; standUp(); } });
+            }
 
             document.addEventListener('keydown', (e) => {
                 if (e.code === 'Space' || e.code === 'ArrowUp') {
