@@ -1933,48 +1933,59 @@
 
             /* ── Render Featured Drops ── */
             const DROPS_SVG = {
-                hoodie: `<svg viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="%237DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="35" y="50" width="30" height="35" rx="2" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/></svg>`,
-                tshirts: `<svg viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="%2365B6ED" stroke-width="0.5" opacity="0.3"/><path d="M30 30 L22 20 L50 8 L78 20 L70 30" stroke="%2365B6ED" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="40" y="50" width="20" height="25" rx="2" stroke="%2365B6ED" stroke-width="0.5" opacity="0.15"/></svg>`,
-                socks: `<svg viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M30 65 Q25 80 35 80 Q40 80 48 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/><path d="M52 65 Q47 80 57 80 Q62 80 70 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/></svg>`,
-                accessories: `<svg viewBox="0 0 100 120" fill="none"><circle cx="50" cy="40" r="22" stroke="%23F4D05C" stroke-width="0.5" opacity="0.25"/><rect x="36" y="55" width="28" height="35" rx="4" stroke="%23F4D05C" stroke-width="0.5" opacity="0.2"/><line x1="40" y1="68" x2="60" y2="68" stroke="%23F4D05C" stroke-width="0.5" opacity="0.15"/></svg>`
+                hoodie: '<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="#7DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="#7DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="35" y="50" width="30" height="35" rx="2" stroke="#7DC4B9" stroke-width="0.5" opacity="0.15"/></svg>',
+                hoodies: '<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="#7DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="#7DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="35" y="50" width="30" height="35" rx="2" stroke="#7DC4B9" stroke-width="0.5" opacity="0.15"/></svg>',
+                tshirts: '<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="#65B6ED" stroke-width="0.5" opacity="0.3"/><path d="M30 30 L22 20 L50 8 L78 20 L70 30" stroke="#65B6ED" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="40" y="50" width="20" height="25" rx="2" stroke="#65B6ED" stroke-width="0.5" opacity="0.15"/></svg>',
+                socks: '<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5" opacity="0.3"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M30 65 Q25 80 35 80 Q40 80 48 65" stroke="#7DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/><path d="M52 65 Q47 80 57 80 Q62 80 70 65" stroke="#7DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/></svg>',
+                accessories: '<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><circle cx="50" cy="40" r="22" stroke="#F4D05C" stroke-width="0.5" opacity="0.25"/><rect x="36" y="55" width="28" height="35" rx="4" stroke="#F4D05C" stroke-width="0.5" opacity="0.2"/><line x1="40" y1="68" x2="60" y2="68" stroke="#F4D05C" stroke-width="0.5" opacity="0.15"/></svg>',
+                fallback: '<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><circle cx="50" cy="55" r="20" stroke="#7DC4B9" stroke-width="0.5" opacity="0.2"/><path d="M40 50 L50 42 L60 50" stroke="#7DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/></svg>'
             };
 
+            const DROPS_FALLBACK = [
+                { name:'Hoodie Void', category:'hoodies', price:18500, image:'hoodies' },
+                { name:'Tee Raw Cut', category:'tshirts', price:8200, image:'tshirts' },
+                { name:'Cap Signature', category:'accessories', price:6500, image:'accessories' },
+                { name:'Crew Socks', category:'socks', price:3500, image:'socks' }
+            ];
+
             function catLabelHome(cat) {
-                const m = { tshirts: currentLang==='es'?'Camisetas':'T-Shirts', hoodies: currentLang==='es'?'Hoodies':'Hoodies', socks: currentLang==='es'?'Medias':'Socks', accessories: currentLang==='es'?'Accesorios':'Accessories' };
-                return m[cat] || cat;
+                const m = { tshirts: 'Camisetas', hoodies: 'Hoodies', socks: 'Medias', accessories: 'Accesorios' };
+                return (currentLang === 'en' ? { tshirts: 'T-Shirts', hoodies: 'Hoodies', socks: 'Socks', accessories: 'Accessories' } : m)[cat] || cat;
+            }
+
+            function dropsImageHTML(p) {
+                if (p.coverImage && p.coverImage.trim().length > 4) {
+                    return `<img src="${p.coverImage}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;" loading="lazy">`;
+                }
+                return DROPS_SVG[p.image] || DROPS_SVG[p.category] || DROPS_SVG.fallback;
             }
 
             function renderDrops() {
                 const grid = $('#drops-grid');
                 if (!grid) return;
-                let drops = [];
+                let items = [];
                 try {
                     const stored = localStorage.getItem('lb-products');
                     if (stored) {
                         const p = JSON.parse(stored);
-                        if (Array.isArray(p)) drops = p;
+                        if (Array.isArray(p)) items = p.filter(x => x.featured === true);
                     }
                 } catch(e) {}
-                drops = drops.filter(p => p.featured === true);
-                if (!drops.length) return; // keep empty, no fallback cards
+                if (!items.length) items = DROPS_FALLBACK;
 
-                grid.innerHTML = drops.map((p, i) => {
-                    const imageHtml = p.coverImage
-                        ? `<img src="${p.coverImage}" alt="${p.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;" loading="lazy">`
-                        : (DROPS_SVG[p.image] || DROPS_SVG[p.category] || DROPS_SVG.hoodie);
-                    return `<a href="store.html" class="product-card reveal reveal-d${(i%4)+1}" style="text-decoration:none;color:inherit;">
-                        <div class="card-visual">${imageHtml}</div>
+                grid.innerHTML = items.slice(0, 6).map((p, i) => {
+                    return `<div class="product-card reveal reveal-d${(i%4)+1}" onclick="window.location.href='store.html'" style="cursor:pointer;">
+                        <div class="card-visual">${dropsImageHTML(p)}</div>
                         <div class="card-info">
                             <div class="product-name">${p.name}</div>
                             <div class="product-category">${catLabelHome(p.category)}</div>
                             <div class="product-price">$${(p.price||0).toLocaleString('es-AR')}</div>
                         </div>
-                    </a>`;
+                    </div>`;
                 }).join('');
             }
 
             renderDrops();
-
         })();
     </script>
 
