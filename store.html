@@ -3,16 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>LUCKY BUNNY | Tienda</title>
+    <title>Tienda | Lucky Bunny — Prendas con Suerte</title>
+    <meta name="description" content="Comprá ropa de skate en Lucky Bunny. Hoodies, camisetas, accesorios con estilo argentino. Envíos a todo el país. Prendas con suerte. Be your own luck.">
+    <link rel="canonical" href="https://luckybunny.arg/store.html">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://luckybunny.arg/store.html">
+    <meta property="og:title" content="Tienda | Lucky Bunny — Prendas con Suerte">
+    <meta property="og:description" content="Comprá ropa de skate en Lucky Bunny. Hoodies, camisetas, accesorios con estilo argentino. Prendas con suerte.">
+    <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://luckybunny.arg/store.html">
+    <meta property="twitter:title" content="Tienda | Lucky Bunny — Prendas con Suerte">
+    <meta property="twitter:description" content="Comprá ropa de skate en Lucky Bunny. Hoodies, camisetas, accesorios con estilo argentino. Prendas con suerte.">
+    <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["Organization", "OnlineStore"],
+      "name": "Lucky Bunny",
+      "url": "https://luckybunny.arg",
+      "logo": "https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png",
+      "description": "Tienda de skatewear argentina. Prendas con suerte. Be your own luck.",
+      "sameAs": [
+        "https://www.instagram.com/LUCKYBUNNY.ARG",
+        "https://www.tiktok.com/@luckybunny.ar"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+54-261-6886484",
+        "email": "luckybunny.arg@gmail.com",
+        "contactType": "customer service"
+      }
+    }
+    </script>
 
     <style>
         ::selection { background-color: #7DC4B9; color: #000; }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; border-radius: 4px; }
         html { scroll-behavior: smooth; }
 
         :root {
@@ -107,7 +140,10 @@
             display: flex; align-items: center; gap: 0.8rem;
             font-family: 'Anton', sans-serif; font-size: 1.1rem;
             letter-spacing: 0.15em; text-transform: uppercase; color: var(--chalk);
+            text-decoration: none; cursor: pointer;
+            transition: opacity 0.3s;
         }
+        nav .logo:hover { opacity: 0.75; }
         nav .logo img { width: 28px; height: 28px; }
         nav .nav-links { display: flex; gap: 2rem; align-items: center; }
         nav .nav-links a {
@@ -696,7 +732,7 @@
     <div id="cursor-glow" class="is-hidden"></div>
 
     <div id="loading-overlay">
-        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="load-logo" alt="LB">
+        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="load-logo" alt="Lucky Bunny">
         <h1 id="load-title">LUCKY BUNNY</h1>
         <p id="load-sub" data-lang="load_sub">Skateware</p>
     </div>
@@ -704,10 +740,10 @@
     <div id="page-progress"><div id="page-progress-bar"></div></div>
 
     <nav>
-        <div class="logo">
-            <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="LB">
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="Lucky Bunny">
             <span>Lucky Bunny</span>
-        </div>
+        </a>
         <div class="nav-links">
             <a href="index.html" data-lang="nav_drops">Lanzamientos</a>
             <a href="store.html" class="active" data-lang="nav_store">Tienda</a>
@@ -776,7 +812,7 @@
         </div>
         <div class="cart-items" id="cart-items">
             <div class="cart-empty" id="cart-empty">
-                <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="LB">
+                <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="Lucky Bunny">
                 <p data-lang="cart_empty">Todavía no hay suerte acá...</p>
             </div>
         </div>
@@ -855,15 +891,16 @@
             </div>
             <div>
                 <h4 data-lang="footer_connect">Redes</h4>
-                <a href="#">Instagram</a>
-                <a href="#">YouTube</a>
-                <a href="#">TikTok</a>
+            <a href="https://www.instagram.com/LUCKYBUNNY.ARG" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://www.tiktok.com/@luckybunny.ar?_r=1&_t=ZS-96dYMLuPPOx" target="_blank" rel="noopener">TikTok</a>
+            <a href="mailto:luckybunny.arg@gmail.com">Email</a>
             </div>
             <div>
                 <h4 data-lang="footer_info">Info</h4>
                 <a href="about.html" data-lang="footer_about">Nosotros</a>
                 <a href="#" data-lang="footer_ship">Envíos</a>
                 <a href="#" data-lang="footer_returns">Devoluciones</a>
+                <a href="privacidad.html" data-lang="footer_privacy">Privacidad</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -987,6 +1024,7 @@
                 footer_info: { es: 'Info', en: 'Info' },
                 footer_ship: { es: 'Envíos', en: 'Shipping' },
                 footer_returns: { es: 'Devoluciones', en: 'Returns' },
+                footer_privacy: { es: 'Privacidad', en: 'Privacy' },
                 footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' }
             };
 
@@ -1254,7 +1292,7 @@
 
                 if (!cart.length) {
                     itemsEl.innerHTML = `<div class="cart-empty" id="cart-empty">
-                        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="LB">
+                        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="Lucky Bunny">
                         <p>${t('cart_empty')}</p>
                     </div>`;
                     if (footerEl) footerEl.style.display = 'none';

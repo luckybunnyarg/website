@@ -3,16 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>LUCKY BUNNY | Skateware</title>
+    <title>Lucky Bunny | Skatewear Argentina — Be Your Own Luck</title>
+    <meta name="description" content="Lucky Bunny es una marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Envíos a todo el país. Be your own luck. Tu eres tu propia suerte.">
+    <link rel="canonical" href="https://luckybunny.arg/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://luckybunny.arg/">
+    <meta property="og:title" content="Lucky Bunny | Skatewear Argentina — Be Your Own Luck">
+    <meta property="og:description" content="Marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Be your own luck.">
+    <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://luckybunny.arg/">
+    <meta property="twitter:title" content="Lucky Bunny | Skatewear Argentina — Be Your Own Luck">
+    <meta property="twitter:description" content="Marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Be your own luck.">
+    <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="icon" type="image/png" href="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Lucky Bunny",
+      "url": "https://luckybunny.arg",
+      "logo": "https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png",
+      "description": "Marca de skatewear argentina. Be your own luck.",
+      "sameAs": [
+        "https://www.instagram.com/LUCKYBUNNY.ARG",
+        "https://www.tiktok.com/@luckybunny.ar"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+54-261-6886484",
+        "email": "luckybunny.arg@gmail.com",
+        "contactType": "customer service"
+      }
+    }
+    </script>
 
     <style>
         ::selection { background-color: #7DC4B9; color: #000; }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; border-radius: 4px; }
         html { scroll-behavior: smooth; }
 
         :root {
@@ -143,7 +176,10 @@
             display: flex; align-items: center; gap: 0.8rem;
             font-family: 'Anton', sans-serif; font-size: 1.1rem;
             letter-spacing: 0.15em; text-transform: uppercase; color: var(--chalk);
+            text-decoration: none; cursor: pointer;
+            transition: opacity 0.3s;
         }
+        nav .logo:hover { opacity: 0.75; }
         nav .logo img { width: 28px; height: 28px; }
         nav .nav-links { display: flex; gap: 2rem; align-items: center; }
         nav .nav-links a {
@@ -696,7 +732,7 @@
     <div id="cursor-glow" class="is-hidden"></div>
 
     <div id="loading-overlay">
-        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="load-logo" alt="LB">
+        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="load-logo" alt="Lucky Bunny">
         <h1 id="load-title">LUCKY BUNNY</h1>
         <p id="load-sub" data-lang="load_sub">Skateware</p>
     </div>
@@ -706,10 +742,10 @@
     <div class="sticker-banner" data-lang="store_sticker_banner">🎁 Llevate un sticker gratis con tu primer compra</div>
 
     <nav>
-        <div class="logo">
-            <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="LB">
+        <a href="index.html" class="logo">
+            <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="Lucky Bunny">
             <span>Lucky Bunny</span>
-        </div>
+        </a>
         <div class="nav-links">
             <a href="#drops" data-lang="nav_drops">Lanzamientos</a>
             <a href="store.html" data-lang="nav_store">Tienda</a>
@@ -741,10 +777,10 @@
         <p class="tagline" data-lang="hero_tagline">Skatewear para los inquietos</p>
         <div class="cta-row">
             <button class="btn-primary" onclick="document.getElementById('drops').scrollIntoView({behavior:'smooth'})" data-lang="hero_shop">
-                Comprar Colección
+                Nueva Colección
             </button>
-            <button class="btn-ghost" onclick="document.getElementById('ethos').scrollIntoView({behavior:'smooth'})" data-lang="hero_story">
-                Nuestra Historia
+            <button class="btn-ghost" onclick="window.location.href='store.html'" data-lang="hero_store">
+                Tienda Completa
             </button>
         </div>
         <div class="scroll-indicator"><span></span></div>
@@ -838,6 +874,7 @@
                         en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte 
                         ocurre cuando decides que el universo está de tu lado.
                     </p>
+                    <a href="about.html" class="btn-ghost" style="display:inline-flex;margin-top:1.5rem;font-size:0.7rem;padding:0.6rem 1.5rem;" data-lang="ethos_cta">Conocé más sobre nosotros →</a>
                 </div>
             </div>
         </div>
@@ -950,17 +987,18 @@
                 <a href="#" data-lang="footer_tees">Camisetas</a>
                 <a href="#" data-lang="footer_acc">Accesorios</a>
             </div>
-            <div>
-                <h4 data-lang="footer_connect">Redes</h4>
-                <a href="#">Instagram</a>
-                <a href="#">YouTube</a>
-                <a href="#">TikTok</a>
-            </div>
+        <div>
+            <h4 data-lang="footer_connect">Redes</h4>
+            <a href="https://www.instagram.com/LUCKYBUNNY.ARG" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://www.tiktok.com/@luckybunny.ar?_r=1&_t=ZS-96dYMLuPPOx" target="_blank" rel="noopener">TikTok</a>
+            <a href="mailto:luckybunny.arg@gmail.com">Email</a>
+        </div>
             <div>
                 <h4 data-lang="footer_info">Info</h4>
                 <a href="#" data-lang="footer_ship">Envíos</a>
                 <a href="#" data-lang="footer_returns">Devoluciones</a>
                 <a href="#" data-lang="footer_size">Guía de Tallas</a>
+            <a href="privacidad.html" data-lang="footer_privacy">Privacidad</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -987,8 +1025,8 @@
                 nav_arcade: { es: 'Arcade', en: 'Arcade' },
                 nav_connect: { es: 'Contacto', en: 'Connect' },
                 hero_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
-                hero_shop: { es: 'Prendas con Suerte', en: 'Lucky Gear' },
-                hero_story: { es: 'El Accidente', en: 'The Accident' },
+                hero_shop: { es: 'Nueva Colección', en: 'New Collection' },
+                hero_store: { es: 'Tienda Completa', en: 'Full Store' },
                 divider1: { es: 'Entra', en: 'Drop In' },
                 divider2: { es: 'El Feliz Accidente', en: 'The Happy Accident' },
                 divider3: { es: 'Arcade', en: 'Arcade' },
@@ -1003,6 +1041,7 @@
                 ethos_label: { es: 'El Origen', en: 'The Origin' },
                 ethos_title: { es: 'El Feliz<br>Accidente.', en: 'The Happy<br>Accident.' },
                 ethos_p1: { es: 'Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte ocurre cuando decides que el universo está de tu lado.', en: 'Lucky Bunny wasn\'t born in a corporate boardroom. It appeared from a mistake in 2014, when a hand slipped trying to draw a universal peace symbol and brought our protagonist to life. It went from being the silent companion of exams and late nights in Mendoza, to becoming a real good luck charm: the living proof that luck happens when you decide the universe is on your side.' },
+                ethos_cta: { es: 'Conocé más sobre nosotros →', en: 'Get to know us →' },
                 game_label: { es: 'Prueba Tu Suerte', en: 'Prove Your Luck' },
                 game_title: { es: 'El <span class="text-pink">Drop</span> Game', en: 'The <span class="text-pink">Drop</span> Game' },
                 game_desc: { es: 'Esquiva los obstáculos. ¿Qué tan lejos podés llegar?', en: 'Dodge the obstacles. How far can you roll?' },
@@ -1034,6 +1073,7 @@
                 footer_ship: { es: 'Envíos', en: 'Shipping' },
                 footer_returns: { es: 'Devoluciones', en: 'Returns' },
                 footer_size: { es: 'Guía de Tallas', en: 'Size Guide' },
+                footer_privacy: { es: 'Privacidad', en: 'Privacy' },
                 footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
                 load_sub: { es: 'Skateware', en: 'Skatewear' }
             };
