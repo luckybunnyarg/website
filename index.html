@@ -511,38 +511,71 @@
             position: absolute; bottom: 40px; left: 60px; width: 70px; height: 140px;
             z-index: 20; transform-origin: bottom center; will-change: transform;
         }
-        #bunny-body-wrapper {
-            position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%);
-            width: 100%; height: 120px; display: flex; flex-direction: column;
-            align-items: center; transform-origin: bottom center;
+
+        #bunny-group {
+            position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+            width: 52px; height: 116px; margin: 0; padding: 0;
         }
+        #player-rig.is-ducking #bunny-group {
+            transform: translateX(-50%) scaleY(0.55);
+            transform-origin: bottom center;
+            transition: transform 0.1s;
+        }
+
         #bunny-face {
-            width: 55px; height: 55px; z-index: 10; position: relative;
+            position: absolute; top: 0; left: 0;
+            width: 52px; height: 52px; z-index: 3; display: block;
         }
+
         #bunny-torso {
-            width: 40px; height: 50px; background: white; border-radius: 40px;
-            margin-top: -10px; position: relative; z-index: 5;
+            position: absolute; top: 46px; left: 8px;
+            width: 36px; height: 44px;
+            background: #fff; border: 3px solid #000;
+            border-radius: 0 0 18px 18px; z-index: 2;
+            box-sizing: border-box;
         }
-        .stick-limb { position: absolute; background: black; z-index: 6; border-radius: 2px; }
-        #arm-left { width: 24px; height: 4px; top: 15px; left: -18px; transform: rotate(-30deg); transform-origin: right top; }
-        #arm-right { width: 24px; height: 4px; top: 15px; right: -18px; transform: rotate(30deg); transform-origin: left top; }
-        #leg-left { width: 4px; height: 25px; bottom: -20px; left: 8px; transform: rotate(15deg); }
-        #leg-right { width: 4px; height: 25px; bottom: -20px; right: 8px; transform: rotate(-15deg); }
+
+        .bunny-arm {
+            position: absolute; top: 58px; height: 3px;
+            background: #000; z-index: 4;
+        }
+        #bunny-arm-l { right: 44px; width: 16px; }
+        #bunny-arm-r { left: 44px; width: 16px; }
+
         #bunny-tail {
-            position: absolute; width: 12px; height: 12px; background: #f0f0f0;
-            border-radius: 50%; top: 22px; left: -10px;
-            box-shadow: 0 0 0 2px white, -1px 2px 4px rgba(0,0,0,0.15); z-index: 4;
+            position: absolute; top: 72px; left: 34px;
+            width: 14px; height: 14px;
+            background: #fff; border: 3px solid #000;
+            border-radius: 50%; z-index: 1;
         }
+
+        .bunny-leg {
+            position: absolute; top: 90px; width: 3px; height: 26px;
+            background: #000; z-index: 1;
+        }
+        #bunny-leg-l { left: 18px; }
+        #bunny-leg-r { left: 31px; }
+        .bunny-leg::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 14px; height: 7px; background: #000; border-radius: 4px 4px 6px 6px;
+            border-bottom: 3px solid #fff;
+        }
+        .bunny-leg::before {
+            content: ''; position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+            width: 6px; height: 1px; background: #fff; z-index: 1;
+        }
+
         #skate-deck {
-            position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
-            width: 76px; height: 4px;
+            position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 76px; height: 6px;
             background: linear-gradient(180deg, #c4a882 0%, #8b7355 100%);
+            border: 2px solid #222;
             border-radius: 10px 10px 4px 4px; z-index: 8;
-            box-shadow: 0 0 8px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.15), 0 2px 15px rgba(125,196,185,0.15);
+            box-shadow: 0 0 8px rgba(255,255,255,0.05), inset 0 1px 0 rgba(255,255,255,0.15);
         }
-        .skate-truck { position: absolute; bottom: -3px; width: 8px; height: 3px; background: #666; border-radius: 0 0 3px 3px; }
+        .skate-truck { position: absolute; bottom: -4px; width: 8px; height: 4px; background: #555; border-radius: 0 0 3px 3px; }
         .skate-truck.front { right: 10px; } .skate-truck.back { left: 10px; }
-        .skate-wheel { position: absolute; bottom: -4px; left: -5px; width: 18px; height: 10px; background: radial-gradient(circle at 40% 40%, #ddd, #222); border: 2px solid #222; border-radius: 4px 4px 8px 8px; }
+        .skate-wheel { position: absolute; bottom: -5px; left: -5px; width: 18px; height: 10px; background: radial-gradient(circle at 40% 40%, #ddd, #222); border: 2px solid #222; border-radius: 4px 4px 8px 8px; }
         .spin-wheels .skate-wheel { animation: spinFast 0.15s linear infinite; }
         @keyframes spinFast { 100% { transform: rotate(360deg); } }
 
@@ -568,14 +601,6 @@
             animation: popUp 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
         }
         @keyframes popUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 100% { opacity: 0; transform: translateY(-40px) scale(1.2); } }
-
-        #combo-display {
-            position: absolute; top: 10px; right: 10px; z-index: 30;
-            font-family: 'Inter'; font-weight: 900; font-size: 24px; color: #7DC4B9;
-            text-shadow: 0 0 20px rgba(125,196,185,0.5);
-        }
-        .combo-pulse { animation: comboPulse 0.3s ease; }
-        @keyframes comboPulse { 0% { transform: scale(1); } 50% { transform: scale(1.35); } 100% { transform: scale(1); } }
 
         .flash-overlay { position: absolute; inset: 0; z-index: 35; pointer-events: none; background: white; opacity: 0; animation: flash 0.15s ease forwards; }
         @keyframes flash { 0% { opacity: 0.5; } 100% { opacity: 0; } }
@@ -783,15 +808,14 @@
                 <div id="game-ground"></div>
 
                 <div id="player-rig" class="spin-wheels">
-                    <div id="bunny-body-wrapper">
-                        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="bunny-face" alt="Bunny">
-                        <div id="bunny-torso">
-                            <div id="arm-left" class="stick-limb"></div>
-                            <div id="arm-right" class="stick-limb"></div>
-                            <div id="leg-left" class="stick-limb"></div>
-                            <div id="leg-right" class="stick-limb"></div>
-                            <div id="bunny-tail"></div>
-                        </div>
+                    <div id="bunny-group">
+                        <div id="bunny-tail"></div>
+                        <div id="bunny-torso"></div>
+                        <div id="bunny-arm-l" class="bunny-arm"></div>
+                        <div id="bunny-arm-r" class="bunny-arm"></div>
+                        <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="bunny-face" alt="Bunny Face and Ears">
+                        <div id="bunny-leg-l" class="bunny-leg"></div>
+                        <div id="bunny-leg-r" class="bunny-leg"></div>
                     </div>
                     <div id="skate-deck">
                         <div class="skate-truck front"><div class="skate-wheel"></div></div>
@@ -1235,12 +1259,19 @@
             const saveBtn = $('#save-score-btn');
             const leaderboardContainer = $('#leaderboard-container');
 
-            const H = { GRAV: 5500, JP: 1600, BASE_SPEED: 200, SPEED_INC: 0.5, MAX_SPEED: 700, CW: 1200, PL: 60, GY: 410, PH: 140 };
+            const H = {
+                GRAV: 2800, JUMP_VEL: 900,
+                BASE_SPEED: 250, SPEED_INC: 0.3, MAX_SPEED: 700,
+                GROUND_Y: 410, PLAYER_WIDTH: 70, PLAYER_HEIGHT: 140,
+                DUCK_OFFSET: 55, HITBOX_INSET: 8,
+                SPAWN_BASE: 1800, SPAWN_MIN: 700,
+                SCORE_INTERVAL: 8, GRACE_FRAMES: 60, MILESTONE: 100
+            };
 
             const OBSTACLE_TYPES = [
-                { id: 'briefcase', bottom: 40, h: 30, w: 40, cls: 'obs-briefcase', label: '' },
-                { id: 'flyer', bottom: 130, h: 35, w: 65, cls: 'obs-flyer', label: 'SELL' },
-                { id: 'sign', bottom: 120, h: 50, w: 50, cls: 'obs-sign', label: 'STOP' }
+                { id: 'briefcase', bottom: 40, h: 30, w: 36, cls: 'obs-briefcase', label: '' },
+                { id: 'flyer', bottom: 130, h: 35, w: 60, cls: 'obs-flyer', label: 'SELL' },
+                { id: 'sign', bottom: 120, h: 45, w: 45, cls: 'obs-sign', label: 'STOP' }
             ];
 
             const ST = { IDLE: 0, PLAYING: 1, OVER: 2 };
@@ -1250,12 +1281,14 @@
                 { name: 'LKY', score: 500 }, { name: 'BNY', score: 300 }, { name: 'ARG', score: 10 }
             ];
 
+            const PLAYER_X = 60;
+
             function resetGameState() {
                 g = {
                     st: ST.IDLE, score: 0, speed: H.BASE_SPEED, frame: 0,
                     pY: 0, pVy: 0, ducking: false, holdDown: false,
-                    canJump: true, combo: 0, lastPass: 0,
-                    obstacles: [], loopId: null, spawnTimer: 1500, lastTime: 0
+                    canJump: true, obstacles: [], loopId: null,
+                    spawnTimer: 1500, lastTime: 0, milestone: 0
                 };
             }
             resetGameState();
@@ -1265,20 +1298,17 @@
                     const ctx = new (window.AudioContext || window.webkitAudioContext)();
                     const t = ctx.currentTime;
                     function note(freq, dur, vol, oscType, startOff) {
-                        const o = ctx.createOscillator();
-                        const g = ctx.createGain();
-                        o.type = oscType || 'sine';
-                        o.connect(g); g.connect(ctx.destination);
+                        const o = ctx.createOscillator(); const g = ctx.createGain();
+                        o.type = oscType || 'sine'; o.connect(g); g.connect(ctx.destination);
                         const s = t + (startOff || 0);
                         o.frequency.setValueAtTime(freq, s);
-                        g.gain.setValueAtTime(vol, s);
-                        g.gain.exponentialRampToValueAtTime(0.001, s + dur);
+                        g.gain.setValueAtTime(vol, s); g.gain.exponentialRampToValueAtTime(0.001, s + dur);
                         o.start(s); o.stop(s + dur);
                     }
                     switch (type) {
                         case 'jump': note(300, 0.08, 0.1, 'square'); note(500, 0.1, 0.07, 'sine', 0.015); break;
-                        case 'score': note(880, 0.1, 0.08, 'sine'); note(1320, 0.1, 0.05, 'sine', 0.04); break;
-                        case 'combo': note(523, 0.05, 0.08, 'sine'); note(659, 0.05, 0.08, 'sine', 0.06); note(784, 0.08, 0.08, 'sine', 0.12); break;
+                        case 'score': note(880, 0.1, 0.06, 'sine'); note(1320, 0.1, 0.04, 'sine', 0.04); break;
+                        case 'milestone': note(523, 0.08, 0.1, 'sine'); note(659, 0.08, 0.1, 'sine', 0.09); note(784, 0.08, 0.1, 'sine', 0.18); note(1047, 0.12, 0.12, 'sine', 0.27); break;
                         case 'crash': {
                             const o = ctx.createOscillator(); const g = ctx.createGain();
                             o.type = 'sawtooth'; o.connect(g); g.connect(ctx.destination);
@@ -1287,18 +1317,17 @@
                             g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
                             o.start(t); o.stop(t + 0.35); note(60, 0.3, 0.1, 'sine', 0); break;
                         }
-                        case 'milestone': note(523, 0.08, 0.1, 'sine'); note(659, 0.08, 0.1, 'sine', 0.09); note(784, 0.08, 0.1, 'sine', 0.18); note(1047, 0.12, 0.12, 'sine', 0.27); break;
                     }
                 } catch {}
             }
 
             function loadLeaderboard() {
-                try { const d = localStorage.getItem('luckyBunnyRecordsNB'); return d ? JSON.parse(d) : DEFAULT_RECORDS; } catch { return DEFAULT_RECORDS; }
+                try { const d = localStorage.getItem('lbNewRecords'); return d ? JSON.parse(d) : DEFAULT_RECORDS; } catch { return DEFAULT_RECORDS; }
             }
             let leaderboard = loadLeaderboard();
 
             function saveLeaderboard() {
-                try { localStorage.setItem('luckyBunnyRecordsNB', JSON.stringify(leaderboard)); } catch {}
+                try { localStorage.setItem('lbNewRecords', JSON.stringify(leaderboard)); } catch {}
             }
 
             function renderLeaderboard() {
@@ -1324,8 +1353,8 @@
                     const sz = 2 + Math.random() * 3;
                     p.style.width = p.style.height = sz + 'px';
                     p.style.background = `rgba(255,255,255,${0.15 + Math.random() * 0.25})`;
-                    p.style.left = (H.PL + 10 + (Math.random() - 0.5) * 15) + 'px';
-                    p.style.top = (H.GY - 8 + (Math.random() - 0.5) * 6) + 'px';
+                    p.style.left = (PLAYER_X + 15 + (Math.random() - 0.5) * 15) + 'px';
+                    p.style.top = (H.GROUND_Y - 8 + (Math.random() - 0.5) * 6) + 'px';
                     gameContainer.append(p);
                     requestAnimationFrame(() => { p.style.transform = `translate(${-(8+Math.random()*18)}px,${(Math.random()-0.5)*8}px)`; p.style.opacity = '0'; });
                     setTimeout(() => p.remove(), 500);
@@ -1334,14 +1363,15 @@
 
             function spawnGhostTrail() {
                 if (g.st !== ST.PLAYING) return;
+                const rigH = H.PLAYER_HEIGHT;
                 for (let i = 0; i < 3; i++) {
                     const ghost = document.createElement('div');
                     ghost.className = 'ghost-trail';
-                    ghost.style.left = '60px';
-                    ghost.style.top = (410 - 140) + 'px';
-                    ghost.style.width = '70px';
-                    ghost.style.height = '140px';
-                    ghost.style.opacity = String(0.15 - i * 0.04);
+                    ghost.style.left = PLAYER_X + 'px';
+                    ghost.style.top = (H.GROUND_Y - rigH) + 'px';
+                    ghost.style.width = H.PLAYER_WIDTH + 'px';
+                    ghost.style.height = rigH + 'px';
+                    ghost.style.opacity = String(0.12 - i * 0.035);
                     ghost.style.transitionDelay = (i * 0.03) + 's';
                     gameContainer.append(ghost);
                     requestAnimationFrame(() => { ghost.style.opacity = '0'; ghost.style.transform = 'scale(0.92)'; });
@@ -1357,12 +1387,13 @@
                 setTimeout(() => line.remove(), 500);
             }
 
-            function spawnScorePopup(x, y, text) {
+            function spawnMilestonePopup() {
                 const pop = document.createElement('div');
                 pop.className = 'score-popup';
-                pop.textContent = text;
-                pop.style.left = (x - 20) + 'px';
-                pop.style.top = (y - 50) + 'px';
+                pop.textContent = g.score;
+                pop.style.left = (gameContainer.clientWidth / 2 - 30) + 'px';
+                pop.style.top = (gameContainer.clientHeight / 2 - 30) + 'px';
+                pop.style.fontSize = '28px';
                 gameContainer.append(pop);
                 setTimeout(() => pop.remove(), 650);
             }
@@ -1392,7 +1423,8 @@
                     p.className = 'game-particle crash';
                     p.style.width = (3 + Math.random() * 5) + 'px'; p.style.height = (3 + Math.random() * 5) + 'px';
                     p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    p.style.left = (H.PL + Math.random() * 100) + 'px'; p.style.top = (H.GY - 80 + Math.random() * 60) + 'px';
+                    p.style.left = (PLAYER_X + Math.random() * 100) + 'px';
+                    p.style.top = (H.GROUND_Y - 80 + Math.random() * 60) + 'px';
                     p.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
                     gameContainer.append(p);
                     const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI;
@@ -1409,17 +1441,6 @@
                 setTimeout(() => f.remove(), 200);
             }
 
-            function showCombo() {
-                let el = $('#combo-display');
-                if (!el) { el = document.createElement('div'); el.id = 'combo-display'; gameContainer.append(el); }
-                el.textContent = `x${g.combo}`;
-                el.className = 'combo-pulse';
-                void el.offsetWidth;
-                el.className = '';
-            }
-
-            function hideCombo() { const el = $('#combo-display'); if (el) el.remove(); }
-
             function applySquash() {
                 playerRig.style.transition = 'transform 0.1s cubic-bezier(0.2, 0.8, 0.3, 1)';
                 playerRig.style.transform = 'scaleY(0.75)';
@@ -1435,7 +1456,7 @@
 
             function jump() {
                 if (g.st !== ST.PLAYING || !g.canJump || g.pY > 0) return;
-                g.pVy = H.JP;
+                g.pVy = H.JUMP_VEL;
                 g.ducking = false;
                 g.canJump = false;
                 playerRig.classList.remove('is-ducking');
@@ -1455,16 +1476,16 @@
             function pickObstacleType() {
                 const r = Math.random();
                 if (g.speed < 300) {
-                    if (r < 0.45) return OBSTACLE_TYPES[0];
+                    if (r < 0.5) return OBSTACLE_TYPES[0];
                     if (r < 0.75) return OBSTACLE_TYPES[1];
                     return OBSTACLE_TYPES[2];
                 } else if (g.speed < 500) {
-                    if (r < 0.3) return OBSTACLE_TYPES[0];
-                    if (r < 0.6) return OBSTACLE_TYPES[1];
+                    if (r < 0.35) return OBSTACLE_TYPES[0];
+                    if (r < 0.65) return OBSTACLE_TYPES[1];
                     return OBSTACLE_TYPES[2];
                 } else {
-                    if (r < 0.2) return OBSTACLE_TYPES[0];
-                    if (r < 0.5) return OBSTACLE_TYPES[1];
+                    if (r < 0.25) return OBSTACLE_TYPES[0];
+                    if (r < 0.55) return OBSTACLE_TYPES[1];
                     return OBSTACLE_TYPES[2];
                 }
             }
@@ -1477,8 +1498,22 @@
                 const left = gameContainer.clientWidth;
                 obs.style.left = left + 'px';
                 obsContainer.append(obs);
-                const oTop = H.GY - type.bottom - type.h;
+                const oTop = H.GROUND_Y - type.bottom - type.h;
                 g.obstacles.push({ el: obs, x: left, passed: false, top: oTop, w: type.w, h: type.h });
+            }
+
+            function checkCollision(o) {
+                const pTop = (H.GROUND_Y - H.PLAYER_HEIGHT + (g.ducking ? H.DUCK_OFFSET : 0)) - g.pY;
+                const pBot = H.GROUND_Y - g.pY;
+                const pLeft = PLAYER_X + H.HITBOX_INSET;
+                const pRight = PLAYER_X + H.PLAYER_WIDTH - H.HITBOX_INSET;
+                const pTopActual = pTop + H.HITBOX_INSET;
+                const pBotActual = pBot - H.HITBOX_INSET;
+                const oLeft = o.x + H.HITBOX_INSET;
+                const oRight = o.x + o.w - H.HITBOX_INSET;
+                const oTop = o.top + H.HITBOX_INSET;
+                const oBot = o.top + o.h - H.HITBOX_INSET;
+                return pRight > oLeft && pLeft < oRight && pBotActual > oTop && pTopActual < oBot;
             }
 
             function tick(time) {
@@ -1486,61 +1521,59 @@
                 const dt = Math.min((time - g.lastTime) / 1000, 0.05);
                 g.lastTime = time;
                 g.frame++;
-                g.pVy -= H.GRAV * dt;
-                g.pY += g.pVy * dt;
-                if (g.pY <= 0) {
-                    if (g.pY < -5) applyLandingSquash();
-                    g.pY = 0; g.pVy = 0;
-                    g.canJump = true;
-                    if (g.holdDown && !g.ducking) duck();
+
+                if (g.frame > H.GRACE_FRAMES) {
+                    g.pVy -= H.GRAV * dt;
+                    g.pY += g.pVy * dt;
+                    if (g.pY <= 0) {
+                        if (g.pY < -5) applyLandingSquash();
+                        g.pY = 0; g.pVy = 0;
+                        g.canJump = true;
+                        if (g.holdDown && !g.ducking) duck();
+                    }
                 }
-                const progress = Math.min(g.pY / 165, 1);
-                const rotation = g.pY > 0 ? Math.sin(progress * Math.PI) * 15 : 0;
+
+                if (g.frame % H.SCORE_INTERVAL === 0) {
+                    g.score++;
+                    scoreSpan.textContent = g.score.toString().padStart(4, '0');
+                    playSFX('score');
+                    if (g.score % H.MILESTONE === 0) {
+                        g.milestone++;
+                        playSFX('milestone');
+                        flashScreen();
+                        spawnMilestoneConfetti();
+                        spawnMilestonePopup();
+                    }
+                }
+
+                const progress = Math.min(g.pY / 140, 1);
+                const rotation = g.pY > 0 ? Math.sin(progress * Math.PI) * 12 : 0;
                 playerRig.style.transform = `translateY(${-g.pY}px) rotate(${rotation}deg)`;
                 playerRig.classList.toggle('spin-wheels', g.pY <= 0);
+
                 if (g.frame % 4 === 0) spawnDust();
-                g.spawnTimer -= dt * 1000;
-                if (g.spawnTimer <= 0) {
-                    spawnObstacle();
-                    g.spawnTimer = Math.max(500, 2200 - g.speed * 2.5);
+
+                if (g.frame > H.GRACE_FRAMES) {
+                    g.spawnTimer -= dt * 1000;
+                    if (g.spawnTimer <= 0) {
+                        spawnObstacle();
+                        g.spawnTimer = Math.max(H.SPAWN_MIN, H.SPAWN_BASE - g.speed * 1.8);
+                    }
                 }
-                const currentCW = Math.max(800, H.CW - g.speed * 0.3);
-                if (g.combo > 0 && Date.now() - g.lastPass > currentCW + 300) { g.combo = 0; hideCombo(); }
-                const playerTop = H.GY - H.PH;
-                const pTop = (g.ducking ? playerTop + 55 : playerTop) - g.pY;
-                const pBottom = H.GY - g.pY;
+
                 for (let i = g.obstacles.length - 1; i >= 0; i--) {
                     const o = g.obstacles[i];
                     o.x -= g.speed * dt;
                     o.el.style.left = o.x + 'px';
-                    if (!o.passed && o.x + o.w < H.PL) {
-                        o.passed = true;
-                        const now = Date.now();
-                        if (now - g.lastPass < currentCW) {
-                            g.combo = Math.min(g.combo + 1, 10);
-                            showCombo();
-                            playSFX('combo');
-                        } else { g.combo = 1; }
-                        g.lastPass = now;
-                        const points = Math.floor(10 * g.combo * (1 + g.speed / 2000));
-                        g.score += points;
-                        scoreSpan.textContent = g.score.toString().padStart(4, '0');
-                        playSFX('score');
-                        spawnScorePopup(o.x + o.w / 2, o.top, `+${points}`);
-                        if (g.score % 100 === 0 && g.score > 0) {
-                            playSFX('milestone'); flashScreen(); spawnMilestoneConfetti();
-                        }
-                    }
                     if (o.x < -150) { o.el.remove(); g.obstacles.splice(i, 1); continue; }
-                    if (H.PL + 70 > o.x + 8 && H.PL < o.x + o.w - 8 && pBottom > o.top + 5 && pTop < o.top + o.h - 5) {
-                        handleGameOver(); return;
-                    }
+                    if (checkCollision(o)) { handleGameOver(); return; }
                 }
-                g.speed = Math.min(H.BASE_SPEED + Math.pow(g.score, 0.82) * 0.7, H.MAX_SPEED);
+
+                g.speed = Math.min(H.BASE_SPEED + g.frame * H.SPEED_INC, H.MAX_SPEED);
                 const scrollX = (g.frame * (g.speed / 300)) % 800;
                 bg.style.backgroundPosition = `-${scrollX}px 0`;
                 clouds.style.backgroundPosition = `-${(g.frame * (g.speed / 900)) % 800}px 0`;
-                if (g.speed > 250 && g.frame % Math.max(3, Math.floor(12 - g.speed / 100)) === 0) spawnSpeedLine();
+                if (g.speed > 280 && g.frame % Math.max(3, Math.floor(14 - g.speed / 80)) === 0) spawnSpeedLine();
                 g.loopId = requestAnimationFrame(tick);
             }
 
@@ -1557,7 +1590,6 @@
                 startBtn.style.display = 'block';
                 gameContainer.classList.remove('shake-board');
                 gameContainer.classList.add('game-active');
-                hideCombo();
                 obsContainer.innerHTML = '';
                 g.obstacles = [];
                 gameContainer.focus({ preventScroll: true });
@@ -1569,7 +1601,7 @@
                 gameContainer.classList.remove('game-active');
                 if (g.loopId) { cancelAnimationFrame(g.loopId); g.loopId = null; }
                 playSFX('crash');
-                spawnCrashParticles(95, H.GY - 70);
+                spawnCrashParticles(PLAYER_X + 35, H.GROUND_Y - 70);
                 gameContainer.classList.add('shake-board');
                 setTimeout(() => {
                     overlay.style.display = 'flex';
