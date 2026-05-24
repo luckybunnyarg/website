@@ -468,13 +468,21 @@
             0%,100% { border-color: rgba(125,196,185,0.15); box-shadow: 0 0 30px rgba(125,196,185,0.03); }
             50% { border-color: rgba(125,196,185,0.4); box-shadow: 0 0 60px rgba(125,196,185,0.1); }
         }
-        #game-container.game-active { animation: borderPulse 3s ease-in-out infinite; }
+        #game-container.game-active {
+            animation: borderPulse 3s ease-in-out infinite;
+            touch-action: none;
+            perspective: 600px;
+            transform: rotateX(var(--game-tilt, 1.5deg));
+            transform-origin: bottom center;
+            transition: perspective 0.3s;
+        }
 
         #game-container {
-            position: relative; width: 100%; height: 450px;
+            position: relative; width: 100%; height: clamp(300px, 55vh, 450px);
             touch-action: manipulation;
             background: linear-gradient(180deg, #020202 0%, #111 80%, #0a0a0a 100%);
             border: 2px solid #333; overflow: hidden; border-radius: 8px;
+            -webkit-user-select: none; user-select: none;
         }
         #city-bg {
             position: absolute; top: 0; left: 0; width: 200%; height: 100%;
@@ -485,6 +493,16 @@
             position: absolute; top: 0; left: 0; width: 200%; height: 100%;
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200"><circle cx="100" cy="40" r="12" fill="%23FFF" opacity=".02"/><circle cx="300" cy="60" r="18" fill="%23FFF" opacity=".03"/><circle cx="500" cy="30" r="10" fill="%23FFF" opacity=".01"/><circle cx="700" cy="50" r="15" fill="%23FFF" opacity=".02"/></svg>');
             background-repeat: repeat-x; z-index: 2; opacity: 0.6; pointer-events: none;
+        }
+        #fg-bg {
+            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
+            background: repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(125,196,185,0.04) 30px, rgba(125,196,185,0.04) 32px) 0 0 / 60px 60px,
+                        repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(125,196,185,0.02) 30px, rgba(125,196,185,0.02) 31px) 0 0 / 60px 60px;
+            z-index: 3; opacity: 0.5; pointer-events: none;
+        }
+        #vfx-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 25; pointer-events: none;
         }
         #game-ground {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
@@ -591,24 +609,7 @@
         .shake-board { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake { 10%,90% { transform: translate3d(-4px,0,0); } 20%,80% { transform: translate3d(6px,0,0); } 30%,50%,70% { transform: translate3d(-10px,0,0); } 40%,60% { transform: translate3d(10px,0,0); } }
 
-        .game-particle { position: absolute; pointer-events: none; z-index: 25; border-radius: 50%; }
-        .game-particle.dust { transition: opacity 0.5s ease, transform 0.5s ease; }
-        .game-particle.crash { transition: opacity 0.8s ease, transform 0.8s ease; }
 
-        .score-popup {
-            position: absolute; z-index: 30; pointer-events: none;
-            font-family: 'Inter'; font-weight: 900; font-size: 18px; color: #F4D05C;
-            animation: popUp 0.6s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
-        }
-        @keyframes popUp { 0% { opacity: 1; transform: translateY(0) scale(0.5); } 100% { opacity: 0; transform: translateY(-40px) scale(1.2); } }
-
-        .flash-overlay { position: absolute; inset: 0; z-index: 35; pointer-events: none; background: white; opacity: 0; animation: flash 0.15s ease forwards; }
-        @keyframes flash { 0% { opacity: 0.5; } 100% { opacity: 0; } }
-
-        .speed-line { position: absolute; width: 50px; height: 1px; z-index: 3; pointer-events: none; border-radius: 2px; background: linear-gradient(90deg, transparent, rgba(125,196,185,0.25)); animation: speedLineSweep 0.5s linear forwards; }
-        @keyframes speedLineSweep { 0% { left: 100%; opacity: 0; } 5% { opacity: 0.12; } 90% { opacity: 0.03; } 100% { left: -80px; opacity: 0; } }
-
-        .ghost-trail { position: absolute; z-index: 19; pointer-events: none; background: rgba(125,196,185,0.08); border-radius: 8px; border: 1px solid rgba(125,196,185,0.06); }
 
         @media (max-width: 768px) {
             nav .nav-links { display: none; }
@@ -620,7 +621,6 @@
             .product-card .card-info .product-name { font-size: 0.85rem; }
             .cursor-dot { display: none; }
             section { padding: 4rem 1.5rem; }
-            #game-container { height: 350px; }
             #hero-city { height: 150px; opacity: 0.08; }
         }
         @media (max-width: 480px) {
@@ -803,6 +803,7 @@
             <div id="game-container" tabindex="0" role="application" aria-label="Endless runner">
                 <div id="city-bg"></div>
                 <div id="clouds-bg"></div>
+                <div id="fg-bg"></div>
                 <canvas id="rain-canvas-game"></canvas>
                 <div id="horizon-glow"></div>
                 <div id="game-ground"></div>
@@ -824,6 +825,8 @@
                 </div>
 
                 <div id="obstacles-container"></div>
+
+                <canvas id="vfx-canvas"></canvas>
 
                 <div id="game-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;">
                     <h3 id="overlay-title" style="font-family:'Anton',sans-serif;font-size:clamp(2rem,4vw,3rem);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:1.5rem;text-shadow:0 0 30px rgba(125,196,185,0.2);" data-lang="game_ready">¿Listo para Arriesgarte?</h3>
@@ -1259,10 +1262,18 @@
             const saveBtn = $('#save-score-btn');
             const leaderboardContainer = $('#leaderboard-container');
 
+            const vfxCanvas = document.getElementById('vfx-canvas');
+            const vctx = vfxCanvas.getContext('2d');
+            const particles = [];
+            const MAX_PARTICLES = isMobile ? 30 : 60;
+            const DUST_INTERVAL = isMobile ? 6 : 4;
+            let milestonePulse = 0;
+            let windAudioCtx = null, windGain = null, windOsc = null;
+
             const H = {
                 GRAV: 2800, JUMP_VEL: 900,
                 BASE_SPEED: 250, SPEED_INC: 0.3, MAX_SPEED: 700,
-                GROUND_Y: 410, PLAYER_WIDTH: 70, PLAYER_HEIGHT: 140,
+                GROUND_Y: 0, PLAYER_WIDTH: 70, PLAYER_HEIGHT: 140,
                 DUCK_OFFSET: 55, HITBOX_INSET: 8,
                 SPAWN_BASE: 1800, SPAWN_MIN: 700,
                 SCORE_INTERVAL: 8, GRACE_FRAMES: 60, MILESTONE: 100
@@ -1283,6 +1294,20 @@
 
             const PLAYER_X = 60;
 
+            function updateGameSize() {
+                const rect = gameContainer.getBoundingClientRect();
+                const w = Math.round(rect.width);
+                const h = Math.round(rect.height);
+                if (w === 0 || h === 0) return;
+                const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+                vfxCanvas.width = w * dpr;
+                vfxCanvas.height = h * dpr;
+                vfxCanvas.style.width = w + 'px';
+                vfxCanvas.style.height = h + 'px';
+                vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                H.GROUND_Y = h - 40;
+            }
+
             function resetGameState() {
                 g = {
                     st: ST.IDLE, score: 0, speed: H.BASE_SPEED, frame: 0,
@@ -1292,6 +1317,8 @@
                 };
             }
             resetGameState();
+            updateGameSize();
+            window.addEventListener('resize', updateGameSize);
 
             function playSFX(type) {
                 try {
@@ -1317,7 +1344,37 @@
                             g.gain.setValueAtTime(0.12, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
                             o.start(t); o.stop(t + 0.35); note(60, 0.3, 0.1, 'sine', 0); break;
                         }
+                        case 'land': note(80, 0.08, 0.06, 'sine'); note(50, 0.15, 0.04, 'triangle', 0.02); break;
                     }
+                } catch {}
+            }
+
+            function startWind() {
+                try {
+                    if (windAudioCtx) return;
+                    windAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    windOsc = windAudioCtx.createOscillator();
+                    windGain = windAudioCtx.createGain();
+                    const filter = windAudioCtx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.value = 200;
+                    windOsc.type = 'sawtooth';
+                    windOsc.frequency.value = 60;
+                    windGain.gain.value = 0;
+                    windOsc.connect(filter); filter.connect(windGain); windGain.connect(windAudioCtx.destination);
+                    windOsc.start();
+                } catch {}
+            }
+            function updateWind() {
+                if (!windGain) return;
+                const targetGain = g.st === ST.PLAYING ? Math.min(0.03, (g.speed / H.MAX_SPEED) * 0.03) : 0;
+                windGain.gain.setTargetAtTime(targetGain, windAudioCtx.currentTime, 0.1);
+            }
+            function stopWind() {
+                try {
+                    if (windOsc) { windOsc.stop(); windOsc = null; }
+                    if (windAudioCtx) { windAudioCtx.close(); windAudioCtx = null; }
+                    windGain = null;
                 } catch {}
             }
 
@@ -1345,100 +1402,118 @@
             }
             renderLeaderboard();
 
-            function spawnDust() {
-                if (g.st !== ST.PLAYING || g.pY > 0) return;
-                for (let d = 0; d < 2; d++) {
-                    const p = document.createElement('div');
-                    p.className = 'game-particle dust';
-                    const sz = 2 + Math.random() * 3;
-                    p.style.width = p.style.height = sz + 'px';
-                    p.style.background = `rgba(255,255,255,${0.15 + Math.random() * 0.25})`;
-                    p.style.left = (PLAYER_X + 15 + (Math.random() - 0.5) * 15) + 'px';
-                    p.style.top = (H.GROUND_Y - 8 + (Math.random() - 0.5) * 6) + 'px';
-                    gameContainer.append(p);
-                    requestAnimationFrame(() => { p.style.transform = `translate(${-(8+Math.random()*18)}px,${(Math.random()-0.5)*8}px)`; p.style.opacity = '0'; });
-                    setTimeout(() => p.remove(), 500);
+            function spawnParticles(type, cx, cy, count) {
+                const palette = {
+                    dust: ['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.15)'],
+                    ghost: ['rgba(125,196,185,0.12)'],
+                    speedLine: ['rgba(125,196,185,0.2)'],
+                    crash: ['#7DC4B9', '#F4D05C', '#FF3366', '#FFF'],
+                    confetti: ['#7DC4B9', '#F4D05C', '#65B6ED', '#FFF', '#FF3366'],
+                    burst: ['rgba(125,196,185,0.4)', '#F4D05C']
+                };
+                const colors = palette[type] || ['#FFF'];
+                const maxCount = isMobile ? { confetti: 12, crash: 8, burst: 6, dust: 2, ghost: 2, speedLine: 1 }[type] || count : count;
+                for (let i = 0; i < maxCount; i++) {
+                    if (particles.length >= MAX_PARTICLES) break;
+                    const p = { x: cx, y: cy, vx: 0, vy: 0, life: 0, maxLife: 0, size: 0, color: colors[Math.floor(Math.random() * colors.length)], alpha: 1, rot: 0, type: type };
+                    switch (type) {
+                        case 'dust':
+                            p.vx = -(8 + Math.random() * 18); p.vy = (Math.random() - 0.5) * 8;
+                            p.size = 2 + Math.random() * 3; p.maxLife = 25; p.life = p.maxLife; break;
+                        case 'ghost':
+                            p.vx = -(3 + Math.random() * 5); p.vy = (Math.random() - 0.5) * 2;
+                            p.size = 4 + Math.random() * 4; p.maxLife = 12; p.life = p.maxLife; break;
+                        case 'speedLine':
+                            p.vx = -(g.speed || 300) * 1.5 / 60; p.vy = 0;
+                            p.size = 1; p.maxLife = 15; p.life = p.maxLife; break;
+                        case 'crash':
+                        case 'burst': {
+                            const a = Math.random() * Math.PI * 2;
+                            const d = 40 + Math.random() * 100;
+                            p.vx = Math.cos(a) * d / 30; p.vy = Math.sin(a) * d / 30 - 2;
+                            p.size = 3 + Math.random() * 6; p.maxLife = 24; p.life = p.maxLife; break;
+                        }
+                        case 'confetti': {
+                            const a = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI;
+                            const d = 60 + Math.random() * 120;
+                            p.vx = Math.cos(a) * d / 30; p.vy = Math.sin(a) * d / 30;
+                            p.size = 3 + Math.random() * 5; p.maxLife = 28; p.life = p.maxLife;
+                            p.rot = Math.random() * 6; break;
+                        }
+                    }
+                    particles.push(p);
                 }
             }
 
-            function spawnGhostTrail() {
-                if (g.st !== ST.PLAYING) return;
-                const rigH = H.PLAYER_HEIGHT;
-                for (let i = 0; i < 3; i++) {
-                    const ghost = document.createElement('div');
-                    ghost.className = 'ghost-trail';
-                    ghost.style.left = PLAYER_X + 'px';
-                    ghost.style.top = (H.GROUND_Y - rigH) + 'px';
-                    ghost.style.width = H.PLAYER_WIDTH + 'px';
-                    ghost.style.height = rigH + 'px';
-                    ghost.style.opacity = String(0.12 - i * 0.035);
-                    ghost.style.transitionDelay = (i * 0.03) + 's';
-                    gameContainer.append(ghost);
-                    requestAnimationFrame(() => { ghost.style.opacity = '0'; ghost.style.transform = 'scale(0.92)'; });
-                    setTimeout(() => ghost.remove(), 180 + i * 30);
+            function updateParticles() {
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx; p.y += p.vy;
+                    p.life--;
+                    if (p.type === 'crash' || p.type === 'burst' || p.type === 'confetti') p.vy += 2.5;
+                    if (p.type === 'dust') p.vx *= 0.98;
+                    if (p.life <= 0) particles.splice(i, 1);
                 }
             }
 
-            function spawnSpeedLine() {
-                const line = document.createElement('div');
-                line.className = 'speed-line';
-                line.style.top = (30 + Math.random() * 300) + 'px';
-                gameContainer.append(line);
-                setTimeout(() => line.remove(), 500);
-            }
-
-            function spawnMilestonePopup() {
-                const pop = document.createElement('div');
-                pop.className = 'score-popup';
-                pop.textContent = g.score;
-                pop.style.left = (gameContainer.clientWidth / 2 - 30) + 'px';
-                pop.style.top = (gameContainer.clientHeight / 2 - 30) + 'px';
-                pop.style.fontSize = '28px';
-                gameContainer.append(pop);
-                setTimeout(() => pop.remove(), 650);
-            }
-
-            function spawnCrashParticles(cx, cy) {
-                const colors = ['#7DC4B9', '#F4D05C', '#FF3366', '#FFF'];
-                for (let i = 0; i < 14; i++) {
-                    const p = document.createElement('div');
-                    p.className = 'game-particle crash';
-                    const sz = 3 + Math.random() * 6;
-                    p.style.width = p.style.height = sz + 'px';
-                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    p.style.left = cx + 'px'; p.style.top = cy + 'px';
-                    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
-                    gameContainer.append(p);
-                    const angle = Math.random() * Math.PI * 2;
-                    const dist = 40 + Math.random() * 100;
-                    requestAnimationFrame(() => { p.style.transform = `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px)`; p.style.opacity = '0'; });
-                    setTimeout(() => p.remove(), 800);
+            function drawParticles() {
+                for (const p of particles) {
+                    const alpha = Math.min(1, (p.life / p.maxLife) * 2);
+                    const size = p.size * (0.5 + 0.5 * (p.life / p.maxLife));
+                    vctx.globalAlpha = alpha;
+                    vctx.fillStyle = p.color;
+                    if (p.type === 'speedLine') {
+                        vctx.fillRect(p.x, p.y, 50 * (p.life / p.maxLife), 1);
+                    } else if (p.type === 'confetti') {
+                        vctx.save(); vctx.translate(p.x, p.y); vctx.rotate(p.rot * (1 - p.life / p.maxLife));
+                        vctx.fillRect(-size / 2, -size / 2, size, size);
+                        vctx.restore();
+                    } else {
+                        vctx.beginPath(); vctx.arc(p.x, p.y, size / 2, 0, Math.PI * 2); vctx.fill();
+                    }
                 }
+                vctx.globalAlpha = 1;
             }
 
-            function spawnMilestoneConfetti() {
-                const colors = ['#7DC4B9', '#F4D05C', '#65B6ED', '#FFF', '#FF3366'];
-                for (let i = 0; i < 20; i++) {
-                    const p = document.createElement('div');
-                    p.className = 'game-particle crash';
-                    p.style.width = (3 + Math.random() * 5) + 'px'; p.style.height = (3 + Math.random() * 5) + 'px';
-                    p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    p.style.left = (PLAYER_X + Math.random() * 100) + 'px';
-                    p.style.top = (H.GROUND_Y - 80 + Math.random() * 60) + 'px';
-                    p.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                    gameContainer.append(p);
-                    const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI;
-                    const dist = 60 + Math.random() * 120;
-                    requestAnimationFrame(() => { p.style.transition = 'all 0.8s cubic-bezier(0.2, 0.8, 0.3, 1)'; p.style.transform = `translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px)`; p.style.opacity = '0'; });
-                    setTimeout(() => p.remove(), 800);
-                }
+            function drawShadow() {
+                const jumpRatio = Math.min(g.pY / 140, 1);
+                const sw = 20 + jumpRatio * 12;
+                const sh = 6 + jumpRatio * 6;
+                const sa = 0.4 - jumpRatio * 0.3;
+                const sy = H.GROUND_Y - 2 + jumpRatio * 10;
+                vctx.save();
+                vctx.globalAlpha = sa;
+                vctx.fillStyle = 'rgba(0,0,0,0.6)';
+                vctx.beginPath();
+                vctx.ellipse(PLAYER_X + 35, sy, sw, sh, 0, 0, Math.PI * 2);
+                vctx.fill();
+                vctx.restore();
             }
 
-            function flashScreen() {
-                const f = document.createElement('div');
-                f.className = 'flash-overlay';
-                gameContainer.append(f);
-                setTimeout(() => f.remove(), 200);
+            function drawRimLight(o) {
+                vctx.save();
+                vctx.shadowColor = '#7DC4B9';
+                vctx.shadowBlur = 8;
+                vctx.strokeStyle = 'rgba(125,196,185,0.25)';
+                vctx.lineWidth = 1.5;
+                vctx.strokeRect(o.x - 1, o.top - 1, o.w + 2, o.h + 2);
+                vctx.restore();
+            }
+
+            function drawMilestonePulse() {
+                if (milestonePulse <= 0) return;
+                const progress = milestonePulse / 20;
+                const radius = 30 + (1 - progress) * 120;
+                vctx.save();
+                vctx.globalAlpha = 0.35 * progress;
+                vctx.fillStyle = '#F4D05C';
+                vctx.shadowColor = '#F4D05C';
+                vctx.shadowBlur = 50;
+                vctx.beginPath();
+                vctx.arc(gameContainer.clientWidth / 2, H.GROUND_Y - 70, radius, 0, Math.PI * 2);
+                vctx.fill();
+                vctx.restore();
+                milestonePulse--;
             }
 
             function applySquash() {
@@ -1462,7 +1537,7 @@
                 playerRig.classList.remove('is-ducking');
                 playSFX('jump');
                 applySquash();
-                spawnGhostTrail();
+                spawnParticles('burst', PLAYER_X + 20, H.GROUND_Y - 5, 6);
             }
 
             function duck() {
@@ -1516,6 +1591,16 @@
                 return pRight > oLeft && pLeft < oRight && pBotActual > oTop && pTopActual < oBot;
             }
 
+            function drawVFX() {
+                vctx.clearRect(0, 0, vfxCanvas.width, vfxCanvas.height);
+                drawShadow();
+                drawParticles();
+                drawMilestonePulse();
+                for (const o of g.obstacles) {
+                    if (o.x > -50 && o.x < gameContainer.clientWidth + 50) drawRimLight(o);
+                }
+            }
+
             function tick(time) {
                 if (g.st !== ST.PLAYING) return;
                 const dt = Math.min((time - g.lastTime) / 1000, 0.05);
@@ -1526,7 +1611,7 @@
                     g.pVy -= H.GRAV * dt;
                     g.pY += g.pVy * dt;
                     if (g.pY <= 0) {
-                        if (g.pY < -5) applyLandingSquash();
+                        if (g.pY < -5) { applyLandingSquash(); playSFX('land'); }
                         g.pY = 0; g.pVy = 0;
                         g.canJump = true;
                         if (g.holdDown && !g.ducking) duck();
@@ -1540,9 +1625,8 @@
                     if (g.score % H.MILESTONE === 0) {
                         g.milestone++;
                         playSFX('milestone');
-                        flashScreen();
-                        spawnMilestoneConfetti();
-                        spawnMilestonePopup();
+                        milestonePulse = 20;
+                        spawnParticles('confetti', PLAYER_X + 35, H.GROUND_Y - 70, 20);
                     }
                 }
 
@@ -1551,7 +1635,13 @@
                 playerRig.style.transform = `translateY(${-g.pY}px) rotate(${rotation}deg)`;
                 playerRig.classList.toggle('spin-wheels', g.pY <= 0);
 
-                if (g.frame % 4 === 0) spawnDust();
+                if (g.frame % DUST_INTERVAL === 0 && g.pY <= 0) {
+                    spawnParticles('dust', PLAYER_X + 15, H.GROUND_Y - 8, 2);
+                }
+
+                if (g.speed > 280 && g.frame % Math.max(3, Math.floor(14 - g.speed / 80)) === 0) {
+                    spawnParticles('speedLine', gameContainer.clientWidth, 30 + Math.random() * 300, 1);
+                }
 
                 if (g.frame > H.GRACE_FRAMES) {
                     g.spawnTimer -= dt * 1000;
@@ -1573,7 +1663,12 @@
                 const scrollX = (g.frame * (g.speed / 300)) % 800;
                 bg.style.backgroundPosition = `-${scrollX}px 0`;
                 clouds.style.backgroundPosition = `-${(g.frame * (g.speed / 900)) % 800}px 0`;
-                if (g.speed > 280 && g.frame % Math.max(3, Math.floor(14 - g.speed / 80)) === 0) spawnSpeedLine();
+                const fg = document.getElementById('fg-bg');
+                if (fg) fg.style.backgroundPosition = `-${(g.frame * (g.speed / 200)) % 800}px 0`;
+                document.documentElement.style.setProperty('--game-tilt', Math.min(1.5 + g.speed * 0.003, 4) + 'deg');
+                updateParticles();
+                drawVFX();
+                updateWind();
                 g.loopId = requestAnimationFrame(tick);
             }
 
@@ -1581,6 +1676,7 @@
                 resetGameState();
                 g.st = ST.PLAYING;
                 g.lastTime = performance.now();
+                updateGameSize();
                 playerRig.classList.remove('is-ducking');
                 playerRig.style.transform = '';
                 playerRig.style.transition = '';
@@ -1592,16 +1688,19 @@
                 gameContainer.classList.add('game-active');
                 obsContainer.innerHTML = '';
                 g.obstacles = [];
+                particles.length = 0;
                 gameContainer.focus({ preventScroll: true });
+                startWind();
                 g.loopId = requestAnimationFrame(tick);
             }
 
             function handleGameOver() {
                 g.st = ST.OVER;
+                stopWind();
                 gameContainer.classList.remove('game-active');
                 if (g.loopId) { cancelAnimationFrame(g.loopId); g.loopId = null; }
                 playSFX('crash');
-                spawnCrashParticles(PLAYER_X + 35, H.GROUND_Y - 70);
+                spawnParticles('crash', PLAYER_X + 35, H.GROUND_Y - 70, 14);
                 gameContainer.classList.add('shake-board');
                 setTimeout(() => {
                     overlay.style.display = 'flex';
@@ -1643,16 +1742,19 @@
 
             let touchStartY = 0;
             gameContainer.addEventListener('touchstart', (e) => {
+                e.preventDefault();
                 touchStartY = e.touches[0].clientY;
                 if (g.st !== ST.PLAYING) return;
-                if (e.touches[0].clientX > window.innerWidth / 2) jump();
+                const rect = gameContainer.getBoundingClientRect();
+                if (e.touches[0].clientX - rect.left > rect.width / 2) jump();
                 else { g.holdDown = true; duck(); }
-            }, { passive: true });
+            }, { passive: false });
             gameContainer.addEventListener('touchmove', (e) => {
+                e.preventDefault();
                 if (g.st !== ST.PLAYING || !touchStartY) return;
                 if (touchStartY - e.touches[0].clientY > 30) { jump(); touchStartY = 0; }
-            }, { passive: true });
-            gameContainer.addEventListener('touchend', () => { touchStartY = 0; standUp(); }, { passive: true });
+            }, { passive: false });
+            gameContainer.addEventListener('touchend', (e) => { e.preventDefault(); touchStartY = 0; standUp(); }, { passive: false });
             gameContainer.addEventListener('touchcancel', () => { touchStartY = 0; standUp(); }, { passive: true });
 
         })();
