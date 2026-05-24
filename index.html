@@ -1082,6 +1082,17 @@
                 load_sub: { es: 'Skateware', en: 'Skatewear' }
             };
 
+            // Merge admin Home Page overrides
+            try {
+                const home = JSON.parse(localStorage.getItem('lb-home-settings') || '{}');
+                Object.keys(home).forEach(key => {
+                    if (i18n[key] && home[key]) {
+                        if (home[key].es) i18n[key].es = home[key].es;
+                        if (home[key].en) i18n[key].en = home[key].en;
+                    }
+                });
+            } catch(e) {}
+
             function setLang(lang) {
                 currentLang = lang;
                 document.querySelectorAll('[data-lang]').forEach(el => {

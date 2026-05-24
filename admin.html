@@ -321,6 +321,7 @@
             <button class="side-link active" data-tab="tab-products">Productos</button>
             <button class="side-link" data-tab="tab-discounts">Descuentos</button>
             <button class="side-link" data-tab="tab-orders">Pedidos</button>
+            <button class="side-link" data-tab="tab-home">Home Page</button>
             <a class="side-link" href="store.html" target="_blank" style="text-decoration:none;">Ver Tienda ↗</a>
         </div>
         <div class="dash-main">
@@ -364,9 +365,9 @@
                     <div class="form-group">
                         <label>Categoría</label>
                         <select id="prod-category">
-                            <option value="outerwear">Outerwear</option>
-                            <option value="tops">Tops</option>
-                            <option value="bottoms">Bottoms</option>
+                            <option value="tshirts">T-Shirts</option>
+                            <option value="hoodies">Hoodies</option>
+                            <option value="socks">Socks</option>
                             <option value="accessories">Accessories</option>
                         </select>
                     </div>
@@ -422,7 +423,89 @@
                         <div class="image-list" id="extra-images">
                             <div class="img-row">
                                 <input type="text" class="extra-img-input" placeholder="https://i.ibb.co/...">
-                            </div>
+            </div>
+
+            <!-- ── Home Page Tab ── -->
+            <div class="tab-panel" id="tab-home">
+                <h2>Editar Home Page</h2>
+                <p style="font-size:0.65rem;color:rgba(255,255,255,0.2);margin-bottom:2rem;">Editá los textos que aparecen en index.html. Dejá vacío para usar el texto por defecto.</p>
+
+                <div class="settings-card">
+                    <h3>Sección Hero</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tagline (ES)</label>
+                            <input type="text" id="home-hero-tagline-es" placeholder="Be your own luck. // Tu eres tu propia suerte.">
+                        </div>
+                        <div class="form-group">
+                            <label>Tagline (EN)</label>
+                            <input type="text" id="home-hero-tagline-en" placeholder="Be your own luck. // Tu eres tu propia suerte.">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Sección Nueva Colección</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Etiqueta (ES)</label>
+                            <input type="text" id="home-drops-label-es" placeholder="Últimos Lanzamientos">
+                        </div>
+                        <div class="form-group">
+                            <label>Etiqueta (EN)</label>
+                            <input type="text" id="home-drops-label-en" placeholder="Latest Drops">
+                        </div>
+                        <div class="form-group full" style="grid-column:1/-1;">
+                            <label>Descripción (ES)</label>
+                            <input type="text" id="home-drops-desc-es" placeholder="Equipo fresco. Lanzamientos limitados.">
+                        </div>
+                        <div class="form-group full" style="grid-column:1/-1;">
+                            <label>Descripción (EN)</label>
+                            <input type="text" id="home-drops-desc-en" placeholder="Fresh gear. Limited drops.">
+                        </div>
+                        <div class="form-group">
+                            <label>Botón CTA (ES)</label>
+                            <input type="text" id="home-drops-cta-es" placeholder="Ver Tienda Completa →">
+                        </div>
+                        <div class="form-group">
+                            <label>Botón CTA (EN)</label>
+                            <input type="text" id="home-drops-cta-en" placeholder="See Full Store →">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h3>Sección El Feliz Accidente</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Etiqueta (ES)</label>
+                            <input type="text" id="home-ethos-label-es" placeholder="El Origen">
+                        </div>
+                        <div class="form-group">
+                            <label>Etiqueta (EN)</label>
+                            <input type="text" id="home-ethos-label-en" placeholder="The Origin">
+                        </div>
+                        <div class="form-group full" style="grid-column:1/-1;">
+                            <label>Párrafo (ES)</label>
+                            <textarea id="home-ethos-p1-es" placeholder="Lucky Bunny no nació en una sala de juntas..."></textarea>
+                        </div>
+                        <div class="form-group full" style="grid-column:1/-1;">
+                            <label>Párrafo (EN)</label>
+                            <textarea id="home-ethos-p1-en" placeholder="Lucky Bunny wasn't born in a corporate boardroom..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Botón CTA (ES)</label>
+                            <input type="text" id="home-ethos-cta-es" placeholder="Conocé más sobre nosotros →">
+                        </div>
+                        <div class="form-group">
+                            <label>Botón CTA (EN)</label>
+                            <input type="text" id="home-ethos-cta-en" placeholder="Get to know us →">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-mint" onclick="saveHomeSettings()">Guardar Home Page</button>
+            </div>
                         </div>
                         <button class="btn btn-outline" style="margin-top:0.5rem;" onclick="addExtraImageRow()">+ Agregar Imagen</button>
                     </div>
@@ -775,14 +858,41 @@
             if (target) target.classList.add('active');
             $('#product-form-panel').style.display = 'none';
             if (link.dataset.tab === 'tab-orders') loadOrders();
+            if (link.dataset.tab === 'tab-home') loadHomeSettings();
         });
     });
 
     // ── Helpers ──
+    const HOME_KEY = 'lb-home-settings';
+
+    function loadHomeSettings() {
+        const raw = localStorage.getItem(HOME_KEY);
+        const data = raw ? (() => { try { return JSON.parse(raw); } catch(e) { return {}; } })() : {};
+        const fields = ['hero_tagline','drops_label','drops_desc','drops_cta','ethos_label','ethos_p1','ethos_cta'];
+        fields.forEach(f => {
+            const elEs = $('#home-' + f.replace(/_/g, '-') + '-es');
+            const elEn = $('#home-' + f.replace(/_/g, '-') + '-en');
+            if (elEs && data[f]) elEs.value = data[f].es || '';
+            if (elEn && data[f]) elEn.value = data[f].en || '';
+        });
+    }
+
+    window.saveHomeSettings = function() {
+        const fields = ['hero_tagline','drops_label','drops_desc','drops_cta','ethos_label','ethos_p1','ethos_cta'];
+        const data = {};
+        fields.forEach(f => {
+            const es = $('#home-' + f.replace(/_/g, '-') + '-es')?.value?.trim();
+            const en = $('#home-' + f.replace(/_/g, '-') + '-en')?.value?.trim();
+            if (es || en) data[f] = { es: es || '', en: en || '' };
+        });
+        localStorage.setItem(HOME_KEY, JSON.stringify(data));
+        showToast('Home Page actualizada ✓');
+    };
+
     function clearForm() {
         ['prod-name','prod-cover','prod-hover','prod-desc'].forEach(id => $('#'+id).value = '');
         ['prod-price','prod-ref-price','prod-stock','prod-discount'].forEach(id => $('#'+id).value = '0');
-        $('#prod-category').value = 'outerwear';
+        $('#prod-category').value = 'tshirts';
         $('#prod-badge').value = '';
         $('#prod-active').checked = true;
         $$('#size-checks input[type=checkbox]').forEach(cb => cb.checked = false);

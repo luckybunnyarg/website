@@ -1105,26 +1105,27 @@
 
             const SVG_SHAPES = {
                 hoodie: `<svg viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="%237DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="35" y="50" width="30" height="35" rx="2" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/></svg>`,
+                hoodies: `<svg viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="%237DC4B9" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="35" y="50" width="30" height="35" rx="2" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/></svg>`,
                 hoodie2: `<svg viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="%23F4D05C" stroke-width="0.5" opacity="0.3"/><path d="M35 25 L50 15 L65 25" stroke="%23F4D05C" stroke-width="0.5" opacity="0.2" fill="none"/><circle cx="50" cy="55" r="12" stroke="%23F4D05C" stroke-width="0.5" opacity="0.15"/></svg>`,
                 tee: `<svg viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="%2365B6ED" stroke-width="0.5" opacity="0.3"/><path d="M30 30 L22 20 L50 8 L78 20 L70 30" stroke="%2365B6ED" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="40" y="50" width="20" height="25" rx="2" stroke="%2365B6ED" stroke-width="0.5" opacity="0.15"/></svg>`,
+                tshirts: `<svg viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="%2365B6ED" stroke-width="0.5" opacity="0.3"/><path d="M30 30 L22 20 L50 8 L78 20 L70 30" stroke="%2365B6ED" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="40" y="50" width="20" height="25" rx="2" stroke="%2365B6ED" stroke-width="0.5" opacity="0.15"/></svg>`,
                 tee2: `<svg viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="%23FF3366" stroke-width="0.5" opacity="0.3"/><path d="M30 30 L22 20 L50 8 L78 20 L70 30" stroke="%23FF3366" stroke-width="0.5" opacity="0.2" fill="none"/><text x="50" y="65" text-anchor="middle" fill="%23FF3366" opacity="0.15" font-size="10">LB</text></svg>`,
-                pants: `<svg viewBox="0 0 100 120" fill="none"><rect x="25" y="20" width="50" height="90" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><line x1="50" y1="20" x2="50" y2="110" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/><rect x="25" y="85" width="22" height="25" rx="2" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/><rect x="53" y="85" width="22" height="25" rx="2" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15"/></svg>`,
                 cap: `<svg viewBox="0 0 100 120" fill="none"><path d="M20 60 Q20 30 50 25 Q80 30 80 60" stroke="%23F4D05C" stroke-width="0.5" opacity="0.3" fill="none"/><path d="M20 60 L30 70 L70 70 L80 60" stroke="%23F4D05C" stroke-width="0.5" opacity="0.2" fill="none"/><rect x="44" y="68" width="12" height="8" rx="2" stroke="%23F4D05C" stroke-width="0.5" opacity="0.15"/></svg>`,
                 bag: `<svg viewBox="0 0 100 120" fill="none"><rect x="22" y="35" width="56" height="70" rx="6" stroke="%2365B6ED" stroke-width="0.5" opacity="0.3"/><path d="M35 35 V25 Q35 15 50 15 Q65 15 65 25 V35" stroke="%2365B6ED" stroke-width="0.5" opacity="0.2" fill="none"/><line x1="35" y1="60" x2="65" y2="60" stroke="%2365B6ED" stroke-width="0.5" opacity="0.15"/></svg>`,
                 sticker: `<svg viewBox="0 0 100 120" fill="none"><rect x="20" y="30" width="60" height="60" rx="12" stroke="%23FF3366" stroke-width="0.5" opacity="0.3" transform="rotate(-8 50 60)"/><circle cx="50" cy="58" r="16" stroke="%23FF3366" stroke-width="0.5" opacity="0.2" transform="rotate(-8 50 60)"/><path d="M40 58 L47 65 L60 52" stroke="%23FF3366" stroke-width="0.5" opacity="0.15" transform="rotate(-8 50 60)"/></svg>`,
+                accessories: `<svg viewBox="0 0 100 120" fill="none"><circle cx="50" cy="40" r="22" stroke="%23F4D05C" stroke-width="0.5" opacity="0.25"/><rect x="36" y="55" width="28" height="35" rx="4" stroke="%23F4D05C" stroke-width="0.5" opacity="0.2"/><line x1="40" y1="68" x2="60" y2="68" stroke="%23F4D05C" stroke-width="0.5" opacity="0.15"/></svg>`,
                 socks: `<svg viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M30 65 Q25 80 35 80 Q40 80 48 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/><path d="M52 65 Q47 80 57 80 Q62 80 70 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/></svg>`
             };
 
             const FALLBACK_PRODUCTS = [
-                { id:'hoodie-void', name:'Hoodie Void', category:'outerwear', price:18500, referencePrice:22000, image:'hoodie', badge:'new', sizes:['S','M','L','XL'], desc:'Hoodie oversized. Algodón peinado. Bolsillo canguro.', stock:12, salesCount:47 },
-                { id:'hoodie-logo', name:'Hoodie Logo', category:'outerwear', price:16500, referencePrice:19500, image:'hoodie2', sizes:['S','M','L','XL'], desc:'Hoodie clásico. Logo Lucky Bunny frontal.', stock:8, salesCount:34 },
-                { id:'tee-raw', name:'Tee Raw Cut', category:'tops', price:8200, referencePrice:9800, image:'tee', sizes:['S','M','L','XL'], desc:'Camiseta manga corta. Corte raw. Algodón 240g.', stock:25, salesCount:82 },
-                { id:'tee-mantra', name:'Tee Mantra', category:'tops', price:7800, referencePrice:9200, image:'tee2', badge:'new', sizes:['S','M','L','XL'], desc:'Be your own luck. Serigrafía espalda grande.', stock:18, salesCount:61 },
-                { id:'pants-cargo', name:'Pants Cargo', category:'bottoms', price:14500, referencePrice:17500, image:'pants', sizes:['28','30','32','34'], desc:'Pantalón cargo. Bolsillos amplios. Cintura ajustable.', stock:6, salesCount:23 },
+                { id:'hoodie-void', name:'Hoodie Void', category:'hoodies', price:18500, referencePrice:22000, image:'hoodie', badge:'new', sizes:['S','M','L','XL'], desc:'Hoodie oversized. Algodón peinado. Bolsillo canguro.', stock:12, salesCount:47 },
+                { id:'hoodie-logo', name:'Hoodie Logo', category:'hoodies', price:16500, referencePrice:19500, image:'hoodie2', sizes:['S','M','L','XL'], desc:'Hoodie clásico. Logo Lucky Bunny frontal.', stock:8, salesCount:34 },
+                { id:'tee-raw', name:'Tee Raw Cut', category:'tshirts', price:8200, referencePrice:9800, image:'tee', sizes:['S','M','L','XL'], desc:'Camiseta manga corta. Corte raw. Algodón 240g.', stock:25, salesCount:82 },
+                { id:'tee-mantra', name:'Tee Mantra', category:'tshirts', price:7800, referencePrice:9200, image:'tee2', badge:'new', sizes:['S','M','L','XL'], desc:'Be your own luck. Serigrafía espalda grande.', stock:18, salesCount:61 },
+                { id:'socks-crew', name:'Crew Socks', category:'socks', price:3500, referencePrice:4200, image:'socks', sizes:['Unico'], desc:'Medias caña alta. Algodón peinado. Logo bordado.', stock:22, salesCount:47 },
                 { id:'cap-signature', name:'Cap Signature', category:'accessories', price:6500, referencePrice:7800, image:'cap', badge:'limited', sizes:['Unico'], desc:'Gorra trucker. Frente estructurado. Malla transpirable.', stock:4, salesCount:55 },
                 { id:'bag-tote', name:'Tote Bag', category:'accessories', price:4800, referencePrice:5800, image:'bag', sizes:['Unico'], desc:'Bolso de tela cruda. Serigrafía frontal. Capacidad 15L.', stock:15, salesCount:38 },
-                { id:'sticker-set', name:'Sticker Pack', category:'accessories', price:2200, referencePrice:2800, image:'sticker', sizes:['Unico'], desc:'Pack de 6 stickers. Vinilo premium. 10cm c/u.', stock:40, salesCount:120 },
-                { id:'socks-crew', name:'Crew Socks', category:'accessories', price:3500, referencePrice:4200, image:'socks', sizes:['Unico'], desc:'Medias caña alta. Algodón peinado. Logo bordado.', stock:22, salesCount:47 }
+                { id:'sticker-set', name:'Sticker Pack', category:'accessories', price:2200, referencePrice:2800, image:'sticker', sizes:['Unico'], desc:'Pack de 6 stickers. Vinilo premium. 10cm c/u.', stock:40, salesCount:120 }
             ];
 
             let products = [];
@@ -1188,9 +1189,9 @@
 
             function getCategoryLabel(cat) {
                 const labels = {
-                    outerwear: currentLang === 'es' ? 'Ropa Exterior' : 'Outerwear',
-                    tops: currentLang === 'es' ? 'Camisetas' : 'Tops',
-                    bottoms: currentLang === 'es' ? 'Pantalones' : 'Bottoms',
+                    tshirts: currentLang === 'es' ? 'Camisetas' : 'T-Shirts',
+                    hoodies: currentLang === 'es' ? 'Hoodies' : 'Hoodies',
+                    socks: currentLang === 'es' ? 'Medias' : 'Socks',
                     accessories: currentLang === 'es' ? 'Accesorios' : 'Accessories'
                 };
                 return labels[cat] || cat;
@@ -1213,9 +1214,9 @@
                     cats[p.category] = (cats[p.category] || 0) + 1;
                 });
                 const catLabels = {
-                    outerwear: currentLang === 'es' ? 'Hoodies' : 'Hoodies',
-                    tops: currentLang === 'es' ? 'Camisetas' : 'Tees',
-                    bottoms: currentLang === 'es' ? 'Pantalones' : 'Bottoms',
+                    tshirts: currentLang === 'es' ? 'Camisetas' : 'T-Shirts',
+                    hoodies: currentLang === 'es' ? 'Hoodies' : 'Hoodies',
+                    socks: currentLang === 'es' ? 'Medias' : 'Socks',
                     accessories: currentLang === 'es' ? 'Accesorios' : 'Accessories'
                 };
                 let html = `<button class="filter-pill active" data-filter="all"><span data-lang="store_filter_all">${currentLang === 'es' ? 'Todo' : 'All'}</span> <span class="count">(${products.length})</span></button>`;
