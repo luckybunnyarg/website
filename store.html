@@ -679,9 +679,32 @@
         #detail-modal .detail-image {
             aspect-ratio: 1; border-radius: 12px; overflow: hidden;
             background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
+            position: relative; cursor: pointer;
         }
-        #detail-modal .detail-image img { width: 100%; height: 100%; object-fit: cover; }
+        #detail-modal .detail-image img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: opacity 0.3s; }
+        #detail-modal .detail-image img.hover-img { opacity: 0; }
+        #detail-modal .detail-image:hover img.cover-img { opacity: 0; }
+        #detail-modal .detail-image:hover img.hover-img { opacity: 1; }
         #detail-modal .detail-image svg { width: 60%; height: 60%; opacity: 0.15; }
+        .detail-carousel-nav {
+            position: absolute; bottom: 0.5rem; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 0.3rem; z-index: 3;
+        }
+        .detail-carousel-nav span {
+            width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2);
+            cursor: pointer; transition: background 0.3s;
+        }
+        .detail-carousel-nav span.active { background: var(--mint); }
+        .detail-prev, .detail-next {
+            position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+            background: rgba(0,0,0,0.5); color: var(--chalk); border: none;
+            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
+            font-size: 1rem; display: none; align-items: center; justify-content: center;
+            transition: background 0.3s;
+        }
+        .detail-prev:hover, .detail-next:hover { background: rgba(0,0,0,0.8); }
+        .detail-prev { left: 0.5rem; }
+        .detail-next { right: 0.5rem; }
         #detail-modal .detail-info { display: flex; flex-direction: column; }
         #detail-modal .detail-cat {
             font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
@@ -961,6 +984,11 @@
                 <span class="ct-label" data-lang="cart_total">Total</span>
                 <span class="ct-amount" id="cart-total">$0</span>
             </div>
+            <div class="ci-row" style="margin-top:0.8rem;">
+                <input type="text" id="coupon-input" placeholder="Código de descuento" style="flex:1;padding:0.4rem 0.6rem;background:transparent;border:1px solid rgba(255,255,255,0.1);border-radius:4px;color:var(--chalk);font-size:0.7rem;text-transform:uppercase;">
+                <button style="background:transparent;border:1px solid var(--mint);color:var(--mint);padding:0.4rem 0.8rem;border-radius:4px;cursor:pointer;font-size:0.65rem;" onclick="applyCoupon()">Aplicar</button>
+            </div>
+            <div id="coupon-msg" style="font-size:0.6rem;margin-top:0.3rem;min-height:1rem;"></div>
             <button class="checkout-btn" id="checkout-btn" data-lang="cart_checkout">Comprar Ahora</button>
         </div>
     </div>
@@ -1498,6 +1526,34 @@
                 }
             }
 
+            var couponState = { code: '', discount: 0 };
+
+            window.applyCoupon = function() {
+                var code = document.getElementById('coupon-input').value.trim().toUpperCase();
+                var msgEl = document.getElementById('coupon-msg');
+                if (!code) return;
+                var base = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
+                fetch(base + '/?action=validate-coupon&code=' + encodeURIComponent(code))
+                    .then(function(r){ return r.json(); })
+                    .then(function(data){
+                        if (data.valid) {
+                            couponState = { code: code, discount: data.discount };
+                            msgEl.textContent = '✓ ' + data.discount + '% de descuento aplicado';
+                            msgEl.style.color = 'var(--mint)';
+                            renderCart();
+                        } else {
+                            couponState = { code: '', discount: 0 };
+                            msgEl.textContent = '✗ ' + (data.error || 'Código inválido');
+                            msgEl.style.color = 'var(--pink)';
+                            renderCart();
+                        }
+                    })
+                    .catch(function(){
+                        msgEl.textContent = '✗ Error al validar';
+                        msgEl.style.color = 'var(--pink)';
+                    });
+            };
+
             function renderCart() {
                 const itemsEl = $('#cart-items');
                 const footerEl = $('#cart-footer');
@@ -1507,7 +1563,8 @@
                 const checkoutBtn = $('#checkout-btn');
 
                 const totalItems = cart.reduce((s, i) => s + i.qty, 0);
-                const totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+                var totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
+                if (couponState.discount > 0) totalPrice = Math.round(totalPrice * (1 - couponState.discount / 100));
 
                 if (countEl) {
                     countEl.textContent = totalItems;
@@ -1821,11 +1878,48 @@
                 }
 
                 var imgEl = document.getElementById('detail-image');
-                if (prod.coverImage && prod.coverImage.trim().length > 4) {
-                    imgEl.innerHTML = '<img src="' + prod.coverImage + '" alt="' + prod.name + '" loading="lazy">';
+                var allImages = [];
+                if (prod.coverImage && prod.coverImage.trim().length > 4) allImages.push(prod.coverImage);
+                if (prod.hoverImage && prod.hoverImage.trim().length > 4) allImages.push(prod.hoverImage);
+                if (prod.extraImages && prod.extraImages.length) {
+                    prod.extraImages.forEach(function(u){ if (u && u.trim().length > 4) allImages.push(u); });
+                }
+
+                if (allImages.length > 0) {
+                    var currentImg = 0;
+                    function renderCarousel() {
+                        var html = '';
+                        var hasHover = prod.hoverImage && prod.hoverImage.trim().length > 4 && prod.coverImage && prod.coverImage.trim().length > 4;
+                        // Show cover + hover stacked for hover effect (only first two)
+                        if (hasHover && currentImg === 0) {
+                            html += '<img src="' + prod.coverImage + '" class="cover-img" alt="' + prod.name + '" loading="lazy">';
+                            html += '<img src="' + prod.hoverImage + '" class="hover-img" alt="' + prod.name + '" loading="lazy">';
+                        } else {
+                            html += '<img src="' + allImages[currentImg] + '" alt="' + prod.name + '" loading="lazy">';
+                        }
+                        // Nav dots
+                        if (allImages.length > 1) {
+                            html += '<div class="detail-carousel-nav">';
+                            for (var j = 0; j < allImages.length; j++) {
+                                html += '<span class="' + (j === currentImg ? 'active' : '') + '" data-idx="' + j + '"></span>';
+                            }
+                            html += '</div>';
+                            if (currentImg > 0) html += '<button class="detail-prev" style="display:flex;">◀</button>';
+                            if (currentImg < allImages.length - 1) html += '<button class="detail-next" style="display:flex;">▶</button>';
+                        }
+                        imgEl.innerHTML = html;
+                        // Bind events
+                        imgEl.querySelectorAll('.detail-carousel-nav span').forEach(function(dot){
+                            dot.addEventListener('click', function(e){ e.stopPropagation(); currentImg = parseInt(this.dataset.idx); renderCarousel(); });
+                        });
+                        var prev = imgEl.querySelector('.detail-prev');
+                        var next = imgEl.querySelector('.detail-next');
+                        if (prev) prev.addEventListener('click', function(e){ e.stopPropagation(); if (currentImg > 0) { currentImg--; renderCarousel(); } });
+                        if (next) next.addEventListener('click', function(e){ e.stopPropagation(); if (currentImg < allImages.length - 1) { currentImg++; renderCarousel(); } });
+                    }
+                    renderCarousel();
                 } else {
-                    var svg = SVG_SHAPES[prod.image] || SVG_SHAPES[prod.category] || SVG_SHAPES.hoodie;
-                    imgEl.innerHTML = svg;
+                    imgEl.innerHTML = SVG_SHAPES[prod.image] || SVG_SHAPES[prod.category] || SVG_SHAPES.hoodie;
                 }
 
                 var addBtn = document.getElementById('detail-add-btn');

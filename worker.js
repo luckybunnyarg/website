@@ -58,7 +58,13 @@ async function handleGet(url, action, env) {
     return await saveSettings(env, JSON.parse(raw));
   }
 
+  if (action === 'validate-coupon') {
+    const code = url.searchParams.get('code') || '';
+    return await validateCoupon(env, code);
+  }
+
   // Read
+  if (action === 'coupons')      return await getCoupons(env);
   if (action === 'all-products') return await getAllProducts(env);
   if (action === 'settings')     return await getSettings(env);
   if (action === 'orders')       return await getOrders(env);
@@ -91,6 +97,8 @@ async function handlePost(request, env) {
   if (act === 'upload-image')    return await uploadImage(env, body.image, body.filename);
   if (act === 'save-product')    return await saveProduct(env, body.product);
   if (act === 'delete-product')  return await deleteProduct(env, body.id);
+  if (act === 'save-coupon')    return await saveCoupon(env, body.coupon);
+  if (act === 'delete-coupon')  return await deleteCoupon(env, body.code);
   if (act === 'save-settings')   return await saveSettings(env, body.settings);
   if (act === 'save-order')      return await saveOrder(env, body);
 
@@ -220,6 +228,51 @@ async function saveOrder(env, order) {
   orders.unshift({ ...order, timestamp: new Date().toISOString(), status: 'pending' });
   await writeJSON(env, 'orders.json', orders);
   return json({ status: 'ok', message: 'Order created' });
+}
+
+// ═══════════ COUPONS ═══════════
+async function getCoupons(env) {
+  const data = await readJSON(env, 'coupons.json');
+  return json(Array.isArray(data) ? data : []);
+}
+
+async function saveCoupon(env, coupon) {
+  if (!coupon || !coupon.code) return json({ error: 'Missing code' }, 400);
+  const coupons = (await readJSON(env, 'coupons.json')) || [];
+  const idx = coupons.findIndex(c => c.code === coupon.code);
+  if (idx >= 0) coupons[idx] = coupon;
+  else coupons.push(coupon);
+  await writeJSON(env, 'coupons.json', coupons);
+  return json({ status: 'ok', coupon });
+}
+
+async function deleteCoupon(env, code) {
+  let coupons = (await readJSON(env, 'coupons.json')) || [];
+  coupons = coupons.filter(c => c.code !== code);
+  await writeJSON(env, 'coupons.json', coupons);
+  return json({ status: 'ok', deleted: code });
+}
+
+async function validateCoupon(env, code) {
+  const coupons = (await readJSON(env, 'coupons.json')) || [];
+  const c = coupons.find(function(cp) {
+    return cp.code.toUpperCase() === code.toUpperCase() && cp.active !== false;
+  });
+  if (!c) return json({ valid: false, error: 'Código inválido' });
+  if (c.expiresAt) {
+    const now = new Date();
+    const exp = new Date(c.expiresAt);
+    if (now > exp) return json({ valid: false, error: 'Código vencido' });
+  }
+  if (c.maxUses && (c.usedCount || 0) >= c.maxUses) {
+    return json({ valid: false, error: 'Código agotado' });
+  }
+  // Increment usage
+  c.usedCount = (c.usedCount || 0) + 1;
+  var idx = coupons.findIndex(function(cp) { return cp.code === c.code; });
+  if (idx >= 0) coupons[idx] = c;
+  await writeJSON(env, 'coupons.json', coupons);
+  return json({ valid: true, discount: c.discount, code: c.code, type: c.type || 'percentage' });
 }
 
 // ═══════════ HELPERS ═══════════

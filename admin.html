@@ -342,6 +342,7 @@
         <div class="dash-sidebar">
             <button class="side-link active" data-tab="tab-products">Productos</button>
             <button class="side-link" data-tab="tab-discounts">Descuentos</button>
+            <button class="side-link" data-tab="tab-coupons">Cupones</button>
             <button class="side-link" data-tab="tab-orders">Pedidos</button>
             <a class="side-link" href="store.html" target="_blank" style="text-decoration:none;">Ver Tienda ↗</a>
         </div>
@@ -595,6 +596,41 @@
                 <button class="btn btn-mint" onclick="saveSettings()">Guardar Configuración</button>
             </div>
 
+            <!-- ── Coupons Tab ── -->
+            <div class="tab-panel" id="tab-coupons">
+                <h2>Cupones de Descuento</h2>
+                <div class="toolbar">
+                    <button class="btn btn-mint" onclick="openCouponForm()">+ Nuevo Cupón</button>
+                    <button class="btn btn-outline" onclick="loadCoupons()">Refrescar</button>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table class="product-table">
+                        <thead><tr><th>Código</th><th>Desc%</th><th>Usos</th><th>Máx</th><th>Vence</th><th>Activo</th><th></th></tr></thead>
+                        <tbody id="coupons-tbody"></tbody>
+                    </table>
+                </div>
+                <!-- Coupon form (hidden by default) -->
+                <div id="coupon-form-panel" style="display:none;margin-top:1.5rem;">
+                    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem;">
+                        <button class="btn btn-outline" onclick="closeCouponForm()">← Volver</button>
+                        <h3 style="font-family:'Anton',sans-serif;font-size:1rem;text-transform:uppercase;margin:0;" id="coupon-form-title">Nuevo Cupón</h3>
+                    </div>
+                    <div class="settings-card">
+                        <div class="form-grid">
+                            <div class="form-group"><label>Código</label><input type="text" id="coup-code" placeholder="VERANO20" style="text-transform:uppercase;"></div>
+                            <div class="form-group"><label>Descuento (%)</label><input type="number" id="coup-discount" placeholder="20" min="1" max="100"></div>
+                            <div class="form-group"><label>Usos máximos (0 = ilimitado)</label><input type="number" id="coup-max-uses" placeholder="0" min="0"></div>
+                            <div class="form-group"><label>Fecha vencimiento</label><input type="date" id="coup-expires"></div>
+                            <div class="form-group"><label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;"><input type="checkbox" id="coup-active" checked> Activo</label></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:0.8rem;">
+                        <button class="btn btn-mint" onclick="saveCoupon()">Guardar Cupón</button>
+                        <button class="btn btn-outline" onclick="closeCouponForm()">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- ── Orders Tab ── -->
             <div class="tab-panel" id="tab-orders">
                 <h2>Pedidos</h2>
@@ -630,10 +666,11 @@
         };
     })();
 
-    // Image upload via form+iframe (bypasses CORS, works from file://)
+    // Image upload via persistent form+iframe (bypasses CORS)
     var uploadCallbacks = {};
     window.addEventListener('message', function(e) {
-        var data = typeof e.data === 'string' ? (function(){try{return JSON.parse(e.data);}catch(_){return null;}})() : e.data;
+        var data = null;
+        try { data = JSON.parse(e.data); } catch(_) {}
         if (!data || !data._uploadId) return;
         var cb = uploadCallbacks[data._uploadId];
         if (cb) { delete uploadCallbacks[data._uploadId]; cb(data); }
@@ -641,37 +678,22 @@
 
     function uploadFileViaForm(file, filename) {
         return new Promise(function(resolve, reject) {
-            var uploadId = 'up-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,6);
+            var uploadId = 'up-' + Date.now().toString(36);
             uploadCallbacks[uploadId] = function(data) {
                 if (data.status === 'ok') resolve(data);
                 else reject(new Error(data.error || 'Upload failed'));
             };
-            // Timeout after 30s
-            setTimeout(function() { if (uploadCallbacks[uploadId]) { delete uploadCallbacks[uploadId]; reject(new Error('Timeout')); } }, 30000);
-            // Build hidden form
-            var container = document.getElementById('upload-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'upload-container';
-                container.style.display = 'none';
-                document.body.appendChild(container);
-            }
-            container.innerHTML = ''
-                + '<iframe name="uframe-' + uploadId + '" id="uframe-' + uploadId + '" style="display:none;"></iframe>'
-                + '<form id="uform-' + uploadId + '" action="' + API.baseURL + '/" method="POST" enctype="multipart/form-data" target="uframe-' + uploadId + '">'
-                + '<input type="hidden" name="action" value="upload">'
-                + '<input type="hidden" name="_uploadId" value="' + uploadId + '">'
-                + '</form>';
-            var form = document.getElementById('uform-' + uploadId);
-            // Clone the file input into the form
-            var fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.name = 'file';
-            // Use DataTransfer to copy the file
+            setTimeout(function() { if (uploadCallbacks[uploadId]) { delete uploadCallbacks[uploadId]; reject(new Error('Timeout')); } }, 45000);
+
+            // Reuse persistent form
+            var form = document.getElementById('up-form');
+            // Set hidden values
+            document.getElementById('up-uploadId').value = uploadId;
+            // Set file via DataTransfer
             var dt = new DataTransfer();
             dt.items.add(file);
-            fileInput.files = dt.files;
-            form.appendChild(fileInput);
+            form.action = (location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api') + '/';
+            document.getElementById('up-file').files = dt.files;
             form.submit();
         });
     }
@@ -924,6 +946,66 @@
         showToast('Configuración guardada ✓');
     };
 
+    // ── Coupons ──
+    var coupons = [];
+    var editingCouponCode = null;
+
+    function loadCoupons() {
+        API.getCoupons ? API.getCoupons().then(function(data){ coupons = Array.isArray(data) ? data : []; renderCoupons(); }).catch(function(){ renderCoupons(); }) : renderCoupons();
+    }
+
+    function renderCoupons() {
+        var tbody = $('#coupons-tbody');
+        if (!coupons.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:rgba(255,255,255,0.15);">No hay cupones.</td></tr>'; return; }
+        tbody.innerHTML = coupons.map(function(c){
+            return '<tr><td><strong style="color:var(--chalk);">' + esc(c.code) + '</strong></td>'
+                + '<td>' + (c.discount||0) + '%</td>'
+                + '<td>' + (c.usedCount||0) + '</td>'
+                + '<td>' + (c.maxUses || '∞') + '</td>'
+                + '<td>' + (c.expiresAt ? new Date(c.expiresAt).toLocaleDateString('es-AR') : '—') + '</td>'
+                + '<td><span class="badge-sm ' + (c.active !== false ? 'active' : 'inactive') + '">' + (c.active !== false ? 'Activo' : 'Inactivo') + '</span></td>'
+                + '<td class="product-actions"><button class="btn btn-outline" style="font-size:0.55rem;padding:0.25rem 0.5rem;" onclick="editCoupon(\'' + esc(c.code) + '\')">Editar</button><button class="btn btn-danger" style="font-size:0.55rem;padding:0.25rem 0.5rem;" onclick="deleteCoupon(\'' + esc(c.code) + '\')">×</button></td></tr>';
+        }).join('');
+    }
+
+    window.openCouponForm = function() { editingCouponCode = null; $('#coupon-form-title').textContent = 'Nuevo Cupón'; $$('#coupon-form-panel input').forEach(function(i){ i.value = ''; }); $('#coup-active').checked = true; $('#coup-max-uses').value = '0'; $('#coupon-form-panel').style.display = 'block'; };
+    window.closeCouponForm = function() { $('#coupon-form-panel').style.display = 'none'; };
+    window.editCoupon = function(code) {
+        var c = coupons.find(function(cp){ return cp.code === code; }); if (!c) return;
+        editingCouponCode = code; $('#coupon-form-title').textContent = 'Editar: ' + c.code;
+        $('#coup-code').value = c.code || ''; $('#coup-discount').value = c.discount || 0;
+        $('#coup-max-uses').value = c.maxUses || 0; $('#coup-expires').value = c.expiresAt ? c.expiresAt.slice(0,10) : '';
+        $('#coup-active').checked = c.active !== false; $('#coupon-form-panel').style.display = 'block';
+    };
+    window.saveCoupon = function() {
+        var code = $('#coup-code').value.trim().toUpperCase();
+        if (!code) { showToast('El código es obligatorio'); return; }
+        var coupon = { code: code, discount: Number($('#coup-discount').value)||0, maxUses: Number($('#coup-max-uses').value)||0, expiresAt: $('#coup-expires').value || null, active: $('#coup-active').checked, usedCount: editingCouponCode ? (coupons.find(function(c){return c.code===editingCouponCode;})||{}).usedCount||0 : 0 };
+        if (editingCouponCode) {
+            var oldIdx = coupons.findIndex(function(c){return c.code===editingCouponCode;});
+            if (oldIdx >= 0) { if (editingCouponCode !== code) coupons.splice(oldIdx,1); else coupons[oldIdx] = coupon; }
+        }
+        if (!editingCouponCode || editingCouponCode !== code) { var exists = coupons.findIndex(function(c){return c.code===code;}); if (exists >= 0) coupons[exists] = coupon; else coupons.push(coupon); }
+        syncCouponToAPI(coupon);
+        closeCouponForm(); renderCoupons();
+        showToast('Cupón guardado ✓');
+    };
+    window.deleteCoupon = function(code) {
+        if (!confirm('¿Eliminar cupón ' + code + '?')) return;
+        coupons = coupons.filter(function(c){ return c.code !== code; });
+        try { fetch((location.protocol==='file:'?'https://lucky-bunny-api.luckybunny-arg.workers.dev':'/api') + '/', {method:'POST',body:JSON.stringify({action:'delete-coupon',code:code})}); } catch(e) {}
+        renderCoupons(); showToast('Cupón eliminado ✓');
+    };
+    function syncCouponToAPI(coupon) {
+        try { fetch((location.protocol==='file:'?'https://lucky-bunny-api.luckybunny-arg.workers.dev':'/api') + '/', {method:'POST',body:JSON.stringify({action:'save-coupon',coupon:coupon})}); } catch(e) {}
+    }
+
+    // Make coupons endpoint accessible
+    API.getCoupons = function() {
+        var base = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
+        return fetch(base + '/?action=coupons').then(function(r){ return r.json(); });
+    };
+
     // ── Sync ──
     window.syncFromGAS = async function() {
         showToast('Sincronizando...');
@@ -960,6 +1042,7 @@
             if (target) target.classList.add('active');
             $('#product-form-panel').style.display = 'none';
             if (link.dataset.tab === 'tab-orders') loadOrders();
+            if (link.dataset.tab === 'tab-coupons') loadCoupons();
         });
     });
 
@@ -1045,5 +1128,14 @@
     }
 })();
 </script>
+
+<!-- Persistent upload form (reused, avoids DOM recreation) -->
+<iframe name="up-frame" id="up-frame" style="display:none;"></iframe>
+<form id="up-form" action="https://lucky-bunny-api.luckybunny-arg.workers.dev/" method="POST" enctype="multipart/form-data" target="up-frame" style="display:none;">
+    <input type="hidden" name="action" value="upload">
+    <input type="hidden" name="_uploadId" id="up-uploadId">
+    <input type="file" name="file" id="up-file">
+</form>
+
 </body>
 </html>
