@@ -76,6 +76,14 @@ function doGet(e) {
     ensureSetup();
     const action = e && e.parameter ? e.parameter.action : null;
     
+    if (action === 'save-product') {
+      const p = JSON.parse(e.parameter.data || '{}');
+      return saveProduct(p);
+    }
+    if (action === 'save-settings') {
+      const s = JSON.parse(e.parameter.data || '{}');
+      return saveSettings(s);
+    }
     if (action === 'all-products') {
       return getAllProducts();
     }
