@@ -19,6 +19,12 @@
       "skillPath": "skills/game-engine/SKILL.md",
       "computedHash": "20057f62cf7a8b2d9f940b3de0b18e5426e8f4bb50e236d36b1033aa0d42c4d8"
     },
+    "marketing-ideas": {
+      "source": "coreyhaines31/marketingskills",
+      "sourceType": "github",
+      "skillPath": "skills/marketing-ideas/SKILL.md",
+      "computedHash": "551cde99c831df343bfb2989ef0e9b4c257d7c2e8ee5572eeeaa0e322a8b5c8b"
+    },
     "seo-audit": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",
