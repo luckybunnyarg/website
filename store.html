@@ -1851,6 +1851,8 @@
                 { count: 30, speed: 2.5, wind: 0.8, minLen: 5, maxLen: 12, headR: 0.9, opacityBase: 0.04, color: '#7DC4B9' }
             ]);
 
+            window.addEventListener('storage', function(e){ if (e.key === 'lb-products') location.reload(); });
+
         })();
     </script>
 
