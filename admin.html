@@ -626,19 +626,55 @@
             saveProduct:    function(p) { return get(base + '/?action=save-product&data=' + encodeURIComponent(JSON.stringify(p))); },
             getSettings:    function() { return get(base + '/?action=settings'); },
             saveSettings:   function(s) { return get(base + '/?action=save-settings&data=' + encodeURIComponent(JSON.stringify(s))); },
-            uploadImage:    function(file, filename) {
-                return new Promise(function(resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function() {
-                        fetch(base + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'upload-image',image:reader.result,filename:filename}) })
-                            .then(function(r){ return r.json(); }).then(resolve).catch(reject);
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(file);
-                });
-            }
+            baseURL: base
         };
     })();
+
+    // Image upload via form+iframe (bypasses CORS, works from file://)
+    var uploadCallbacks = {};
+    window.addEventListener('message', function(e) {
+        var data = typeof e.data === 'string' ? (function(){try{return JSON.parse(e.data);}catch(_){return null;}})() : e.data;
+        if (!data || !data._uploadId) return;
+        var cb = uploadCallbacks[data._uploadId];
+        if (cb) { delete uploadCallbacks[data._uploadId]; cb(data); }
+    });
+
+    function uploadFileViaForm(file, filename) {
+        return new Promise(function(resolve, reject) {
+            var uploadId = 'up-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,6);
+            uploadCallbacks[uploadId] = function(data) {
+                if (data.status === 'ok') resolve(data);
+                else reject(new Error(data.error || 'Upload failed'));
+            };
+            // Timeout after 30s
+            setTimeout(function() { if (uploadCallbacks[uploadId]) { delete uploadCallbacks[uploadId]; reject(new Error('Timeout')); } }, 30000);
+            // Build hidden form
+            var container = document.getElementById('upload-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'upload-container';
+                container.style.display = 'none';
+                document.body.appendChild(container);
+            }
+            container.innerHTML = ''
+                + '<iframe name="uframe-' + uploadId + '" id="uframe-' + uploadId + '" style="display:none;"></iframe>'
+                + '<form id="uform-' + uploadId + '" action="' + API.baseURL + '/" method="POST" enctype="multipart/form-data" target="uframe-' + uploadId + '">'
+                + '<input type="hidden" name="action" value="upload">'
+                + '<input type="hidden" name="_uploadId" value="' + uploadId + '">'
+                + '</form>';
+            var form = document.getElementById('uform-' + uploadId);
+            // Clone the file input into the form
+            var fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.name = 'file';
+            // Use DataTransfer to copy the file
+            var dt = new DataTransfer();
+            dt.items.add(file);
+            fileInput.files = dt.files;
+            form.appendChild(fileInput);
+            form.submit();
+        });
+    }
 
     const ADMIN_EMAIL = 'luckybunny.arg@gmail.com';
     const ADMIN_PASS = '4511663Facu22!!';
@@ -960,18 +996,18 @@
         if (!file) return;
         if (file.size > 10 * 1024 * 1024) { showToast('Imagen muy grande (máx 10MB)'); input.value = ''; return; }
         var btn = document.getElementById(btnId);
-        if (btn) { btn.classList.add('loading'); btn.textContent = '⏳ ' + file.name.slice(0,12); }
+        if (btn) { btn.classList.add('loading'); btn.textContent = '⏳ ' + file.name.slice(0,14); }
         try {
-            var result = await API.uploadImage(file, file.name);
+            var result = await uploadFileViaForm(file, file.name);
             if (result && result.url) {
                 document.getElementById(targetId).value = result.url;
                 showPreviewFor(result.url, targetId.replace('prod-','preview-'), targetId.replace('prod-','err-'));
                 showToast('Imagen subida ✓');
             } else {
-                showToast('Error: ' + (result.error || 'sin respuesta'));
+                showToast('Error: respuesta inesperada');
             }
         } catch(e) {
-            showToast('Error de conexión con el servidor');
+            showToast('Error al subir: ' + (e.message || 'conexión'));
         }
         if (btn) { btn.classList.remove('loading'); btn.textContent = '📷 Subir'; }
         input.value = '';

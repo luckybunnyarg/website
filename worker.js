@@ -69,13 +69,21 @@ async function handleGet(url, action, env) {
 
 // ═══════════ POST ═══════════
 async function handlePost(request, env) {
-  let body;
-  try {
-    body = await request.json();
-  } catch {
-    return json({ error: 'Invalid JSON body' }, 400);
+  // FormData upload (from admin form+iframe) — bypasses CORS
+  const contentType = request.headers.get('Content-Type') || '';
+  if (contentType.includes('multipart/form-data')) {
+    const formData = await request.formData();
+    const file = formData.get('file');
+    const action = formData.get('action') || 'upload';
+    if (action === 'upload' && file && file.name) {
+      return await uploadFile(env, file);
+    }
+    return json({ error: 'Missing file or action' }, 400);
   }
 
+  // JSON body
+  let body;
+  try { body = await request.json(); } catch { return json({ error: 'Invalid JSON body' }, 400); }
   const act = body.action;
   if (!act) return json({ error: 'Missing action' }, 400);
 
@@ -85,7 +93,6 @@ async function handlePost(request, env) {
   if (act === 'save-settings')   return await saveSettings(env, body.settings);
   if (act === 'save-order')      return await saveOrder(env, body);
 
-  // Legacy: treat POST body as order
   return await saveOrder(env, body);
 }
 
@@ -117,6 +124,30 @@ async function uploadImage(env, base64Data, filename) {
 
   const publicUrl = 'https://' + domain + '/' + name;
   return json({ status: 'ok', url: publicUrl, filename: name });
+}
+
+// ═══════════ UPLOAD FILE (FormData via form+iframe — bypasses CORS) ═══════════
+async function uploadFile(env, file) {
+  if (!env.STORE) return uploadHTML({ error: 'R2 binding not configured' });
+
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+  const name = 'img-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.' + ext;
+  const mime = file.type || 'image/' + ext;
+
+  const buffer = await file.arrayBuffer();
+  await env.STORE.put(name, new Uint8Array(buffer), { httpMetadata: { contentType: mime } });
+
+  const domain = env.R2_PUBLIC || '';
+  if (!domain) return uploadHTML({ error: 'R2_PUBLIC env var not set' });
+
+  return uploadHTML({ status: 'ok', url: 'https://' + domain + '/' + name, filename: name });
+}
+
+function uploadHTML(data) {
+  return new Response(
+    '<!DOCTYPE html><html><body><script>window.parent.postMessage(' + JSON.stringify(data) + ',"*");</script></body></html>',
+    { headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+  );
 }
 
 // ═══════════ PRODUCTS ═══════════
