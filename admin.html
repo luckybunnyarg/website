@@ -231,6 +231,17 @@
         .upload-btn:hover { background: rgba(125,196,185,0.15); }
         .upload-btn.loading { opacity: 0.4; pointer-events: none; }
         .upload-file { display: none; }
+        .img-preview {
+            width: 100px; height: 100px; object-fit: cover;
+            border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);
+            margin-top: 0.5rem; background: rgba(0,0,0,0.3);
+            display: none; transition: border-color 0.3s;
+        }
+        .img-preview.has-src { display: block; }
+        .img-preview.broken { border-color: var(--pink); opacity: 0.4; }
+        .preview-error {
+            font-size: 0.55rem; color: var(--pink); margin-top: 0.25rem; display: none;
+        }
 
         /* ── Settings ── */
         .settings-card {
@@ -393,18 +404,22 @@
                     <div class="form-group">
                         <label>Imagen Portada (URL o subir archivo)</label>
                         <div class="upload-row">
-                            <input type="text" id="prod-cover" placeholder="https://i.ibb.co/...">
+                            <input type="text" id="prod-cover" placeholder="https://i.ibb.co/..." oninput="previewImage('prod-cover','preview-cover','err-cover')">
                             <button type="button" class="upload-btn" onclick="document.getElementById('upload-cover').click()">📷 Subir</button>
                             <input type="file" id="upload-cover" class="upload-file" accept="image/*" onchange="handleFileUpload(this,'prod-cover','upload-cover')">
                         </div>
+                        <img class="img-preview" id="preview-cover" alt="Preview portada" onerror="this.classList.add('broken');document.getElementById('err-cover').style.display='block'" onload="this.classList.add('has-src');this.classList.remove('broken');document.getElementById('err-cover').style.display='none'">
+                        <span class="preview-error" id="err-cover">⚠ No se pudo cargar la imagen</span>
                     </div>
                     <div class="form-group">
                         <label>Imagen Hover (URL o subir archivo)</label>
                         <div class="upload-row">
-                            <input type="text" id="prod-hover" placeholder="https://i.ibb.co/...">
+                            <input type="text" id="prod-hover" placeholder="https://i.ibb.co/..." oninput="previewImage('prod-hover','preview-hover','err-hover')">
                             <button type="button" class="upload-btn" onclick="document.getElementById('upload-hover').click()">📷 Subir</button>
                             <input type="file" id="upload-hover" class="upload-file" accept="image/*" onchange="handleFileUpload(this,'prod-hover','upload-hover')">
                         </div>
+                        <img class="img-preview" id="preview-hover" alt="Preview hover" onerror="this.classList.add('broken');document.getElementById('err-hover').style.display='block'" onload="this.classList.add('has-src');this.classList.remove('broken');document.getElementById('err-hover').style.display='none'">
+                        <span class="preview-error" id="err-hover">⚠ No se pudo cargar la imagen</span>
                     </div>
                     <div class="form-group">
                         <label>Badge</label>
@@ -771,6 +786,8 @@
         $('#prod-ref-price').value = p.referencePrice || 0;
         $('#prod-cover').value = p.coverImage || '';
         $('#prod-hover').value = p.hoverImage || '';
+        showPreviewFor(p.coverImage, 'preview-cover', 'err-cover');
+        showPreviewFor(p.hoverImage, 'preview-hover', 'err-hover');
         $('#prod-badge').value = p.badge || '';
         $('#prod-stock').value = p.stock || 0;
         $('#prod-discount').value = p.discount || 0;
@@ -920,6 +937,8 @@
         $('#prod-featured').checked = false;
         $$('#size-checks input[type=checkbox]').forEach(cb => cb.checked = false);
         $('#extra-images').innerHTML = '<div class="img-row"><input type="text" class="extra-img-input" placeholder="https://i.ibb.co/..."></div>';
+        showPreviewFor('', 'preview-cover', 'err-cover');
+        showPreviewFor('', 'preview-hover', 'err-hover');
     }
 
     function esc(str) { return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -935,26 +954,51 @@
         setTimeout(() => t.classList.remove('show'), 2500);
     }
 
-    // Upload file → API → fill URL field
+    // Upload file → API → fill URL field + show preview
     window.handleFileUpload = async function(input, targetId, btnId) {
         var file = input.files[0];
         if (!file) return;
+        if (file.size > 10 * 1024 * 1024) { showToast('Imagen muy grande (máx 10MB)'); input.value = ''; return; }
         var btn = document.getElementById(btnId);
-        if (btn) { btn.classList.add('loading'); btn.textContent = '⏳'; }
+        if (btn) { btn.classList.add('loading'); btn.textContent = '⏳ ' + file.name.slice(0,12); }
         try {
             var result = await API.uploadImage(file, file.name);
             if (result && result.url) {
                 document.getElementById(targetId).value = result.url;
+                showPreviewFor(result.url, targetId.replace('prod-','preview-'), targetId.replace('prod-','err-'));
                 showToast('Imagen subida ✓');
             } else {
-                showToast('Error al subir');
+                showToast('Error: ' + (result.error || 'sin respuesta'));
             }
         } catch(e) {
-            showToast('Error de conexión');
+            showToast('Error de conexión con el servidor');
         }
         if (btn) { btn.classList.remove('loading'); btn.textContent = '📷 Subir'; }
         input.value = '';
     };
+
+    // Preview image from URL
+    window.previewImage = function(srcId, previewId, errId) {
+        var url = document.getElementById(srcId).value.trim();
+        showPreviewFor(url, previewId, errId);
+    };
+
+    function showPreviewFor(url, previewId, errId) {
+        var preview = document.getElementById(previewId);
+        var err = document.getElementById(errId);
+        if (!preview) return;
+        if (url && url.length > 4) {
+            preview.src = url;
+            preview.style.display = 'block';
+            preview.classList.remove('broken', 'has-src');
+            if (err) err.style.display = 'none';
+        } else {
+            preview.src = '';
+            preview.style.display = 'none';
+            preview.classList.remove('broken', 'has-src');
+            if (err) err.style.display = 'none';
+        }
+    }
 
     // ── Init ──
     if (isLoggedIn()) {

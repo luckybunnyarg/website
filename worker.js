@@ -1,92 +1,139 @@
-// Cloudflare Worker — Lucky Bunny API
+// Lucky Bunny API v2 — Cloudflare Worker
 // R2 bucket: lucky-bunny-store
-// 
-// Deploy:
-//   1. Add R2 binding: variable STORE → lucky-bunny-store
-//   2. Add env variable: R2_PUBLIC = your R2 public domain (e.g. pub-xxx.r2.dev)
-//   3. Enable R2 Public Access on the bucket
+//
+// SETUP:
+//   1. R2 binding: variable name STORE → bucket lucky-bunny-store
+//   2. Env variable: R2_PUBLIC = pub-12d1d3df1d9c4a5faff6370acc9d8fcd.r2.dev
+//   3. R2 bucket Public Access = Enabled
+
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Max-Age': '86400'
+};
 
 export default {
   async fetch(request, env) {
+    if (request.method === 'OPTIONS') {
+      return new Response(null, { status: 204, headers: CORS });
+    }
+
     const url = new URL(request.url);
     const action = url.searchParams.get('action');
-    const cors = {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type'
-    };
-
-    if (request.method === 'OPTIONS') return new Response(null, { headers: cors });
 
     try {
-      const res = await handleRequest(request, env, action);
-      // Add CORS to all responses
-      const headers = new Headers(res.headers);
-      Object.entries(cors).forEach(([k, v]) => headers.set(k, v));
-      return new Response(res.body, { status: res.status, headers });
-    } catch (e) {
-      return json({ error: e.message }, 500, cors);
+      let response;
+      if (request.method === 'GET') {
+        response = await handleGet(url, action, env);
+      } else if (request.method === 'POST') {
+        response = await handlePost(request, env);
+      } else {
+        response = json({ error: 'Method not allowed' }, 405);
+      }
+      return addCors(response);
+    } catch (err) {
+      return addCors(json({ error: err.message || 'Server error' }, 500));
     }
   }
 };
 
-async function handleRequest(request, env, action) {
-  // ── GET handlers ──
-  if (request.method === 'GET') {
-    if (action === 'save-product') {
-      const data = request.url.includes('data=') ? new URL(request.url).searchParams.get('data') : null;
-      if (!data) return json({ error: 'Missing data' }, 400);
-      return await saveProduct(env, JSON.parse(data));
-    }
-    if (action === 'save-settings') {
-      const data = new URL(request.url).searchParams.get('data');
-      if (!data) return json({ error: 'Missing data' }, 400);
-      return await saveSettings(env, JSON.parse(data));
-    }
-    if (action === 'all-products') return await getAllProducts(env);
-    if (action === 'settings') return await getSettings(env);
-    if (action === 'orders') return await getOrders(env);
-    return await getActiveProducts(env);
+// ═══════════ GET ═══════════
+async function handleGet(url, action, env) {
+  // Health check
+  if (!action || action === 'health') {
+    return json({ status: 'ok', r2: !!env.STORE, storage: 'R2' });
   }
 
-  // ── POST handlers ──
-  if (request.method === 'POST') {
-    const body = await request.json();
-    const act = body.action || 'save-order';
-
-    if (act === 'upload-image') {
-      return await uploadImage(env, body.image, body.filename);
-    }
-    if (act === 'save-product') {
-      return await saveProduct(env, body.product);
-    }
-    if (act === 'delete-product') {
-      return await deleteProduct(env, body.id);
-    }
-    if (act === 'save-settings') {
-      return await saveSettings(env, body.settings);
-    }
-    if (act === 'save-order') {
-      return await saveOrder(env, body);
-    }
-    return await saveOrder(env, body);
+  // Save via GET (admin sync)
+  if (action === 'save-product') {
+    const raw = url.searchParams.get('data');
+    if (!raw) return json({ error: 'Missing data param' }, 400);
+    return await saveProduct(env, JSON.parse(raw));
   }
 
-  return json({ error: 'Unknown method' }, 405);
+  if (action === 'save-settings') {
+    const raw = url.searchParams.get('data');
+    if (!raw) return json({ error: 'Missing data param' }, 400);
+    return await saveSettings(env, JSON.parse(raw));
+  }
+
+  // Read
+  if (action === 'all-products') return await getAllProducts(env);
+  if (action === 'settings')     return await getSettings(env);
+  if (action === 'orders')       return await getOrders(env);
+
+  // Default: active products for store
+  return await getActiveProducts(env);
 }
 
-// ═══════════════════════════════════════════════
-// PRODUCTS
-// ═══════════════════════════════════════════════
+// ═══════════ POST ═══════════
+async function handlePost(request, env) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Invalid JSON body' }, 400);
+  }
+
+  const act = body.action;
+  if (!act) return json({ error: 'Missing action' }, 400);
+
+  if (act === 'upload-image')    return await uploadImage(env, body.image, body.filename);
+  if (act === 'save-product')    return await saveProduct(env, body.product);
+  if (act === 'delete-product')  return await deleteProduct(env, body.id);
+  if (act === 'save-settings')   return await saveSettings(env, body.settings);
+  if (act === 'save-order')      return await saveOrder(env, body);
+
+  // Legacy: treat POST body as order
+  return await saveOrder(env, body);
+}
+
+// ═══════════ UPLOAD IMAGE ═══════════
+async function uploadImage(env, base64Data, filename) {
+  if (!base64Data) return json({ error: 'Missing image data' }, 400);
+  if (!env.STORE) return json({ error: 'R2 binding not configured' }, 500);
+
+  // Parse data URI: data:image/jpeg;base64,xxxx
+  const match = base64Data.match(/^data:([^;]+);base64,(.+)$/);
+  if (!match) return json({ error: 'Invalid format. Expected data:[mime];base64,[data]' }, 400);
+
+  const mime = match[1];
+  const b64  = match[2];
+  const ext  = mime.split('/')[1] || 'jpg';
+  const name = (filename || 'img') + '-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6) + '.' + ext;
+
+  // Decode
+  let binary;
+  try { binary = Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
+  catch { return json({ error: 'Invalid base64 data' }, 400); }
+
+  // Upload
+  await env.STORE.put(name, binary, { httpMetadata: { contentType: mime } });
+
+  // Public URL
+  const domain = env.R2_PUBLIC || '';
+  if (!domain) return json({ error: 'R2_PUBLIC env var not set. Configure it in Worker Settings → Variables.' }, 500);
+
+  const publicUrl = 'https://' + domain + '/' + name;
+  return json({ status: 'ok', url: publicUrl, filename: name });
+}
+
+// ═══════════ PRODUCTS ═══════════
+async function readJSON(env, filename) {
+  if (!env.STORE) return null;
+  const obj = await env.STORE.get(filename);
+  if (!obj) return null;
+  try { return JSON.parse(await obj.text()); } catch { return null; }
+}
+
+async function writeJSON(env, filename, data) {
+  await env.STORE.put(filename, JSON.stringify(data));
+}
+
 async function getProducts(env) {
-  const obj = await env.STORE.get('products.json');
-  if (!obj) return [];
-  const text = await obj.text();
-  return text ? JSON.parse(text) : [];
-}
-
-async function saveProducts(env, products) {
-  await env.STORE.put('products.json', JSON.stringify(products));
+  const data = await readJSON(env, 'products.json');
+  return Array.isArray(data) ? data : [];
 }
 
 async function getActiveProducts(env) {
@@ -99,97 +146,60 @@ async function getAllProducts(env) {
 }
 
 async function saveProduct(env, product) {
+  if (!product || !product.id || !product.name) {
+    return json({ error: 'Product requires id and name' }, 400);
+  }
   const products = await getProducts(env);
   const idx = products.findIndex(p => p.id === product.id);
-  if (idx >= 0) products[idx] = product;
+  if (idx >= 0) products[idx] = { ...products[idx], ...product };
   else products.push(product);
-  await saveProducts(env, products);
+  await writeJSON(env, 'products.json', products);
   return json({ status: 'ok', product });
 }
 
 async function deleteProduct(env, id) {
   let products = await getProducts(env);
   products = products.filter(p => p.id !== id);
-  await saveProducts(env, products);
+  await writeJSON(env, 'products.json', products);
   return json({ status: 'ok', deleted: id });
 }
 
-// ═══════════════════════════════════════════════
-// UPLOAD IMAGE
-// ═══════════════════════════════════════════════
-async function uploadImage(env, base64Data, filename) {
-  if (!base64Data) return json({ error: 'Missing image data' }, 400);
+// ═══════════ SETTINGS ═══════════
+const DEFAULT_SETTINGS = { storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' };
 
-  // Extract base64 content (strip data:image/...;base64, prefix)
-  const matches = base64Data.match(/^data:([^;]+);base64,(.+)$/);
-  if (!matches) return json({ error: 'Invalid base64 format' }, 400);
-
-  const mimeType = matches[1];       // e.g. image/jpeg, image/png, image/webp
-  const base64 = matches[2];
-  const ext = mimeType.split('/')[1] || 'jpg';
-  const name = (filename || ('img-' + Date.now() + '-' + Math.random().toString(36).slice(2,8))) + '.' + ext;
-
-  // Decode base64 to binary
-  const binary = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-
-  // Upload to R2
-  await env.STORE.put(name, binary, {
-    httpMetadata: { contentType: mimeType },
-    customMetadata: { uploaded: new Date().toISOString() }
-  });
-
-  // Return public URL
-  const publicDomain = env.R2_PUBLIC || 'pub-placeholder.r2.dev';
-  const publicUrl = `https://${publicDomain}/${name}`;
-
-  return json({ url: publicUrl, filename: name });
-}
-
-// ═══════════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════════
 async function getSettings(env) {
-  const obj = await env.STORE.get('settings.json');
-  if (!obj) return json({ storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' });
-  const text = await obj.text();
-  return json(text ? JSON.parse(text) : { storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' });
+  const data = await readJSON(env, 'settings.json');
+  return json(data && typeof data === 'object' ? data : DEFAULT_SETTINGS);
 }
 
 async function saveSettings(env, settings) {
-  await env.STORE.put('settings.json', JSON.stringify(settings));
+  await writeJSON(env, 'settings.json', settings);
   return json({ status: 'ok', settings });
 }
 
-// ═══════════════════════════════════════════════
-// ORDERS
-// ═══════════════════════════════════════════════
+// ═══════════ ORDERS ═══════════
 async function getOrders(env) {
-  const obj = await env.STORE.get('orders.json');
-  if (!obj) return json([]);
-  const text = await obj.text();
-  return json(text ? JSON.parse(text) : []);
+  const data = await readJSON(env, 'orders.json');
+  return json(Array.isArray(data) ? data : []);
 }
 
 async function saveOrder(env, order) {
-  const raw = await getOrdersRaw(env);
-  raw.unshift({ ...order, timestamp: new Date().toISOString(), status: 'pending' });
-  await env.STORE.put('orders.json', JSON.stringify(raw));
+  const orders = (await readJSON(env, 'orders.json')) || [];
+  orders.unshift({ ...order, timestamp: new Date().toISOString(), status: 'pending' });
+  await writeJSON(env, 'orders.json', orders);
   return json({ status: 'ok', message: 'Order created' });
 }
 
-async function getOrdersRaw(env) {
-  const obj = await env.STORE.get('orders.json');
-  if (!obj) return [];
-  const text = await obj.text();
-  return text ? JSON.parse(text) : [];
-}
-
-// ═══════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════
-function json(data, status = 200, extraHeaders = {}) {
+// ═══════════ HELPERS ═══════════
+function json(data, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
-    headers: { 'Content-Type': 'application/json', ...extraHeaders }
+    headers: { 'Content-Type': 'application/json' }
   });
+}
+
+function addCors(response) {
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(CORS)) headers.set(k, v);
+  return new Response(response.body, { status: response.status, headers });
 }
