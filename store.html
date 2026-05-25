@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-    <html lang="es">
+    <html lang="es" style="color-scheme:dark;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#020202">
     <title>Tienda | Lucky Bunny — Prendas con Suerte</title>
     <meta name="description" content="Comprá ropa de skate en Lucky Bunny. Hoodies, camisetas, accesorios con estilo argentino. Envíos a todo el país. Prendas con suerte. Be your own luck.">
     <link rel="canonical" href="https://luckybunny.arg/store.html">
@@ -183,7 +184,7 @@
         }
         #hamburger span {
             display: block; width: 22px; height: 2px; background: var(--chalk);
-            margin: 5px 0; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            margin: 5px 0; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
         }
         #hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
         #hamburger.open span:nth-child(2) { opacity: 0; }
@@ -200,7 +201,7 @@
             font-family: 'Anton', sans-serif; font-size: 2.8rem;
             letter-spacing: 0.05em; text-transform: uppercase;
             color: rgba(255,255,255,0.15); padding: 1rem 2rem;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         #mobile-drawer a:hover { color: var(--mint); }
 
@@ -302,7 +303,7 @@
             font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase;
             padding: 0.4rem 1rem; border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px; background: transparent; color: rgba(255,255,255,0.4);
-            cursor: pointer; transition: all 0.3s; white-space: nowrap;
+            cursor: pointer; transition: opacity 0.3s, border-color 0.3s, color 0.3s; white-space: nowrap;
         }
         .filter-pill:hover { border-color: var(--mint); color: var(--chalk); }
         .filter-pill.active { background: var(--mint); color: var(--void); border-color: var(--mint); }
@@ -332,7 +333,7 @@
             position: relative; border-radius: 8px; overflow: hidden;
             background: var(--surface);
             border: 1px solid rgba(255,255,255,0.04);
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
+            transition: border-color 0.5s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.3, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
             display: flex; flex-direction: column; cursor: pointer;
         }
         .product-card:hover {
@@ -405,7 +406,7 @@
             font-family: 'Inter', sans-serif; font-size: 0.55rem; font-weight: 500;
             padding: 0.25rem 0.55rem; border: 1px solid rgba(255,255,255,0.12);
             border-radius: 4px; background: transparent; color: rgba(255,255,255,0.3);
-            cursor: pointer; transition: all 0.2s;
+            cursor: pointer; transition: opacity 0.2s, transform 0.2s;
         }
         .size-pill:hover { border-color: var(--mint); color: var(--chalk); }
         .size-pill.selected { background: var(--mint); color: var(--void); border-color: var(--mint); }
@@ -414,7 +415,7 @@
             font-family: 'Anton', sans-serif; font-size: 0.75rem;
             letter-spacing: 0.15em; text-transform: uppercase;
             padding: 0.7rem; width: 100%; border: none; border-radius: 6px;
-            cursor: pointer; transition: all 0.3s;
+            cursor: pointer; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
             background: var(--mint); color: var(--void);
         }
         .add-btn:hover { box-shadow: 0 0 20px rgba(125,196,185,0.3); }
@@ -438,7 +439,7 @@
 
         #cart-drawer {
             position: fixed; top: 0; right: 0; width: var(--cart-width);
-            height: 100vh; z-index: 71;
+            height: 100vh; z-index: 71; overscroll-behavior: contain;
             background: rgba(10,10,10,0.97); backdrop-filter: blur(20px);
             border-left: 1px solid rgba(255,255,255,0.04);
             transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
@@ -504,7 +505,7 @@
             background: transparent; color: var(--chalk);
             font-size: 0.7rem; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            transition: all 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
         }
         .ci-qty button:hover { border-color: var(--mint); color: var(--mint); }
         .ci-qty span {
@@ -554,7 +555,7 @@
             font-family: 'Anton', sans-serif; font-size: 0.85rem;
             letter-spacing: 0.15em; text-transform: uppercase;
             padding: 0.9rem; width: 100%; border: none; border-radius: 6px;
-            cursor: pointer; transition: all 0.3s;
+            cursor: pointer; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
             background: var(--mint); color: var(--void);
         }
         .checkout-btn:hover { box-shadow: 0 0 30px rgba(125,196,185,0.3); }
@@ -621,7 +622,7 @@
             flex: 1; font-family: 'Anton', sans-serif; font-size: 0.75rem;
             letter-spacing: 0.15em; text-transform: uppercase;
             padding: 0.8rem; border-radius: 6px; cursor: pointer;
-            transition: all 0.3s; border: none;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s; border: none;
         }
         .cm-cancel { background: transparent; color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.08) !important; }
         .cm-cancel:hover { color: var(--chalk); border-color: var(--chalk) !important; }
@@ -648,7 +649,7 @@
             padding: 0.8rem 2rem; border-radius: 6px;
             background: transparent; color: var(--mint);
             border: 1px solid var(--mint); cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .confirmation .conf-cta:hover { background: var(--mint); color: var(--void); }
 
@@ -724,7 +725,7 @@
         #detail-modal .detail-sizes button {
             padding: 0.4rem 0.8rem; border: 1px solid rgba(255,255,255,0.12);
             border-radius: 4px; background: transparent; color: rgba(255,255,255,0.3);
-            cursor: pointer; font-size: 0.7rem; transition: all 0.3s;
+            cursor: pointer; font-size: 0.7rem; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         #detail-modal .detail-sizes button:hover { border-color: var(--mint); color: var(--chalk); }
         #detail-modal .detail-sizes button.selected { background: var(--mint); color: var(--void); border-color: var(--mint); }
@@ -734,7 +735,7 @@
             letter-spacing: 0.1em; text-transform: uppercase;
             background: var(--mint); color: var(--void);
             border: none; border-radius: 8px; cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         #detail-modal .detail-add:hover { opacity: 0.85; }
         #detail-modal .detail-add.done { background: var(--gold); }
@@ -850,6 +851,9 @@
         @media (orientation: landscape) and (max-height: 500px) {
             #hero { min-height: 120vh; padding: 5rem 1.5rem 3rem; }
             #checkout-modal { max-height: 80vh; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
     </style>
 </head>
@@ -1070,6 +1074,19 @@
             const $$ = (s) => document.querySelectorAll(s);
             const isMobile = window.innerWidth < 768;
 
+            // API Adapter — auto-detect relative or absolute URL
+            const API = (function(){
+                var b = location.protocol === 'file:'
+                    ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev'
+                    : '/api';
+                function get(u){ return fetch(u).then(function(r){return r.json();}); }
+                return {
+                    getProducts:  function(){ return get(b+'/?action=all-products'); },
+                    getSettings:  function(){ return get(b+'/?action=settings'); },
+                    saveOrder:    function(o){ return fetch(b+'/',{method:'POST',body:JSON.stringify({action:'save-order',name:o.name,email:o.email,address:o.address,notes:o.notes,items:o.items,total:o.total})}).then(function(r){return r.json();}); }
+                };
+            })();
+
             /* ── Loading Overlay ── */
             const loadOverlay = $('#loading-overlay');
             if (loadOverlay) {
@@ -1243,39 +1260,30 @@
             let currentFilter = 'all';
             let currentSort = 'best';
 
-            const GAS_URL = 'https://script.google.com/macros/s/AKfycbwlEVmm2v2AIGLU98NK6sfxEmeo052r6ESGGbX0nGYuH_0-9e5SbDGEE4jcXYPE3qf5mA/exec';
-
             /* ── Fetch or Load Products ── */
             function loadProducts() {
-                if (GAS_URL) {
-                    fetch(GAS_URL)
-                        .then(r => r.json())
-                        .then(data => {
-                            if (Array.isArray(data) && data.length > 0) {
-                                products = data;
-                                localStorage.setItem('lb-products', JSON.stringify(data));
-                            } else {
-                                products = loadFromLocalOrFallback();
-                            }
-                            loadSettings();
-                            initStore();
-                        })
-                        .catch(() => {
+                API.getProducts()
+                    .then(function(data){
+                        if (Array.isArray(data) && data.length > 0) {
+                            products = data;
+                            localStorage.setItem('lb-products', JSON.stringify(data));
+                        } else {
                             products = loadFromLocalOrFallback();
-                            loadSettings();
-                            initStore();
-                        });
-                } else {
-                    products = loadFromLocalOrFallback();
-                    loadSettings();
-                    initStore();
-                }
+                        }
+                        loadSettings();
+                        initStore();
+                    })
+                    .catch(function(){
+                        products = loadFromLocalOrFallback();
+                        loadSettings();
+                        initStore();
+                    });
             }
 
             function loadFromLocalOrFallback() {
                 try {
-                    const stored = localStorage.getItem('lb-products');
-                    if (stored) { const p = JSON.parse(stored); if (Array.isArray(p) && p.length > 0) return p; }
+                    var stored = localStorage.getItem('lb-products');
+                    if (stored) { var p = JSON.parse(stored); if (Array.isArray(p) && p.length > 0) return p; }
                 } catch(e) {}
                 return FALLBACK_PRODUCTS;
             }
@@ -1283,19 +1291,18 @@
             let storeSettings = { storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' };
 
             function loadSettings() {
-                const raw = localStorage.getItem('lb-settings');
+                var raw = localStorage.getItem('lb-settings');
                 if (raw) {
                     try { storeSettings = JSON.parse(raw); } catch(e) {}
                 } else {
-                    fetch(GAS_URL + '?action=settings')
-                        .then(r => r.json())
-                        .then(data => {
+                    API.getSettings()
+                        .then(function(data){
                             if (data && data.storeDiscount !== undefined) {
                                 storeSettings = data;
                                 localStorage.setItem('lb-settings', JSON.stringify(data));
                             }
                         })
-                        .catch(() => {});
+                        .catch(function(){});
                 }
             }
 
@@ -1645,20 +1652,10 @@
                     cmSubmit.disabled = true;
                     cmSubmit.textContent = '...';
 
-                    if (GAS_URL) {
-                        fetch(GAS_URL, {
-                            method: 'POST',
-                            body: JSON.stringify(order)
-                        })
-                        .then(r => r.json())
+                    API.saveOrder(order)
                         .then(() => showConfirmation())
                         .catch(() => showConfirmation())
                         .finally(() => { cmSubmit.disabled = false; cmSubmit.textContent = t('checkout_submit'); });
-                    } else {
-                        setTimeout(() => showConfirmation(), 600);
-                        cmSubmit.disabled = false;
-                        cmSubmit.textContent = t('checkout_submit');
-                    }
                 });
             }
 

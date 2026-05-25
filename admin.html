@@ -60,7 +60,7 @@
             letter-spacing: 0.15em; text-transform: uppercase;
             background: var(--mint); color: var(--void);
             border: none; border-radius: 8px; cursor: pointer;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .btn-login:hover { opacity: 0.85; }
         .login-error { color: var(--pink); font-size: 0.7rem; margin-top: 0.5rem; display: none; }
@@ -85,7 +85,7 @@
             background: transparent; border: 1px solid rgba(255,255,255,0.1);
             color: rgba(255,255,255,0.4); cursor: pointer;
             padding: 0.4rem 0.8rem; border-radius: 4px;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .btn-logout:hover { border-color: var(--pink); color: var(--pink); }
 
@@ -101,7 +101,7 @@
             font-family: 'Inter', sans-serif; font-size: 0.7rem;
             font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
             color: rgba(255,255,255,0.25); background: none; border: none;
-            cursor: pointer; transition: all 0.3s;
+            cursor: pointer; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .side-link:hover { color: rgba(255,255,255,0.5); background: rgba(125,196,185,0.03); }
         .side-link.active { color: var(--mint); background: rgba(125,196,185,0.06); }
@@ -127,7 +127,7 @@
             font-family: 'Inter', sans-serif; font-size: 0.65rem;
             letter-spacing: 0.1em; text-transform: uppercase;
             padding: 0.5rem 1rem; border-radius: 6px;
-            cursor: pointer; transition: all 0.3s;
+            cursor: pointer; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .btn-mint {
             background: var(--mint); color: var(--void);
@@ -202,7 +202,7 @@
             font-size: 0.7rem; color: rgba(255,255,255,0.5);
             cursor: pointer; padding: 0.3rem 0.6rem;
             border: 1px solid rgba(255,255,255,0.08); border-radius: 4px;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .size-checkboxes label:has(input:checked) {
             border-color: var(--mint); color: var(--mint); background: rgba(125,196,185,0.08);
@@ -217,9 +217,20 @@
         .image-list .img-row button {
             background: transparent; border: 1px solid rgba(255,51,102,0.2);
             color: var(--pink); cursor: pointer; padding: 0.4rem 0.6rem;
-            border-radius: 4px; font-size: 0.6rem; transition: all 0.3s;
+            border-radius: 4px; font-size: 0.6rem; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .image-list .img-row button:hover { background: var(--pink); color: var(--void); }
+
+        .upload-row { display: flex; gap: 0.5rem; align-items: center; }
+        .upload-row input[type="text"] { flex: 1; }
+        .upload-btn {
+            background: rgba(125,196,185,0.08); border: 1px solid rgba(125,196,185,0.2);
+            color: var(--mint); cursor: pointer; padding: 0.55rem 0.8rem; border-radius: 6px;
+            font-size: 0.65rem; white-space: nowrap; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
+        }
+        .upload-btn:hover { background: rgba(125,196,185,0.15); }
+        .upload-btn.loading { opacity: 0.4; pointer-events: none; }
+        .upload-file { display: none; }
 
         /* ── Settings ── */
         .settings-card {
@@ -273,7 +284,7 @@
             padding: 0.8rem 1.5rem; border-radius: 8px;
             font-family: 'Inter', sans-serif; font-size: 0.75rem;
             font-weight: 600; opacity: 0; transform: translateY(10px);
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         .toast.show { opacity: 1; transform: translateY(0); }
 
@@ -380,12 +391,20 @@
                         <input type="number" id="prod-ref-price" placeholder="22000">
                     </div>
                     <div class="form-group">
-                        <label>Imagen Portada (URL)</label>
-                        <input type="text" id="prod-cover" placeholder="https://i.ibb.co/...">
+                        <label>Imagen Portada (URL o subir archivo)</label>
+                        <div class="upload-row">
+                            <input type="text" id="prod-cover" placeholder="https://i.ibb.co/...">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('upload-cover').click()">📷 Subir</button>
+                            <input type="file" id="upload-cover" class="upload-file" accept="image/*" onchange="handleFileUpload(this,'prod-cover','upload-cover')">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Imagen Hover (URL)</label>
-                        <input type="text" id="prod-hover" placeholder="https://i.ibb.co/...">
+                        <label>Imagen Hover (URL o subir archivo)</label>
+                        <div class="upload-row">
+                            <input type="text" id="prod-hover" placeholder="https://i.ibb.co/...">
+                            <button type="button" class="upload-btn" onclick="document.getElementById('upload-hover').click()">📷 Subir</button>
+                            <input type="file" id="upload-hover" class="upload-file" accept="image/*" onchange="handleFileUpload(this,'prod-hover','upload-hover')">
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Badge</label>
@@ -580,6 +599,31 @@
 (function(){
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
+
+    // API Adapter — auto-detect relative or absolute URL
+    const API = (function(){
+        var base = location.protocol === 'file:' 
+            ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev'
+            : '/api';
+        function get(url) { return fetch(url).then(function(r){ return r.json(); }); }
+        return {
+            getProducts:    function() { return get(base + '/?action=all-products'); },
+            saveProduct:    function(p) { return get(base + '/?action=save-product&data=' + encodeURIComponent(JSON.stringify(p))); },
+            getSettings:    function() { return get(base + '/?action=settings'); },
+            saveSettings:   function(s) { return get(base + '/?action=save-settings&data=' + encodeURIComponent(JSON.stringify(s))); },
+            uploadImage:    function(file, filename) {
+                return new Promise(function(resolve, reject) {
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        fetch(base + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'upload-image',image:reader.result,filename:filename}) })
+                            .then(function(r){ return r.json(); }).then(resolve).catch(reject);
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+        };
+    })();
 
     const ADMIN_EMAIL = 'luckybunny.arg@gmail.com';
     const ADMIN_PASS = '4511663Facu22!!';
@@ -827,51 +871,30 @@
         showToast('Configuración guardada ✓');
     };
 
-    // ── GAS Sync ──
+    // ── Sync ──
     window.syncFromGAS = async function() {
-        const GAS = 'https://script.google.com/macros/s/AKfycbwlEVmm2v2AIGLU98NK6sfxEmeo052r6ESGGbX0nGYuH_0-9e5SbDGEE4jcXYPE3qf5mA/exec';
         showToast('Sincronizando...');
-        // 1. Push local products to GAS
         var pushed = 0;
         for (var i = 0; i < products.length; i++) {
-            try {
-                var url = GAS + '?action=save-product&data=' + encodeURIComponent(JSON.stringify(products[i]));
-                (new Image()).src = url;
-                pushed++;
-            } catch(e) {}
+            try { await API.saveProduct(products[i]); pushed++; } catch(e) {}
         }
-        // 2. Pull from GAS to update
         try {
-            var resp = await fetch(GAS + '?action=all-products');
-            var data = await resp.json();
+            var data = await API.getProducts();
             if (Array.isArray(data) && data.length > 0) {
                 products = data;
                 saveToStorage();
                 renderProducts();
-                showToast('Sync: ' + data.length + ' prods, empujados ' + pushed);
+                showToast('Sync: ' + data.length + ' prods, push ' + pushed);
             } else {
-                showToast('Empujados ' + pushed + ' productos. Refrescá para ver.');
+                showToast('Push ' + pushed + '. Refrescá.');
             }
         } catch(e) {
-            showToast('Empujados ' + pushed + '. Error al leer GAS.');
+            showToast('Push ' + pushed + '. Error al leer API.');
         }
     };
 
     async function syncProductToGAS(product) {
-        // Use Image beacon (GET, no CORS) — fire and forget
-        const GAS = 'https://script.google.com/macros/s/AKfycbwlEVmm2v2AIGLU98NK6sfxEmeo052r6ESGGbX0nGYuH_0-9e5SbDGEE4jcXYPE3qf5mA/exec';
-        var json = JSON.stringify({ action: 'save-product', product: product });
-        var url = GAS + '?action=save-product&data=' + encodeURIComponent(JSON.stringify(product));
-        // Try Image beacon first (works from file://)
-        try {
-            var img = new Image();
-            img.src = url;
-        } catch(e) {}
-        // Also try fetch as fallback
-        try {
-            await fetch(url, { mode: 'no-cors' });
-        } catch(e) {}
-        return true;
+        try { await API.saveProduct(product); return true; } catch(e) { return false; }
     }
 
     // ── Tabs ──
@@ -911,6 +934,27 @@
         t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 2500);
     }
+
+    // Upload file → API → fill URL field
+    window.handleFileUpload = async function(input, targetId, btnId) {
+        var file = input.files[0];
+        if (!file) return;
+        var btn = document.getElementById(btnId);
+        if (btn) { btn.classList.add('loading'); btn.textContent = '⏳'; }
+        try {
+            var result = await API.uploadImage(file, file.name);
+            if (result && result.url) {
+                document.getElementById(targetId).value = result.url;
+                showToast('Imagen subida ✓');
+            } else {
+                showToast('Error al subir');
+            }
+        } catch(e) {
+            showToast('Error de conexión');
+        }
+        if (btn) { btn.classList.remove('loading'); btn.textContent = '📷 Subir'; }
+        input.value = '';
+    };
 
     // ── Init ──
     if (isLoggedIn()) {

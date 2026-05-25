@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-    <html lang="es">
+    <html lang="es" style="color-scheme:dark;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#020202">
     <title>Nuestra Historia | Lucky Bunny — El Feliz Accidente</title>
     <meta name="description" content="Conocé la historia de Lucky Bunny, la marca de skatewear argentina nacida de un feliz accidente. Filosofía, creador y misión. Be your own luck.">
     <link rel="canonical" href="https://luckybunny.arg/about.html">
@@ -165,7 +166,7 @@
             font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
             background: transparent; border: 1px solid rgba(255,255,255,0.15);
             color: var(--chalk); cursor: pointer; padding: 0.3rem 0.6rem;
-            border-radius: 4px; transition: all 0.3s;
+            border-radius: 4px; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
             display: flex; align-items: center; gap: 0.3rem;
         }
         #lang-toggle:hover { border-color: var(--mint); color: var(--mint); }
@@ -177,7 +178,7 @@
         }
         #hamburger span {
             display: block; width: 22px; height: 2px; background: var(--chalk);
-            margin: 5px 0; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+            margin: 5px 0; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
         }
         #hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
         #hamburger.open span:nth-child(2) { opacity: 0; }
@@ -194,7 +195,7 @@
             font-family: 'Anton', sans-serif; font-size: 2.8rem;
             letter-spacing: 0.05em; text-transform: uppercase;
             color: rgba(255,255,255,0.15); padding: 1rem 2rem;
-            transition: all 0.3s;
+            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
         }
         #mobile-drawer a:hover { color: var(--mint); }
 
@@ -248,7 +249,7 @@
             letter-spacing: 0.15em; text-transform: uppercase;
             padding: 1rem 3rem; border: 2px solid var(--chalk);
             background: transparent; color: var(--chalk);
-            cursor: pointer; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+            cursor: pointer; transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), border-color 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), background-color 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
             border-radius: 8px;
         }
         .btn-primary:hover {
