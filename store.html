@@ -333,7 +333,7 @@
             background: var(--surface);
             border: 1px solid rgba(255,255,255,0.04);
             transition: all 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
-            display: flex; flex-direction: column;
+            display: flex; flex-direction: column; cursor: pointer;
         }
         .product-card:hover {
             border-color: rgba(125,196,185,0.3);
@@ -1007,7 +1007,7 @@
         </div>
     </div>
 
-    <div id="detail-overlay">
+    <div id="detail-overlay" onclick="if(event.target===this){this.classList.remove('open');history.replaceState(null,'',window.location.pathname);}">
         <div id="detail-modal">
             <button class="detail-close" onclick="document.getElementById('detail-overlay').classList.remove('open');history.replaceState(null,'',window.location.pathname);">×</button>
             <div class="detail-image" id="detail-image"></div>
@@ -1441,6 +1441,18 @@
                         setTimeout(() => { btn.textContent = t('store_add'); btn.classList.remove('done'); }, 1500);
                     });
                 });
+
+                // Click on card → open detail modal
+                grid.querySelectorAll('.product-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        if (e.target.closest('.add-btn') || e.target.closest('.size-pill')) return;
+                        const id = card.dataset.id;
+                        const product = products.find(p => p.id === id);
+                        if (!product) return;
+                        window.location.hash = id;
+                        showDetailModal(product);
+                    });
+                });
             }
 
             /* ── Cart ── */
@@ -1735,11 +1747,20 @@
 
             function handleDetailHash() {
                 var hash = window.location.hash.replace('#','');
-                if (!hash) return;
+                if (!hash) { document.getElementById('detail-overlay').classList.remove('open'); return; }
                 var prod = products.find(function(p){ return p.id === hash; });
                 if (!prod) return;
                 showDetailModal(prod);
             }
+
+            window.addEventListener('hashchange', handleDetailHash);
+
+            document.addEventListener('keydown', function(e){
+                if (e.key === 'Escape') {
+                    document.getElementById('detail-overlay').classList.remove('open');
+                    history.replaceState(null,'',window.location.pathname);
+                }
+            });
 
             function showDetailModal(prod) {
                 var overlay = document.getElementById('detail-overlay');
