@@ -1298,13 +1298,12 @@
                         } else {
                             products = loadFromLocalOrFallback();
                         }
-                        loadSettings();
-                        initStore();
+                        return loadSettings();
                     })
+                    .then(function(){ initStore(); })
                     .catch(function(){
                         products = loadFromLocalOrFallback();
-                        loadSettings();
-                        initStore();
+                        loadSettings().then(function(){ initStore(); });
                     });
             }
 
@@ -1319,19 +1318,23 @@
             let storeSettings = { storeDiscount: 0, bannerActive: false, bannerText: '', bannerLink: '' };
 
             function loadSettings() {
-                var raw = localStorage.getItem('lb-settings');
-                if (raw) {
-                    try { storeSettings = JSON.parse(raw); } catch(e) {}
-                } else {
-                    API.getSettings()
-                        .then(function(data){
-                            if (data && data.storeDiscount !== undefined) {
-                                storeSettings = data;
-                                localStorage.setItem('lb-settings', JSON.stringify(data));
-                            }
-                        })
-                        .catch(function(){});
-                }
+                return new Promise(function(resolve) {
+                    var raw = localStorage.getItem('lb-settings');
+                    if (raw) {
+                        try { storeSettings = JSON.parse(raw); } catch(e) {}
+                        resolve();
+                    } else {
+                        API.getSettings()
+                            .then(function(data){
+                                if (data && data.storeDiscount !== undefined) {
+                                    storeSettings = data;
+                                    localStorage.setItem('lb-settings', JSON.stringify(data));
+                                }
+                                resolve();
+                            })
+                            .catch(function(){ resolve(); });
+                    }
+                });
             }
 
             function getCategoryLabel(cat) {
@@ -1494,7 +1497,14 @@
             let cart = [];
 
             function loadCart() {
-                try { const d = localStorage.getItem('lb-cart'); if (d) cart = JSON.parse(d); } catch(e) { cart = []; }
+                try {
+                    var d = localStorage.getItem('lb-cart');
+                    if (d) {
+                        cart = JSON.parse(d);
+                        // Migrate old cart format (with name/price/image) to new (id+size+qty only)
+                        cart.forEach(function(item){ delete item.name; delete item.price; delete item.image; });
+                    }
+                } catch(e) { cart = []; }
             }
 
             function saveCart() {
@@ -1503,14 +1513,24 @@
             }
 
             function addToCart(product, size) {
-                const existing = cart.find(i => i.id === product.id && i.size === size);
+                // Check stock
+                if (product.stock !== undefined && product.stock <= 0) {
+                    showToastMsg('Producto sin stock');
+                    return;
+                }
+                var existing = cart.find(function(i){ return i.id === product.id && i.size === size; });
+                var currentQty = existing ? existing.qty : 0;
+                if (product.stock !== undefined && currentQty >= product.stock) {
+                    showToastMsg('Stock máximo alcanzado (' + product.stock + ')');
+                    return;
+                }
                 if (existing) {
                     existing.qty++;
                 } else {
-                    cart.push({ id: product.id, name: product.name, size, price: product.price, image: product.image, qty: 1 });
+                    cart.push({ id: product.id, size: size, qty: 1 });
                 }
                 saveCart();
-                const count = $('#cart-count');
+                var count = $('#cart-count');
                 if (count) { count.classList.remove('bump'); void count.offsetWidth; count.classList.add('bump'); }
             }
 
@@ -1520,10 +1540,26 @@
             }
 
             function updateQty(index, delta) {
-                if (cart[index]) {
-                    cart[index].qty = Math.max(1, cart[index].qty + delta);
-                    saveCart();
+                if (!cart[index]) return;
+                var item = cart[index];
+                var prod = products.find(function(p){ return p.id === item.id; });
+                var newQty = item.qty + delta;
+                if (delta > 0 && prod && prod.stock !== undefined && newQty > prod.stock) {
+                    showToastMsg('Solo hay ' + prod.stock + ' disponible' + (prod.stock !== 1 ? 's' : ''));
+                    return;
                 }
+                cart[index].qty = Math.max(1, newQty);
+                saveCart();
+            }
+
+            function showToastMsg(msg) {
+                var toast = document.getElementById('toast-container');
+                if (!toast) return;
+                var el = document.createElement('div');
+                el.textContent = msg;
+                el.style.cssText = 'background:rgba(255,51,102,0.2);color:var(--pink);padding:0.5rem 1rem;border-radius:6px;font-size:0.7rem;margin-bottom:0.3rem;animation:fadeIn 0.3s;';
+                toast.appendChild(el);
+                setTimeout(function(){ el.remove(); }, 2500);
             }
 
             var couponState = { code: '', discount: 0 };
@@ -1554,6 +1590,12 @@
                     });
             };
 
+            function getCartTotal() {
+                var raw = cart.reduce(function(s, i) { return s + i.price * i.qty; }, 0);
+                if (couponState.discount > 0) raw = Math.round(raw * (1 - couponState.discount / 100));
+                return raw;
+            }
+
             function renderCart() {
                 const itemsEl = $('#cart-items');
                 const footerEl = $('#cart-footer');
@@ -1563,8 +1605,7 @@
                 const checkoutBtn = $('#checkout-btn');
 
                 const totalItems = cart.reduce((s, i) => s + i.qty, 0);
-                var totalPrice = cart.reduce((s, i) => s + i.price * i.qty, 0);
-                if (couponState.discount > 0) totalPrice = Math.round(totalPrice * (1 - couponState.discount / 100));
+                var totalPrice = getCartTotal();
 
                 if (countEl) {
                     countEl.textContent = totalItems;
@@ -1581,24 +1622,42 @@
                 }
 
                 if (footerEl) footerEl.style.display = 'block';
-                itemsEl.innerHTML = cart.map((item, i) => {
-                    const svg = SVG_SHAPES[item.image] || SVG_SHAPES.hoodie;
-                    return `<div class="cart-item">
-                        <div class="ci-thumb">${svg}</div>
-                        <div class="ci-info">
-                            <div class="ci-name">${item.name}</div>
-                            <div class="ci-meta">${item.size} — ${formatPrice(item.price)}</div>
-                            <div class="ci-qty">
-                                <button class="ci-qty-down" data-index="${i}">−</button>
-                                <span>${item.qty}</span>
-                                <button class="ci-qty-up" data-index="${i}">+</button>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">
-                            <div class="ci-price">${formatPrice(item.price * item.qty)}</div>
-                            <button class="ci-remove" data-index="${i}">${t('cart_remove')}</button>
-                        </div>
-                    </div>`;
+
+                // Validate cart items against current products
+                cart.forEach(function(item, i) {
+                    var prod = products.find(function(p){ return p.id === item.id; });
+                    if (!prod) {
+                        item._stale = true;
+                        item._stock = 0;
+                    } else {
+                        item._stale = false;
+                        item._stock = prod.stock;
+                        // Update price/image from current product data
+                        item.price = prod.price;
+                        item.name = prod.name;
+                        item.image = prod.coverImage || prod.image || prod.category;
+                    }
+                });
+
+                itemsEl.innerHTML = cart.map(function(item, i) {
+                    var svg = SVG_SHAPES[item.image] || SVG_SHAPES.hoodie;
+                    var staleBadge = item._stale ? '<span style="color:var(--pink);font-size:0.55rem;">⚠ Ya no disponible</span>' : '';
+                    var stockBadge = (!item._stale && item._stock !== undefined && item._stock <= 0) ? '<span style="color:var(--pink);font-size:0.55rem;">⚠ Sin stock</span>' : '';
+                    return '<div class="cart-item">'
+                        + '<div class="ci-thumb">' + svg + '</div>'
+                        + '<div class="ci-info">'
+                        + '<div class="ci-name">' + item.name + '</div>'
+                        + '<div class="ci-meta">' + item.size + ' — ' + formatPrice(item.price) + '</div>'
+                        + staleBadge + stockBadge
+                        + '<div class="ci-qty">'
+                        + '<button class="ci-qty-down" data-index="' + i + '">−</button>'
+                        + '<span>' + item.qty + '</span>'
+                        + '<button class="ci-qty-up" data-index="' + i + '">+</button>'
+                        + '</div></div>'
+                        + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.3rem;">'
+                        + '<div class="ci-price">' + formatPrice(item.price * item.qty) + '</div>'
+                        + '<button class="ci-remove" data-index="' + i + '">' + t('cart_remove') + '</button>'
+                        + '</div></div>';
                 }).join('');
 
                 itemsEl.querySelectorAll('.ci-qty-down').forEach(b => {
@@ -1667,7 +1726,7 @@
                 document.body.style.overflow = 'hidden';
                 document.getElementById('checkout-form-view').style.display = 'block';
                 document.getElementById('checkout-confirm-view').style.display = 'none';
-                document.getElementById('cm-total-amount').textContent = formatPrice(cart.reduce((s,i) => s + i.price * i.qty, 0));
+                document.getElementById('cm-total-amount').textContent = formatPrice(getCartTotal());
                 document.getElementById('c-name').value = '';
                 document.getElementById('c-email').value = '';
                 document.getElementById('c-address').value = '';
@@ -1703,7 +1762,7 @@
                         name, email, address,
                         notes: document.getElementById('c-notes').value.trim(),
                         items: cart.map(i => ({ id: i.id, name: i.name, size: i.size, qty: i.qty, price: i.price })),
-                        total: cart.reduce((s,i) => s + i.price * i.qty, 0)
+                        total: getCartTotal()
                     };
 
                     cmSubmit.disabled = true;
@@ -1717,7 +1776,7 @@
             }
 
             function showConfirmation() {
-                const id = '#' + Math.floor(1000 + Math.random() * 9000);
+                var id = '#' + Math.floor(1000 + Math.random() * 9000);
                 document.getElementById('checkout-form-view').style.display = 'none';
                 document.getElementById('checkout-confirm-view').style.display = 'block';
                 document.getElementById('conf-order-id').textContent = id;
@@ -1727,15 +1786,20 @@
             }
 
             function decrementStock() {
-                const stored = localStorage.getItem('lb-products');
+                var stored = localStorage.getItem('lb-products');
                 if (!stored) return;
                 try {
-                    const prods = JSON.parse(stored);
-                    cart.forEach(item => {
-                        const p = prods.find(p => p.id === item.id);
-                        if (p && p.stock !== undefined) p.stock = Math.max(0, p.stock - 1);
+                    var prods = JSON.parse(stored);
+                    cart.forEach(function(item) {
+                        var p = prods.find(function(p){ return p.id === item.id; });
+                        if (p && p.stock !== undefined) p.stock = Math.max(0, p.stock - item.qty);
                     });
                     localStorage.setItem('lb-products', JSON.stringify(prods));
+                    // Update in-memory products too
+                    prods.forEach(function(p){
+                        var mp = products.find(function(m){ return m.id === p.id; });
+                        if (mp && p.stock !== undefined) mp.stock = p.stock;
+                    });
                 } catch(e) {}
             }
 
