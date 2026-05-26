@@ -1013,8 +1013,8 @@
         // Health check
         try {
             var health = await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/?action=health');
-            if (!health.ok) { showToast('Error: Worker no responde'); return; }
-        } catch(e) { showToast('Error: Worker offline. Revisá https://luckybunny-api.luckybunny-arg.workers.dev/?action=health'); return; }
+            if (!health.ok) { showToast('Worker responde ' + health.status); return; }
+        } catch(e) { showToast('Error fetch: ' + (e.message || 'conexión caída')); return; }
         // Push with GET (no CORS preflight needed)
         var pushed = 0, total = products.length;
         for (var i = 0; i < total; i++) {
