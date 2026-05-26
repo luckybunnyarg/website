@@ -653,16 +653,14 @@
 
     // API Adapter — auto-detect relative or absolute URL
     const API = (function(){
-        var base = location.protocol === 'file:' 
-            ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev'
-            : '/api';
-        function get(url) { return fetch(url).then(function(r){ return r.json(); }); }
+        const W = 'https://lucky-bunny-api.luckybunny-arg.workers.dev';
+        function get(url) { return fetch(W + url).then(function(r){ return r.json(); }); }
         return {
-            getProducts:    function() { return get(base + '/?action=all-products'); },
-            saveProduct:    function(p) { return get(base + '/?action=save-product&data=' + encodeURIComponent(JSON.stringify(p))); },
-            getSettings:    function() { return get(base + '/?action=settings'); },
-            saveSettings:   function(s) { return get(base + '/?action=save-settings&data=' + encodeURIComponent(JSON.stringify(s))); },
-            baseURL: base
+            getProducts:    function() { return get('/?action=all-products'); },
+            saveProduct:    function(p) { return get('/?action=save-product&data=' + encodeURIComponent(JSON.stringify(p))); },
+            getSettings:    function() { return get('/?action=settings'); },
+            saveSettings:   function(s) { return get('/?action=save-settings&data=' + encodeURIComponent(JSON.stringify(s))); },
+            baseURL: W
         };
     })();
 
@@ -692,7 +690,7 @@
             // Set file via DataTransfer
             var dt = new DataTransfer();
             dt.items.add(file);
-            form.action = (location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api') + '/';
+            form.action = 'https://lucky-bunny-api.luckybunny-arg.workers.dev/';
             document.getElementById('up-file').files = dt.files;
             form.submit();
         });
@@ -997,16 +995,14 @@
         renderCoupons(); showToast('Cupón eliminado ✓');
     };
     function syncCouponToAPI(couponOrAction) {
-        var base = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
-        fetch(base + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(couponOrAction) })
+        fetch('https://lucky-bunny-api.luckybunny-arg.workers.dev/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(couponOrAction) })
             .then(function(r){ if (!r.ok) showToast('Error de sincronización'); })
             .catch(function(){ showToast('Error de conexión'); });
     }
 
     // Make coupons endpoint accessible
     API.getCoupons = function() {
-        var base = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
-        return fetch(base + '/?action=coupons').then(function(r){ return r.json(); });
+        return fetch('https://lucky-bunny-api.luckybunny-arg.workers.dev/?action=coupons').then(function(r){ return r.json(); });
     };
 
     // ── Sync ──
