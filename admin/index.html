@@ -353,7 +353,7 @@
                 <h2>Productos</h2>
                 <div class="toolbar">
                     <button class="btn btn-mint" onclick="openProductForm()">+ Nuevo Producto</button>
-                    <button class="btn btn-outline" onclick="syncFromGAS()">Sincronizar con GAS</button>
+                    <button class="btn btn-outline" onclick="syncFromGAS()">Sincronizar con R2</button>
                 </div>
                 <div style="overflow-x:auto;">
                     <table class="product-table">
@@ -655,9 +655,11 @@
     const API = (function(){
         const W = 'https://luckybunny-api.luckybunny-arg.workers.dev';
         function get(url) { return fetch(W + url).then(function(r){ return r.json(); }); }
+        function post(body) { return fetch(W + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(function(r){ return r.json(); }); }
         return {
             getProducts:    function() { return get('/?action=all-products'); },
-            saveProduct:    function(p) { return fetch(W + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'save-product',product:p}) }).then(function(r){ return r.json(); }); },
+            saveProduct:    function(p) { return post({action:'save-product',product:p}); },
+            deleteProduct:  function(id) { return post({action:'delete-product',id:id}); },
             getSettings:    function() { return get('/?action=settings'); },
             saveSettings:   function(s) { return get('/?action=save-settings&data=' + encodeURIComponent(JSON.stringify(s))); },
             baseURL: W
@@ -1009,22 +1011,22 @@
     window.syncFromGAS = async function() {
         showToast('Sincronizando...');
         var pushed = 0, total = products.length;
+        // Push all local
         for (var i = 0; i < total; i++) {
             try { await API.saveProduct(products[i]); pushed++; } catch(e) {}
         }
+        // Delete orphans from server (exist in R2 but not in admin)
         try {
-            var data = await API.getProducts();
-            if (Array.isArray(data) && data.length > 0) {
-                products = data;
-                saveToStorage();
-                renderProducts();
-                showToast('Sync: ' + data.length + ' prods, push ' + pushed + '/' + total);
-            } else {
-                showToast('Push ' + pushed + '/' + total + '. Refrescá.');
+            var serverData = await API.getProducts();
+            var localIds = products.map(function(p){ return p.id; });
+            for (var j = 0; j < serverData.length; j++) {
+                if (localIds.indexOf(serverData[j].id) === -1) {
+                    try { await API.deleteProduct(serverData[j].id); } catch(e) {}
+                }
             }
-        } catch(e) {
-            showToast('Push ' + pushed + '/' + total + '. Error API.');
-        }
+        } catch(e) {}
+        saveToStorage();
+        showToast('Push ' + pushed + '/' + total + ' ✓');
     };
 
     async function syncProductToGAS(product) {
