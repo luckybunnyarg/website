@@ -4,4 +4,5 @@
 /contacto   /contacto.html  200
 /brand      /brand.html     200
 /privacidad /privacidad.html 200
+/ayuda      /ayuda.html     200
 /api/*      https://lucky-bunny-api.luckybunny-arg.workers.dev/:splat 200

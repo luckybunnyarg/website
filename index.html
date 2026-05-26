@@ -6,14 +6,14 @@
     <meta name="theme-color" content="#020202">
     <title>Lucky Bunny | Skatewear Argentina — Be Your Own Luck</title>
     <meta name="description" content="Lucky Bunny es una marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Envíos a todo el país. Be your own luck. Tu eres tu propia suerte.">
-    <link rel="canonical" href="https://luckybunny.arg/">
+    <link rel="canonical" href="https://luckybunny.ar/">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://luckybunny.arg/">
+    <meta property="og:url" content="https://luckybunny.ar/">
     <meta property="og:title" content="Lucky Bunny | Skatewear Argentina — Be Your Own Luck">
     <meta property="og:description" content="Marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Be your own luck.">
     <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://luckybunny.arg/">
+    <meta property="twitter:url" content="https://luckybunny.ar/">
     <meta property="twitter:title" content="Lucky Bunny | Skatewear Argentina — Be Your Own Luck">
     <meta property="twitter:description" content="Marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Be your own luck.">
     <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
@@ -47,7 +47,11 @@
         ::selection { background-color: #7DC4B9; color: #000; }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; border-radius: 4px; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(125,196,185,0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(125,196,185,0.3); }
 
         :root {
             --mint: #7DC4B9; --ice: #65B6ED; --gold: #F4D05C; --pink: #FF3366;
@@ -95,6 +99,19 @@
             transform: scale(0.95);
             transition: transform 0.1s;
         }
+        #wa-float {
+            position: fixed; bottom: 24px; right: 24px; z-index: 99;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: #25D366; color: #fff; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 1.6rem; text-decoration: none;
+            box-shadow: 0 4px 16px rgba(37,211,102,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: waPulse 2s ease-in-out infinite;
+        }
+        #wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
+        @keyframes waPulse { 0%,100% { box-shadow: 0 4px 16px rgba(37,211,102,0.3); } 50% { box-shadow: 0 4px 28px rgba(37,211,102,0.65); } }
+        @media (max-width: 768px) { #wa-float { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); right: 16px; width: 50px; height: 50px; font-size: 1.4rem; } }
         .cursor-dot {
             position: fixed; pointer-events: none; z-index: 9998;
             width: 5px; height: 5px; border-radius: 50%;
@@ -725,6 +742,14 @@
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
+        /* ── Polish: nav glass, smooth modals, will-change ── */
+        nav.scrolled { background: rgba(2,2,2,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(125,196,185,0.08); }
+        .product-card { will-change: transform; }
+        .reveal { will-change: transform, opacity; }
+        #cart-drawer.open, #detail-overlay.open { animation: none; }
+        section { content-visibility: auto; contain-intrinsic-size: 500px; }
+        @keyframes skeletonPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+        .skeleton { animation: skeletonPulse 1.5s ease-in-out infinite; background: rgba(125,196,185,0.06); border-radius: 8px; }
     </style>
 </head>
 <body>
@@ -755,7 +780,7 @@
             <a href="/store" data-lang="nav_store">Tienda</a>
             <a href="/about" data-lang="nav_about">Nosotros</a>
             <a href="#game-section" data-lang="nav_arcade">Arcade</a>
-            <a href="/contacto" data-lang="nav_connect">Contacto</a>
+            <a href="#final-cta" data-lang="nav_connect">Contacto</a>
             <button id="lang-toggle"><span class="active-lang">ES</span><span class="sep">/</span>EN</button>
         </div>
         <button id="hamburger" aria-label="Menu">
@@ -973,6 +998,7 @@
                 <a href="#" data-lang="footer_ship">Envíos</a>
                 <a href="#" data-lang="footer_returns">Devoluciones</a>
                 <a href="#" data-lang="footer_size">Guía de Tallas</a>
+            <a href="/ayuda" data-lang="footer_help">Ayuda</a>
             <a href="/privacidad" data-lang="footer_privacy">Privacidad</a>
             </div>
         </div>
@@ -1049,6 +1075,7 @@
                 footer_ship: { es: 'Envíos', en: 'Shipping' },
                 footer_returns: { es: 'Devoluciones', en: 'Returns' },
                 footer_size: { es: 'Guía de Tallas', en: 'Size Guide' },
+                footer_help: { es: 'Ayuda', en: 'Help' },
                 footer_privacy: { es: 'Privacidad', en: 'Privacy' },
                 footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
                 load_sub: { es: 'Skateware', en: 'Skatewear' }
@@ -1387,8 +1414,16 @@
                     window.addEventListener('mousemove', (e) => {
                         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
                         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-                    }, { passive: true });
-                }
+                }, { passive: true });
+            }
+
+            // Nav glass on scroll
+            var navEl = document.querySelector('nav');
+            if (navEl) {
+                window.addEventListener('scroll', function() {
+                    navEl.classList.toggle('scrolled', window.scrollY > 50);
+                }, { passive: true });
+            }
                 window.addEventListener('resize', () => {
                     camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
@@ -2014,5 +2049,7 @@
         })();
     </script>
 
+<a id="wa-float" href="https://wa.me/542616886484" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<script>if(location.protocol==='file:')document.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(!a)return;var h=a.getAttribute('href');if(h==='/')a.href='index.html';else if(h.startsWith('/#'))a.href='index.html'+h.slice(1);else if(!h.startsWith('/api/')&&!h.includes('.'))a.href=h.slice(1)+'.html'},true);</script>
 </body>
 </html>

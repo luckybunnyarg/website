@@ -6,14 +6,14 @@
     <meta name="theme-color" content="#020202">
     <title>Nuestra Historia | Lucky Bunny — El Feliz Accidente</title>
     <meta name="description" content="Conocé la historia de Lucky Bunny, la marca de skatewear argentina nacida de un feliz accidente. Filosofía, creador y misión. Be your own luck.">
-    <link rel="canonical" href="https://luckybunny.arg/about.html">
+    <link rel="canonical" href="https://luckybunny.ar/about.html">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://luckybunny.arg/about.html">
+    <meta property="og:url" content="https://luckybunny.ar/about.html">
     <meta property="og:title" content="Nuestra Historia | Lucky Bunny — El Feliz Accidente">
     <meta property="og:description" content="Conocé la historia de Lucky Bunny, la marca de skatewear argentina nacida de un feliz accidente. Filosofía, creador y misión.">
     <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://luckybunny.arg/about.html">
+    <meta property="twitter:url" content="https://luckybunny.ar/about.html">
     <meta property="twitter:title" content="Nuestra Historia | Lucky Bunny — El Feliz Accidente">
     <meta property="twitter:description" content="Conocé la historia de Lucky Bunny, la marca de skatewear argentina nacida de un feliz accidente. Filosofía, creador y misión.">
     <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
@@ -47,7 +47,7 @@
         ::selection { background-color: #7DC4B9; color: #000; }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; border-radius: 4px; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
 
         :root {
             --mint: #7DC4B9; --ice: #65B6ED; --gold: #F4D05C; --pink: #FF3366;
@@ -207,6 +207,10 @@
             transform: scale(0.95);
             transition: transform 0.1s;
         }
+        #wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 99; width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; text-decoration: none; box-shadow: 0 4px 16px rgba(37,211,102,0.3); transition: transform 0.3s, box-shadow 0.3s; animation: waPulse 2s ease-in-out infinite; }
+        #wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
+        @keyframes waPulse { 0%,100% { box-shadow: 0 4px 16px rgba(37,211,102,0.3); } 50% { box-shadow: 0 4px 28px rgba(37,211,102,0.65); } }
+        @media (max-width: 768px) { #wa-float { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); right: 16px; width: 50px; height: 50px; font-size: 1.4rem; } }
 
         #hero {
             position: relative; width: 100%; min-height: 100vh;
@@ -731,6 +735,7 @@
                 <a href="/about" class="active" data-lang="footer_about">Nosotros</a>
                 <a href="#" data-lang="footer_ship">Envíos</a>
                 <a href="#" data-lang="footer_returns">Devoluciones</a>
+                <a href="/ayuda" data-lang="footer_help">Ayuda</a>
                 <a href="/privacidad" data-lang="footer_privacy">Privacidad</a>
             </div>
         </div>
@@ -886,6 +891,7 @@
                 footer_info: { es: 'Info', en: 'Info' },
                 footer_ship: { es: 'Envíos', en: 'Shipping' },
                 footer_returns: { es: 'Devoluciones', en: 'Returns' },
+                footer_help: { es: 'Ayuda', en: 'Help' },
                 footer_privacy: { es: 'Privacidad', en: 'Privacy' },
                 footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' }
             };
@@ -1137,5 +1143,7 @@
         })();
     </script>
 
+<a id="wa-float" href="https://wa.me/542616886484" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<script>if(location.protocol==='file:')document.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(!a)return;var h=a.getAttribute('href');if(h==='/')a.href='index.html';else if(h.startsWith('/#'))a.href='index.html'+h.slice(1);else if(!h.startsWith('/api/')&&!h.includes('.'))a.href=h.slice(1)+'.html'},true);</script>
 </body>
 </html>

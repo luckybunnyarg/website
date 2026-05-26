@@ -1,17 +1,11 @@
 {
   "version": 1,
   "skills": {
-    "brand-landingpage": {
-      "source": "wshobson/agents",
+    "3d-web-experience": {
+      "source": "sickn33/antigravity-awesome-skills",
       "sourceType": "github",
-      "skillPath": "plugins/brand-landingpage/skills/brand-landingpage/SKILL.md",
-      "computedHash": "19f2f30c471359b5685a911b576c9ab576b30e7d4e3e838c4596f77465c1ffca"
-    },
-    "frontend-design": {
-      "source": "anthropics/skills",
-      "sourceType": "github",
-      "skillPath": "skills/frontend-design/SKILL.md",
-      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+      "skillPath": "skills/3d-web-experience/SKILL.md",
+      "computedHash": "abf349a30764951de0ff17fe6e4b0d3a5332d3682b3b97109d7a23f813406d1a"
     },
     "game-engine": {
       "source": "github/awesome-copilot",
@@ -19,29 +13,11 @@
       "skillPath": "skills/game-engine/SKILL.md",
       "computedHash": "20057f62cf7a8b2d9f940b3de0b18e5426e8f4bb50e236d36b1033aa0d42c4d8"
     },
-    "marketing-ideas": {
-      "source": "coreyhaines31/marketingskills",
-      "sourceType": "github",
-      "skillPath": "skills/marketing-ideas/SKILL.md",
-      "computedHash": "551cde99c831df343bfb2989ef0e9b4c257d7c2e8ee5572eeeaa0e322a8b5c8b"
-    },
-    "seo-audit": {
-      "source": "coreyhaines31/marketingskills",
-      "sourceType": "github",
-      "skillPath": "skills/seo-audit/SKILL.md",
-      "computedHash": "f2dc52130189068981f21e1c0bdc4471ac7cd9b08d8a1320604411aa0f950385"
-    },
-    "storefront-best-practices": {
-      "source": "medusajs/medusa-agent-skills",
-      "sourceType": "github",
-      "skillPath": "plugins/ecommerce-storefront/skills/storefront-best-practices/SKILL.md",
-      "computedHash": "633f757031071344075cce6450ff8c5bf209691a8d072bb6cc73be153faa4ba4"
-    },
-    "web-design-guidelines": {
+    "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",
-      "skillPath": "skills/web-design-guidelines/SKILL.md",
-      "computedHash": "f3bc47f890f42a44db1007ab390709ec368e4b8c089baee6b0007182236ac474"
+      "skillPath": "skills/react-best-practices/SKILL.md",
+      "computedHash": "ca7b0c0c6e5f2750043f7f0cd72d16ac4e2abc48f9b5500d047a4b77a2506212"
     }
   }
 }

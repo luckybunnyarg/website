@@ -6,14 +6,14 @@
     <meta name="theme-color" content="#020202">
     <title>Ayuda | Lucky Bunny Skatewear Argentina</title>
     <meta name="description" content="Centro de ayuda de Lucky Bunny. FAQ, cambios y devoluciones, cuidado de prendas, tabla de talles y contacto.">
-    <link rel="canonical" href="https://luckybunny.arg/ayuda.html">
+    <link rel="canonical" href="https://luckybunny.ar/ayuda.html">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://luckybunny.arg/ayuda.html">
+    <meta property="og:url" content="https://luckybunny.ar/ayuda.html">
     <meta property="og:title" content="Ayuda | Lucky Bunny Skatewear Argentina">
     <meta property="og:description" content="Centro de ayuda de Lucky Bunny. FAQ, cambios y devoluciones, cuidado de prendas, tabla de talles y contacto.">
     <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://luckybunny.arg/ayuda.html">
+    <meta property="twitter:url" content="https://luckybunny.ar/ayuda.html">
     <meta property="twitter:title" content="Ayuda | Lucky Bunny Skatewear Argentina">
     <meta property="twitter:description" content="Centro de ayuda de Lucky Bunny. FAQ, cambios y devoluciones, cuidado de prendas, tabla de talles y contacto.">
     <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
@@ -38,7 +38,7 @@
         ::selection { background-color: #7DC4B9; color: #000; }
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; border-radius: 4px; }
-        html { scroll-behavior: smooth; }
+        html { scroll-behavior: smooth; scroll-padding-top: 80px; }
         :root { --mint: #7DC4B9; --ice: #65B6ED; --gold: #F4D05C; --pink: #FF3366; --chalk: #FFF; --void: #020202; --surface: #0a0a0a; }
         body { background: var(--void); color: var(--chalk); font-family: 'Inter', sans-serif; overflow-x: hidden; -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; overscroll-behavior: none; }
 
@@ -101,6 +101,10 @@
         footer .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.03); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
 
         button:active { transform: scale(0.95); }
+        #wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 99; width: 56px; height: 56px; border-radius: 50%; background: #25D366; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; text-decoration: none; box-shadow: 0 4px 16px rgba(37,211,102,0.3); transition: transform 0.3s, box-shadow 0.3s; animation: waPulse 2s ease-in-out infinite; }
+        #wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
+        @keyframes waPulse { 0%,100% { box-shadow: 0 4px 16px rgba(37,211,102,0.3); } 50% { box-shadow: 0 4px 28px rgba(37,211,102,0.65); } }
+        @media (max-width: 768px) { #wa-float { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); right: 16px; width: 50px; height: 50px; font-size: 1.4rem; } }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
 
         @media (max-width: 768px) {
@@ -405,5 +409,7 @@
         setLang(localStorage.getItem('lb-lang') || 'es');
     })();
     </script>
+<a id="wa-float" href="https://wa.me/542616886484" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+<script>if(location.protocol==='file:')document.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(!a)return;var h=a.getAttribute('href');if(h==='/')a.href='index.html';else if(h.startsWith('/#'))a.href='index.html'+h.slice(1);else if(!h.startsWith('/api/')&&!h.includes('.'))a.href=h.slice(1)+'.html'},true);</script>
 </body>
 </html>
