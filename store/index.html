@@ -1154,14 +1154,12 @@
 
             // API Adapter — auto-detect relative or absolute URL
             const API = (function(){
-                var b = location.protocol === 'file:'
-                    ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev'
-                    : '/api';
-                function get(u){ return fetch(u).then(function(r){return r.json();}); }
+                const W = 'https://lucky-bunny-api.luckybunny-arg.workers.dev';
+                function get(u){ return fetch(W + u).then(function(r){return r.json();}); }
                 return {
-                    getProducts:  function(){ return get(b+'/?action=all-products'); },
-                    getSettings:  function(){ return get(b+'/?action=settings'); },
-                    saveOrder:    function(o){ return fetch(b+'/',{method:'POST',body:JSON.stringify({action:'save-order',name:o.name,email:o.email,address:o.address,notes:o.notes,items:o.items,total:o.total})}).then(function(r){return r.json();}); }
+                    getProducts:  function(){ return get('/?action=all-products'); },
+                    getSettings:  function(){ return get('/?action=settings'); },
+                    saveOrder:    function(o){ return fetch(W + '/',{method:'POST',body:JSON.stringify({action:'save-order',name:o.name,email:o.email,address:o.address,notes:o.notes,items:o.items,total:o.total})}).then(function(r){return r.json();}); }
                 };
             })();
 
@@ -1610,8 +1608,7 @@
                 var code = document.getElementById('coupon-input').value.trim().toUpperCase();
                 var msgEl = document.getElementById('coupon-msg');
                 if (!code) return;
-                var base = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
-                fetch(base + '/?action=validate-coupon&code=' + encodeURIComponent(code))
+                fetch('https://lucky-bunny-api.luckybunny-arg.workers.dev/?action=validate-coupon&code=' + encodeURIComponent(code))
                     .then(function(r){ return r.json(); })
                     .then(function(data){
                         if (data.valid) {
