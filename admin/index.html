@@ -1010,19 +1010,28 @@
     // ── Sync ──
     window.syncFromGAS = async function() {
         showToast('Sincronizando...');
+        // Health check
+        try {
+            var health = await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/?action=health');
+            if (!health.ok) { showToast('Error: Worker no responde'); return; }
+        } catch(e) { showToast('Error: Worker offline. Revisá https://luckybunny-api.luckybunny-arg.workers.dev/?action=health'); return; }
+        // Push with GET (no CORS preflight needed)
         var pushed = 0, total = products.length;
-        // Push all local
         for (var i = 0; i < total; i++) {
-            try { await API.saveProduct(products[i]); pushed++; } catch(e) {}
+            try {
+                await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/?action=save-product&data=' + encodeURIComponent(JSON.stringify(products[i])));
+                pushed++;
+            } catch(e) {}
         }
-        if (pushed === 0) { showToast('Error: Worker offline. Deployalo en Cloudflare.'); return; }
+        if (pushed === 0) { showToast('Error: No se pudo sincronizar ningún producto'); return; }
         // Delete orphans from server
         try {
-            var serverData = await API.getProducts();
+            var r = await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/?action=all-products');
+            var serverData = await r.json();
             var localIds = products.map(function(p){ return p.id; });
             for (var j = 0; j < serverData.length; j++) {
                 if (localIds.indexOf(serverData[j].id) === -1) {
-                    try { await API.deleteProduct(serverData[j].id); } catch(e) {}
+                    try { await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/?action=delete-product&data=' + encodeURIComponent(JSON.stringify({id:serverData[j].id}))); } catch(e) {}
                 }
             }
         } catch(e) {}
