@@ -1154,7 +1154,7 @@
 
             // API Adapter — auto-detect relative or absolute URL
             const API = (function(){
-                const W = 'https://lucky-bunny-api.luckybunny-arg.workers.dev';
+                const W = 'https://lucky-api.luckybunny-arg.workers.dev';
                 function get(u){ return fetch(W + u).then(function(r){return r.json();}); }
                 return {
                     getProducts:  function(){ return get('/?action=all-products'); },
@@ -1608,7 +1608,7 @@
                 var code = document.getElementById('coupon-input').value.trim().toUpperCase();
                 var msgEl = document.getElementById('coupon-msg');
                 if (!code) return;
-                fetch('https://lucky-bunny-api.luckybunny-arg.workers.dev/?action=validate-coupon&code=' + encodeURIComponent(code))
+                fetch('https://lucky-api.luckybunny-arg.workers.dev/?action=validate-coupon&code=' + encodeURIComponent(code))
                     .then(function(r){ return r.json(); })
                     .then(function(data){
                         if (data.valid) {
