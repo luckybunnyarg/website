@@ -618,21 +618,6 @@
         }
         #btn-jump { left: 12px; }
         #btn-duck { right: 12px; }
-        #game-ground {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
-            background: #1a1a1a; z-index: 5;
-            border-top: 2px solid #333;
-        }
-        #game-ground::before {
-            content: ''; position: absolute; top: 18px; width: 100%; height: 4px;
-            background: repeating-linear-gradient(90deg, #F4D05C, #F4D05C 40px, transparent 40px, transparent 80px);
-        }
-        #game-ground::after {
-            content: ''; position: absolute; top: -3px; left: 0; width: 100%; height: 3px;
-            background: #7DC4B9;
-            box-shadow: 0 0 10px rgba(125,196,185,0.6), 0 0 30px rgba(125,196,185,0.2);
-            opacity: .5; pointer-events: none;
-        }
         #player-rig {
             position: absolute; bottom: 40px; left: 60px; width: 70px; height: 140px;
             z-index: 20; transform-origin: bottom center; will-change: transform;
@@ -1678,15 +1663,16 @@
 
             function saveLeaderboard() {
                 try { localStorage.setItem('lbNewRecords', JSON.stringify(leaderboard)); } catch {}
-                // Also sync to R2 (best effort)
-                leaderboard.forEach(function(r){
-                    if (r.score > 0) {
-                        fetch('https://lucky-api.luckybunny-arg.workers.dev/', {
-                            method:'POST', headers:{'Content-Type':'application/json'},
-                            body: JSON.stringify({action:'save-score',name:r.name,score:r.score})
-                        }).catch(function(){});
-                    }
-                });
+                // Sync top 3 to R2 (fire-and-forget, non-blocking)
+                var top3 = leaderboard.slice(0, 3);
+                for (var i = 0; i < top3.length; i++) {
+                    (function(r){
+                        if (r.score > 0) {
+                            var img = new Image();
+                            img.src = 'https://lucky-api.luckybunny-arg.workers.dev/?action=save-score&data=' + encodeURIComponent(JSON.stringify({name:r.name,score:r.score}));
+                        }
+                    })(top3[i]);
+                }
             }
 
             function renderLeaderboard() {
@@ -1958,20 +1944,7 @@
                     o.x -= g.speed * dt;
                     o.el.style.left = o.x + 'px';
                     if (o.x < -150) { o.el.remove(); g.obstacles.splice(i, 1); continue; }
-                    if (checkCollision(o)) {
-                        // Near-miss: if margin ≤ 8px → shake + bonus, no game over
-                        var pRight = PLAYER_X + H.PLAYER_WIDTH - H.HITBOX_INSET;
-                        var oLeft = o.x + H.HITBOX_INSET;
-                        var overlap = pRight - oLeft;
-                        if (overlap > 0 && overlap < 8) {
-                            gameContainer.classList.add('shake-board');
-                            setTimeout(function(){ gameContainer.classList.remove('shake-board'); }, 300);
-                            g.score += 5;
-                            playSFX('score');
-                            o.el.remove(); g.obstacles.splice(i, 1); continue;
-                        }
-                        handleGameOver(); return;
-                    }
+                    if (checkCollision(o)) { handleGameOver(); return; }
                 }
 
                 g.speed = Math.min(H.BASE_SPEED + g.frame * H.SPEED_INC, H.MAX_SPEED);
@@ -2035,14 +2008,11 @@
                 }, 600);
             }
 
-            saveBtn.addEventListener('click', () => {
-                const name = (nameInput.value.toUpperCase().slice(0, 3) || 'UNK');
-                leaderboard.push({ name, score: g.score });
-                // Post score to R2
-                fetch('https://lucky-api.luckybunny-arg.workers.dev/', {
-                    method:'POST', headers:{'Content-Type':'application/json'},
-                    body: JSON.stringify({action:'save-score', name: name, score: g.score})
-                }).catch(function(){});
+            saveBtn.addEventListener('click', function() {
+                var name = (nameInput.value.toUpperCase().slice(0, 3) || 'UNK');
+                leaderboard.push({ name: name, score: g.score });
+                // Fire-and-forget to R2 via GET (no CORS, no blocking)
+                (new Image()).src = 'https://lucky-api.luckybunny-arg.workers.dev/?action=save-score&data=' + encodeURIComponent(JSON.stringify({name:name,score:g.score}));
                 renderLeaderboard();
                 hsForm.style.display = 'none';
                 startBtn.style.display = 'block';
