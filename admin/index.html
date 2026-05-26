@@ -653,11 +653,11 @@
 
     // API Adapter — auto-detect relative or absolute URL
     const API = (function(){
-        const W = 'https://lucky-bunny-api.luckybunny-arg.workers.dev';
+        const W = 'https://luckybunny-api.luckybunny-arg.workers.dev';
         function get(url) { return fetch(W + url).then(function(r){ return r.json(); }); }
         return {
             getProducts:    function() { return get('/?action=all-products'); },
-            saveProduct:    function(p) { return get('/?action=save-product&data=' + encodeURIComponent(JSON.stringify(p))); },
+            saveProduct:    function(p) { return fetch(W + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'save-product',product:p}) }).then(function(r){ return r.json(); }); },
             getSettings:    function() { return get('/?action=settings'); },
             saveSettings:   function(s) { return get('/?action=save-settings&data=' + encodeURIComponent(JSON.stringify(s))); },
             baseURL: W
@@ -1008,8 +1008,8 @@
     // ── Sync ──
     window.syncFromGAS = async function() {
         showToast('Sincronizando...');
-        var pushed = 0;
-        for (var i = 0; i < products.length; i++) {
+        var pushed = 0, total = products.length;
+        for (var i = 0; i < total; i++) {
             try { await API.saveProduct(products[i]); pushed++; } catch(e) {}
         }
         try {
@@ -1018,12 +1018,12 @@
                 products = data;
                 saveToStorage();
                 renderProducts();
-                showToast('Sync: ' + data.length + ' prods, push ' + pushed);
+                showToast('Sync: ' + data.length + ' prods, push ' + pushed + '/' + total);
             } else {
-                showToast('Push ' + pushed + '. Refrescá.');
+                showToast('Push ' + pushed + '/' + total + '. Refrescá.');
             }
         } catch(e) {
-            showToast('Push ' + pushed + '. Error al leer API.');
+            showToast('Push ' + pushed + '/' + total + '. Error API.');
         }
     };
 
@@ -1121,6 +1121,7 @@
     // ── Init ──
     if (isLoggedIn()) {
         showDashboard();
+        if (location.protocol === 'file:') showToast('⚠️ Abrí https://luckybunny.ar/admin para sincronizar');
     } else {
         $('#login-screen').style.display = 'flex';
         $('#dashboard').style.display = 'none';
