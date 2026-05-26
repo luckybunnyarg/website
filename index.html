@@ -1656,12 +1656,37 @@
             }
 
             function loadLeaderboard() {
-                try { const d = localStorage.getItem('lbNewRecords'); return d ? JSON.parse(d) : DEFAULT_RECORDS; } catch { return DEFAULT_RECORDS; }
+                // Try local first (instant)
+                try { var d = localStorage.getItem('lbNewRecords'); if (d) return JSON.parse(d); } catch {}
+                return DEFAULT_RECORDS;
             }
             let leaderboard = loadLeaderboard();
 
+            // Fetch from R2 async to update
+            (function(){
+                fetch('https://lucky-api.luckybunny-arg.workers.dev/?action=leaderboard')
+                    .then(function(r){ return r.json(); })
+                    .then(function(data){
+                        if (Array.isArray(data) && data.length > 0) {
+                            leaderboard = data;
+                            try { localStorage.setItem('lbNewRecords', JSON.stringify(data)); } catch {}
+                            renderLeaderboard();
+                        }
+                    })
+                    .catch(function(){});
+            })();
+
             function saveLeaderboard() {
                 try { localStorage.setItem('lbNewRecords', JSON.stringify(leaderboard)); } catch {}
+                // Also sync to R2 (best effort)
+                leaderboard.forEach(function(r){
+                    if (r.score > 0) {
+                        fetch('https://lucky-api.luckybunny-arg.workers.dev/', {
+                            method:'POST', headers:{'Content-Type':'application/json'},
+                            body: JSON.stringify({action:'save-score',name:r.name,score:r.score})
+                        }).catch(function(){});
+                    }
+                });
             }
 
             function renderLeaderboard() {
@@ -2013,6 +2038,11 @@
             saveBtn.addEventListener('click', () => {
                 const name = (nameInput.value.toUpperCase().slice(0, 3) || 'UNK');
                 leaderboard.push({ name, score: g.score });
+                // Post score to R2
+                fetch('https://lucky-api.luckybunny-arg.workers.dev/', {
+                    method:'POST', headers:{'Content-Type':'application/json'},
+                    body: JSON.stringify({action:'save-score', name: name, score: g.score})
+                }).catch(function(){});
                 renderLeaderboard();
                 hsForm.style.display = 'none';
                 startBtn.style.display = 'block';
