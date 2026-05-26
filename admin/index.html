@@ -797,6 +797,7 @@
                     <td><span class="badge-sm ${p.active !== false ? 'active' : 'inactive'}">${p.active !== false ? 'Activo' : 'Inactivo'}</span></td>
                     <td class="product-actions">
                         <button class="btn btn-outline" style="font-size:0.55rem;padding:0.25rem 0.5rem;" onclick="editProduct('${esc(p.id)}')">Editar</button>
+                        <button class="btn btn-outline" style="font-size:0.55rem;padding:0.25rem 0.5rem;" onclick="duplicateProduct('${esc(p.id)}')">📋</button>
                         <button class="btn btn-danger" style="font-size:0.55rem;padding:0.25rem 0.5rem;" onclick="deleteProduct('${esc(p.id)}')">×</button>
                     </td>
                 </tr>
@@ -932,6 +933,20 @@
         saveToStorage();
         renderProducts();
         showToast('Producto eliminado ✓');
+    };
+
+    window.duplicateProduct = function(id) {
+        var p = products.find(function(pr){ return pr.id === id; });
+        if (!p) return;
+        var newProduct = Object.assign({}, p, {
+            id: generateId(p.name + '-copia'),
+            name: p.name + ' (copia)',
+            salesCount: 0
+        });
+        products.push(newProduct);
+        saveToStorage();
+        renderProducts();
+        showToast('Producto duplicado ✓');
     };
 
     // ── Settings ──
