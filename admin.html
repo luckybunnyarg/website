@@ -344,7 +344,7 @@
             <button class="side-link" data-tab="tab-discounts">Descuentos</button>
             <button class="side-link" data-tab="tab-coupons">Cupones</button>
             <button class="side-link" data-tab="tab-orders">Pedidos</button>
-            <a class="side-link" href="store.html" target="_blank" style="text-decoration:none;">Ver Tienda ↗</a>
+            <a class="side-link" href="/store" target="_blank" style="text-decoration:none;">Ver Tienda ↗</a>
         </div>
         <div class="dash-main">
 
@@ -986,18 +986,21 @@
             if (oldIdx >= 0) { if (editingCouponCode !== code) coupons.splice(oldIdx,1); else coupons[oldIdx] = coupon; }
         }
         if (!editingCouponCode || editingCouponCode !== code) { var exists = coupons.findIndex(function(c){return c.code===code;}); if (exists >= 0) coupons[exists] = coupon; else coupons.push(coupon); }
-        syncCouponToAPI(coupon);
+        syncCouponToAPI({ action: 'save-coupon', coupon: coupon });
         closeCouponForm(); renderCoupons();
         showToast('Cupón guardado ✓');
     };
     window.deleteCoupon = function(code) {
         if (!confirm('¿Eliminar cupón ' + code + '?')) return;
         coupons = coupons.filter(function(c){ return c.code !== code; });
-        try { fetch((location.protocol==='file:'?'https://lucky-bunny-api.luckybunny-arg.workers.dev':'/api') + '/', {method:'POST',body:JSON.stringify({action:'delete-coupon',code:code})}); } catch(e) {}
+        syncCouponToAPI({ action: 'delete-coupon', code: code });
         renderCoupons(); showToast('Cupón eliminado ✓');
     };
-    function syncCouponToAPI(coupon) {
-        try { fetch((location.protocol==='file:'?'https://lucky-bunny-api.luckybunny-arg.workers.dev':'/api') + '/', {method:'POST',body:JSON.stringify({action:'save-coupon',coupon:coupon})}); } catch(e) {}
+    function syncCouponToAPI(couponOrAction) {
+        var base = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
+        fetch(base + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(couponOrAction) })
+            .then(function(r){ if (!r.ok) showToast('Error de sincronización'); })
+            .catch(function(){ showToast('Error de conexión'); });
     }
 
     // Make coupons endpoint accessible

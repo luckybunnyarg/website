@@ -897,16 +897,16 @@
     <div id="page-progress"><div id="page-progress-bar"></div></div>
 
     <nav>
-        <a href="index.html" class="logo">
+        <a href="/" class="logo">
             <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="Lucky Bunny">
             <span>Lucky Bunny</span>
         </a>
         <div class="nav-links">
-            <a href="index.html" data-lang="nav_drops">Lanzamientos</a>
-            <a href="store.html" class="active" data-lang="nav_store">Tienda</a>
-            <a href="about.html" data-lang="nav_about">Nosotros</a>
-            <a href="index.html#game-section" data-lang="nav_arcade">Arcade</a>
-            <a href="contacto.html" data-lang="nav_connect">Contacto</a>
+            <a href="/" data-lang="nav_drops">Lanzamientos</a>
+            <a href="/store" class="active" data-lang="nav_store">Tienda</a>
+            <a href="/about" data-lang="nav_about">Nosotros</a>
+            <a href="/#game-section" data-lang="nav_arcade">Arcade</a>
+            <a href="/contacto" data-lang="nav_connect">Contacto</a>
             <div class="nav-right">
                 <div id="cart-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
@@ -920,11 +920,11 @@
         </button>
     </nav>
     <div id="mobile-drawer">
-        <a href="index.html" data-lang="nav_drops">Lanzamientos</a>
-        <a href="store.html" data-lang="nav_store">Tienda</a>
-        <a href="about.html" data-lang="nav_about">Nosotros</a>
-        <a href="index.html#game-section" data-lang="nav_arcade">Arcade</a>
-        <a href="index.html#final-cta" data-lang="nav_connect">Contacto</a>
+        <a href="/" data-lang="nav_drops">Lanzamientos</a>
+        <a href="/store" data-lang="nav_store">Tienda</a>
+        <a href="/about" data-lang="nav_about">Nosotros</a>
+        <a href="/#game-section" data-lang="nav_arcade">Arcade</a>
+        <a href="/contacto" data-lang="nav_connect">Contacto</a>
     </div>
 
     <div class="sticker-banner" data-lang="store_sticker_banner">🎁 Llevate un sticker gratis con tu primer compra</div>
@@ -1072,7 +1072,7 @@
             </div>
             <div>
                 <h4 data-lang="footer_shop">Tienda</h4>
-                <a href="store.html" data-lang="footer_all">Todos los Lanzamientos</a>
+                <a href="/store" data-lang="footer_all">Todos los Lanzamientos</a>
             </div>
             <div>
                 <h4 data-lang="footer_connect">Redes</h4>
@@ -1082,10 +1082,10 @@
             </div>
             <div>
                 <h4 data-lang="footer_info">Info</h4>
-                <a href="about.html" data-lang="footer_about">Nosotros</a>
+                <a href="/about" data-lang="footer_about">Nosotros</a>
                 <a href="#" data-lang="footer_ship">Envíos</a>
                 <a href="#" data-lang="footer_returns">Devoluciones</a>
-                <a href="privacidad.html" data-lang="footer_privacy">Privacidad</a>
+                <a href="/privacidad" data-lang="footer_privacy">Privacidad</a>
             </div>
         </div>
         <div class="footer-bottom">
@@ -1591,7 +1591,13 @@
             };
 
             function getCartTotal() {
-                var raw = cart.reduce(function(s, i) { return s + i.price * i.qty; }, 0);
+                var raw = cart.reduce(function(s, i) {
+                    var prod = products.find(function(p){ return p.id === i.id; });
+                    var price = (prod ? prod.price : 0);
+                    var discountPct = prod ? (prod.discount || storeSettings.storeDiscount || 0) : 0;
+                    if (discountPct > 0) price = Math.round(price * (1 - discountPct / 100));
+                    return s + price * i.qty;
+                }, 0);
                 if (couponState.discount > 0) raw = Math.round(raw * (1 - couponState.discount / 100));
                 return raw;
             }
@@ -1769,9 +1775,17 @@
                     cmSubmit.textContent = '...';
 
                     API.saveOrder(order)
-                        .then(() => showConfirmation())
-                        .catch(() => showConfirmation())
-                        .finally(() => { cmSubmit.disabled = false; cmSubmit.textContent = t('checkout_submit'); });
+                        .then(function(){ showConfirmation(); })
+                        .catch(function(){
+                            // Save to localStorage as fallback
+                            try {
+                                var backup = JSON.parse(localStorage.getItem('lb-orders-backup') || '[]');
+                                backup.unshift(Object.assign({}, order, { timestamp: new Date().toISOString(), status: 'pending-backup' }));
+                                localStorage.setItem('lb-orders-backup', JSON.stringify(backup));
+                            } catch(e) {}
+                            showConfirmation();
+                        })
+                        .finally(function(){ cmSubmit.disabled = false; cmSubmit.textContent = t('checkout_submit'); });
                 });
             }
 

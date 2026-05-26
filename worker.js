@@ -102,7 +102,7 @@ async function handlePost(request, env) {
   if (act === 'save-settings')   return await saveSettings(env, body.settings);
   if (act === 'save-order')      return await saveOrder(env, body);
 
-  return await saveOrder(env, body);
+  return json({ error: 'Unknown action: ' + act }, 400);
 }
 
 // ═══════════ UPLOAD IMAGE ═══════════
