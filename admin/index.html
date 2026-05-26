@@ -1015,7 +1015,8 @@
         for (var i = 0; i < total; i++) {
             try { await API.saveProduct(products[i]); pushed++; } catch(e) {}
         }
-        // Delete orphans from server (exist in R2 but not in admin)
+        if (pushed === 0) { showToast('Error: Worker offline. Deployalo en Cloudflare.'); return; }
+        // Delete orphans from server
         try {
             var serverData = await API.getProducts();
             var localIds = products.map(function(p){ return p.id; });
