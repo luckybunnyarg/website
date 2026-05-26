@@ -556,25 +556,47 @@
             border: 2px solid #333; overflow: hidden; border-radius: 8px;
             -webkit-user-select: none; user-select: none;
         }
-        #city-bg {
+        #sky-bg {
             position: absolute; top: 0; left: 0; width: 200%; height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400"><rect x="10" y="200" width="30" height="200" fill="%23222"/><rect x="55" y="150" width="45" height="250" fill="%231a1a1a"/><rect x="120" y="100" width="35" height="300" fill="%23282828"/><rect x="170" y="180" width="50" height="220" fill="%23151515"/><rect x="240" y="80" width="40" height="320" fill="%23222"/><rect x="300" y="140" width="55" height="260" fill="%23181818"/><rect x="370" y="120" width="30" height="280" fill="%23282828"/><rect x="420" y="60" width="50" height="340" fill="%231a1a1a"/><rect x="490" y="170" width="40" height="230" fill="%23222"/><rect x="550" y="100" width="45" height="300" fill="%23282828"/><rect x="615" y="150" width="35" height="250" fill="%23151515"/><rect x="670" y="90" width="55" height="310" fill="%231a1a1a"/><rect x="745" y="160" width="45" height="240" fill="%23222"/></svg>');
-            z-index: 1; opacity: 0.5;
+            background: linear-gradient(180deg, #0a0a14 0%, #0d0d1a 40%, #111122 70%, #0f0f1a 100%);
+            z-index: 1; overflow: hidden;
         }
-        #clouds-bg {
-            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="200"><circle cx="100" cy="40" r="12" fill="%23FFF" opacity=".02"/><circle cx="300" cy="60" r="18" fill="%23FFF" opacity=".03"/><circle cx="500" cy="30" r="10" fill="%23FFF" opacity=".01"/><circle cx="700" cy="50" r="15" fill="%23FFF" opacity=".02"/></svg>');
-            background-repeat: repeat-x; z-index: 2; opacity: 0.6; pointer-events: none;
+        #sky-bg::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                        radial-gradient(1px 1px at 30% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+                        radial-gradient(1px 1px at 50% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+                        radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.2) 0%, transparent 100%),
+                        radial-gradient(1px 1px at 90% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+                        radial-gradient(1px 1px at 15% 35%, rgba(125,196,185,0.3) 0%, transparent 100%),
+                        radial-gradient(2px 2px at 60% 40%, rgba(255,255,255,0.15) 0%, transparent 100%),
+                        radial-gradient(2px 2px at 80% 8%, rgba(255,255,255,0.2) 0%, transparent 100%),
+                        radial-gradient(1px 1px at 40% 45%, rgba(125,196,185,0.25) 0%, transparent 100%);
+            background-size: 200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px, 210px 210px, 240px 240px, 200px 200px, 260px 260px;
+            animation: twinkle 3s ease-in-out infinite alternate;
         }
-        #fg-bg {
-            position: absolute; top: 0; left: 0; width: 200%; height: 100%;
-            background: repeating-linear-gradient(90deg, transparent, transparent 30px, rgba(125,196,185,0.04) 30px, rgba(125,196,185,0.04) 32px) 0 0 / 60px 60px,
-                        repeating-linear-gradient(0deg, transparent, transparent 30px, rgba(125,196,185,0.02) 30px, rgba(125,196,185,0.02) 31px) 0 0 / 60px 60px;
-            z-index: 3; opacity: 0.5; pointer-events: none;
+        @keyframes twinkle { 0% { opacity: 0.6; } 100% { opacity: 1; } }
+        #far-bg {
+            position: absolute; bottom: 0; left: 0; width: 200%; height: 70%;
+            z-index: 2; opacity: 0.25;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='300'%3E%3Crect x='0' y='180' width='40' height='120' fill='%23111'/%3E%3Crect x='55' y='140' width='30' height='160' fill='%231a1a1a'/%3E%3Crect x='100' y='160' width='55' height='140' fill='%23151515'/%3E%3Crect x='170' y='100' width='25' height='200' fill='%23181818'/%3E%3Crect x='210' y='150' width='45' height='150' fill='%23111'/%3E%3Crect x='270' y='120' width='35' height='180' fill='%231a1a1a'/%3E%3Crect x='320' y='170' width='50' height='130' fill='%23151515'/%3E%3Crect x='385' y='90' width='30' height='210' fill='%23181818'/%3E%3Crect x='430' y='140' width='55' height='160' fill='%23111'/%3E%3Crect x='500' y='110' width='25' height='190' fill='%231a1a1a'/%3E%3Crect x='540' y='160' width='40' height='140' fill='%23151515'/%3E%3Crect x='600' y='130' width='35' height='170' fill='%23111'/%3E%3Crect x='650' y='180' width='50' height='120' fill='%23181818'/%3E%3Crect x='715' y='100' width='30' height='200' fill='%231a1a1a'/%3E%3Crect x='760' y='150' width='45' height='150' fill='%23111'/%3E%3Crect x='820' y='120' width='55' height='180' fill='%23151515'/%3E%3Crect x='890' y='170' width='25' height='130' fill='%23181818'/%3E%3Crect x='930' y='140' width='40' height='160' fill='%23111'/%3E%3Crect x='985' y='90' width='35' height='210' fill='%231a1a1a'/%3E%3Crect x='1040' y='160' width='50' height='140' fill='%23151515'/%3E%3Crect x='1105' y='110' width='30' height='190' fill='%23111'/%3E%3C/svg%3E");
+            background-repeat: repeat-x; background-position: 0 bottom; background-size: 1200px 300px;
         }
-        #vfx-canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 25; pointer-events: none;
+        #near-bg {
+            position: absolute; bottom: 0; left: 0; width: 200%; height: 80%;
+            z-index: 3; opacity: 0.45;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='350'%3E%3C!-- Buildings --%3E%3Crect x='0' y='200' width='65' height='150' fill='%230f0f0f'/%3E%3Crect x='5' y='230' width='8' height='6' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='25' y='250' width='8' height='6' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='45' y='220' width='8' height='6' fill='%23F4D05C' opacity='.3'/%3E%3Crect x='80' y='140' width='45' height='210' fill='%23181818'/%3E%3Crect x='90' y='160' width='6' height='6' fill='%237DC4B9' opacity='.5'/%3E%3Crect x='105' y='200' width='6' height='6' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='140' y='170' width='70' height='180' fill='%23151515'/%3E%3Crect x='150' y='190' width='7' height='7' fill='%23FF3366' opacity='.4'/%3E%3Crect x='175' y='230' width='7' height='5' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='230' y='120' width='50' height='230' fill='%230f0f0f'/%3E%3Crect x='240' y='145' width='6' height='6' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='260' y='200' width='7' height='5' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='300' y='190' width='60' height='160' fill='%23181818'/%3E%3Crect x='315' y='210' width='8' height='6' fill='%23FF3366' opacity='.3'/%3E%3Crect x='380' y='150' width='55' height='200' fill='%23151515'/%3E%3Crect x='395' y='180' width='6' height='6' fill='%237DC4B9' opacity='.5'/%3E%3Crect x='455' y='100' width='40' height='250' fill='%230f0f0f'/%3E%3Crect x='460' y='130' width='7' height='7' fill='%23F4D05C' opacity='.4'/%3E%3Crect x='480' y='220' width='7' height='5' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='515' y='180' width='70' height='170' fill='%23181818'/%3E%3Crect x='530' y='195' width='6' height='6' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='605' y='130' width='50' height='220' fill='%23151515'/%3E%3Crect x='620' y='155' width='8' height='6' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='675' y='160' width='65' height='190' fill='%230f0f0f'/%3E%3Crect x='690' y='180' width='7' height='5' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='760' y='110' width='45' height='240' fill='%23181818'/%3E%3Crect x='770' y='140' width='6' height='6' fill='%23FF3366' opacity='.3'/%3E%3Crect x='825' y='200' width='55' height='150' fill='%23151515'/%3E%3Crect x='840' y='225' width='7' height='5' fill='%237DC4B9' opacity='.5'/%3E%3Crect x='900' y='140' width='60' height='210' fill='%230f0f0f'/%3E%3Crect x='915' y='170' width='8' height='6' fill='%23F4D05C' opacity='.4'/%3E%3Crect x='980' y='180' width='50' height='170' fill='%23181818'/%3E%3Crect x='995' y='200' width='6' height='6' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='1050' y='120' width='55' height='230' fill='%23151515'/%3E%3Crect x='1065' y='150' width='7' height='7' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='1120' y='190' width='70' height='160' fill='%230f0f0f'/%3E%3Crect x='1140' y='210' width='6' height='6' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='1210' y='150' width='50' height='200' fill='%23181818'/%3E%3Crect x='1225' y='175' width='7' height='5' fill='%23FF3366' opacity='.3'/%3E%3Crect x='1280' y='130' width='60' height='220' fill='%23151515'/%3E%3Crect x='1300' y='160' width='8' height='6' fill='%237DC4B9' opacity='.5'/%3E%3C/svg%3E");
+            background-repeat: repeat-x; background-position: 0 bottom; background-size: 1400px 350px;
+        }
+        #game-ground {
+            position: absolute; bottom: 0; left: 0; width: 200%; height: 40px;
+            background: linear-gradient(180deg, rgba(125,196,185,0.06) 0%, #0a0a0a 8px, #111 100%);
+            z-index: 4; border-top: 1px solid rgba(125,196,185,0.08);
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.4);
+        }
+        #game-ground::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(125,196,185,0.08) 40px, rgba(125,196,185,0.08) 42px);
         }
         .mobile-game-btn {
             display: none; position: absolute; bottom: 50px; z-index: 22;
@@ -611,12 +633,6 @@
             box-shadow: 0 0 10px rgba(125,196,185,0.6), 0 0 30px rgba(125,196,185,0.2);
             opacity: .5; pointer-events: none;
         }
-        #horizon-glow {
-            position: absolute; bottom: 40px; left: 0; width: 100%; height: 150px;
-            background: radial-gradient(ellipse at 50% 100%, rgba(125,196,185,0.06) 0%, transparent 70%);
-            z-index: 0; pointer-events: none;
-        }
-
         #player-rig {
             position: absolute; bottom: 40px; left: 60px; width: 70px; height: 140px;
             z-index: 20; transform-origin: bottom center; will-change: transform;
@@ -899,11 +915,10 @@
             </div>
 
             <div id="game-container" tabindex="0" role="application" aria-label="Endless runner">
-                <div id="city-bg"></div>
-                <div id="clouds-bg"></div>
-                <div id="fg-bg"></div>
+                <div id="sky-bg"></div>
+                <div id="far-bg"></div>
+                <div id="near-bg"></div>
                 <canvas id="rain-canvas-game"></canvas>
-                <div id="horizon-glow"></div>
                 <div id="game-ground"></div>
 
                 <div id="player-rig" class="spin-wheels">
@@ -944,7 +959,7 @@
                             <button id="save-score-btn" style="background:var(--chalk);color:var(--void);font-weight:700;text-transform:uppercase;padding:0.5rem 1rem;border:2px solid transparent;cursor:pointer;font-family:'Anton',sans-serif;letter-spacing:0.1em;" data-lang="game_save">Guardar</button>
                         </div>
                     </div>
-                    <button id="start-game-btn" style="font-family:'Anton',sans-serif;font-size:1.2rem;letter-spacing:0.15em;text-transform:uppercase;padding:1rem 3rem;background:var(--mint);color:var(--void);border:2px solid var(--mint);cursor:pointer;border-radius:8px;box-shadow:0 0 30px rgba(125,196,185,0.3);transition:all 0.3s;" data-lang="game_start">COMENZAR</button>
+                    <button id="start-game-btn" style="font-family:'Anton',sans-serif;font-size:1.2rem;letter-spacing:0.15em;text-transform:uppercase;padding:1rem 3rem;background:var(--mint);color:var(--void);border:2px solid var(--mint);cursor:pointer;border-radius:8px;box-shadow:0 0 30px rgba(125,196,185,0.3);transition: opacity 0.3s, background-color 0.3s, box-shadow 0.3s;" data-lang="game_start">COMENZAR</button>
                 </div>
             </div>
 
@@ -959,15 +974,15 @@
 
     <section id="final-cta">
         <div class="container">
-            <p class="section-label reveal" data-lang="cta_label">Mantente al Tanto</p>
-            <h2 class="section-title reveal reveal-d1" data-lang-html="cta_title">Únete al <span class="text-gold">Equipo</span></h2>
+            <p class="section-label reveal" data-lang="cta_label">Contactanos</p>
+            <h2 class="section-title reveal reveal-d1" data-lang-html="cta_title">¿<span class="text-mint">Hablamos</span>?</h2>
             <p class="section-desc reveal reveal-d2" data-lang="cta_desc">
-                Primer acceso a lanzamientos. Equipo exclusivo. El underground — directo a tu bandeja.
+                Charlamos de lo que necesites. Sin vueltas. — 5:55
             </p>
             <div class="cta-row" style="justify-content: center;">
-                <button class="btn-primary reveal reveal-d3" data-lang="cta_btn">
-                    Suscribirse
-                </button>
+                <a href="/contacto" class="btn-primary reveal reveal-d3" style="text-decoration:none;display:inline-block;" data-lang="cta_btn">
+                    Ir a Contacto
+                </a>
             </div>
         </div>
     </section>
@@ -1061,10 +1076,10 @@
                 game_start: { es: 'PROBAR SUERTE', en: 'TEST YOUR LUCK' },
                 game_placeholder: { es: 'AAA', en: 'AAA' },
                 game_leaderboard: { es: 'Mejores Puntajes', en: 'Live Records' },
-                cta_label: { es: 'La Cábala', en: 'The Cábala' },
-                cta_title: { es: 'Únete a la <span class="text-gold">Cábala</span>', en: 'Join the <span class="text-gold">Cábala</span>' },
-                cta_desc: { es: 'Sé el primero en recibir los drops. La suerte llega sola — directo a tu bandeja.', en: 'First to know. First to drop. Let luck find you — straight to your inbox.' },
-                cta_btn: { es: 'Unirse', en: 'Join' },
+                cta_label: { es: 'Contactanos', en: 'Contact Us' },
+                cta_title: { es: '¿<span class="text-mint">Hablamos</span>?', en: 'Let\'s <span class="text-mint">Talk</span>?' },
+                cta_desc: { es: 'Charlamos de lo que necesites. Sin vueltas. — 5:55', en: 'Let\'s chat about what you need. No BS. — 5:55' },
+                cta_btn: { es: 'Ir a Contacto', en: 'Go to Contact' },
                 footer_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
                 footer_shop: { es: 'Tienda', en: 'Shop' },
                 footer_all: { es: 'Todos los Lanzamientos', en: 'All Drops' },
@@ -1457,7 +1472,7 @@
             (function(){
                 var VG = { hoodies:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="#7DC4B9" stroke-width="0.5"/></svg>', tshirts:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="#65B6ED" stroke-width="0.5"/></svg>', socks:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5"/></svg>', accessories:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><circle cx="50" cy="40" r="22" stroke="#F4D05C" stroke-width="0.5"/><rect x="36" y="55" width="28" height="35" rx="4" stroke="#F4D05C" stroke-width="0.5"/></svg>' };
                 var LB = { tshirts:'Camisetas', hoodies:'Hoodies', socks:'Medias', accessories:'Accesorios' };
-                var API_BASE = location.protocol === 'file:' ? 'https://lucky-bunny-api.luckybunny-arg.workers.dev' : '/api';
+                var API_BASE = 'https://luckybunny-api.luckybunny-arg.workers.dev';
 
                 function renderGrid(items) {
                     var grid = document.getElementById('drops-grid');
@@ -1509,8 +1524,9 @@
             const overlayTitle = $('#overlay-title');
             const startBtn = $('#start-game-btn');
             const scoreSpan = $('#score-display');
-            const bg = $('#city-bg');
-            const clouds = $('#clouds-bg');
+            const sky = $('#sky-bg');
+            const far = $('#far-bg');
+            const near = $('#near-bg');
             const hsForm = $('#highscore-form');
             const nameInput = $('#player-name');
             const saveBtn = $('#save-score-btn');
@@ -1526,7 +1542,7 @@
 
             const H = {
                 GRAV: 2800, JUMP_VEL: 900,
-                BASE_SPEED: 250, SPEED_INC: 0.3, MAX_SPEED: 700,
+                BASE_SPEED: 200, SPEED_INC: 0.5, MAX_SPEED: 750,
                 GROUND_Y: 0, PLAYER_WIDTH: 70, PLAYER_HEIGHT: 140,
                 DUCK_OFFSET: 55, HITBOX_INSET: 8,
                 SPAWN_BASE: 1800, SPAWN_MIN: 700,
@@ -1910,15 +1926,30 @@
                     o.x -= g.speed * dt;
                     o.el.style.left = o.x + 'px';
                     if (o.x < -150) { o.el.remove(); g.obstacles.splice(i, 1); continue; }
-                    if (checkCollision(o)) { handleGameOver(); return; }
+                    if (checkCollision(o)) {
+                        // Near-miss: if margin ≤ 8px → shake + bonus, no game over
+                        var pRight = PLAYER_X + H.PLAYER_WIDTH - H.HITBOX_INSET;
+                        var oLeft = o.x + H.HITBOX_INSET;
+                        var overlap = pRight - oLeft;
+                        if (overlap > 0 && overlap < 8) {
+                            gameContainer.classList.add('shake-board');
+                            setTimeout(function(){ gameContainer.classList.remove('shake-board'); }, 300);
+                            g.score += 5;
+                            playSFX('score');
+                            o.el.remove(); g.obstacles.splice(i, 1); continue;
+                        }
+                        handleGameOver(); return;
+                    }
                 }
 
                 g.speed = Math.min(H.BASE_SPEED + g.frame * H.SPEED_INC, H.MAX_SPEED);
-                const scrollX = (g.frame * (g.speed / 300)) % 800;
-                bg.style.backgroundPosition = `-${scrollX}px 0`;
-                clouds.style.backgroundPosition = `-${(g.frame * (g.speed / 900)) % 800}px 0`;
-                const fg = document.getElementById('fg-bg');
-                if (fg) fg.style.backgroundPosition = `-${(g.frame * (g.speed / 200)) % 800}px 0`;
+
+                // 4-layer parallax
+                const sc = g.speed / 300;
+                sky.style.backgroundPosition = (-(g.frame * (g.speed / 1200)) % 800) + 'px 0';
+                far.style.backgroundPosition = (-(g.frame * (g.speed / 600)) % 1200) + 'px bottom';
+                near.style.backgroundPosition = (-(g.frame * (g.speed / 250)) % 1400) + 'px bottom';
+
                 document.documentElement.style.setProperty('--game-tilt', Math.min(1.5 + g.speed * 0.003, 4) + 'deg');
                 updateParticles();
                 drawVFX();
@@ -2020,7 +2051,7 @@
                 if (e.code === 'Space' || e.code === 'ArrowUp') {
                     e.preventDefault();
                     if (g.st === ST.PLAYING) jump();
-                    else if (g.st === ST.OVER && overlay.style.display !== 'none' && hsForm.style.display === 'none') startGame();
+                    else if (g.st !== ST.PLAYING && overlay.style.display !== 'none' && hsForm.style.display === 'none') startGame();
                 }
                 if (e.code === 'ArrowDown') { e.preventDefault(); if (g.st === ST.PLAYING) { g.holdDown = true; duck(); } }
             });
@@ -2037,7 +2068,12 @@
             }, { passive: false });
             gameContainer.addEventListener('touchmove', (e) => {
                 e.preventDefault();
-                if (g.st !== ST.PLAYING || !touchStartY) return;
+                if (g.st !== ST.PLAYING) {
+                    // Swipe up to start game
+                    if (touchStartY && touchStartY - e.touches[0].clientY > 40) { touchStartY = 0; startGame(); }
+                    return;
+                }
+                if (!touchStartY) return; // undefined when IDLE/OVER
                 if (touchStartY - e.touches[0].clientY > 30) { jump(); touchStartY = 0; }
             }, { passive: false });
             gameContainer.addEventListener('touchend', (e) => { e.preventDefault(); touchStartY = 0; standUp(); }, { passive: false });
