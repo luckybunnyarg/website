@@ -1487,8 +1487,15 @@
 
                 function processAndRender(prods) {
                     var active = prods.filter(function(p){ return p.active !== false; });
-                    active.sort(function(a,b){ return (b.salesCount||0) - (a.salesCount||0); });
-                    renderGrid(active);
+                    // First try featured products
+                    var featured = active.filter(function(p){ return p.featured === true; });
+                    if (featured.length > 0) {
+                        renderGrid(featured);
+                    } else {
+                        // Fallback: top 3 by sales
+                        active.sort(function(a,b){ return (b.salesCount||0) - (a.salesCount||0); });
+                        renderGrid(active);
+                    }
                 }
 
                 // 1. Try localStorage first
