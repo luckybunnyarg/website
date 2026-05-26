@@ -1,8 +1,0 @@
-/admin      /admin.html     200
-/store      /store.html     200
-/about      /about.html     200
-/contacto   /contacto.html  200
-/brand      /brand.html     200
-/privacidad /privacidad.html 200
-/ayuda      /ayuda.html     200
-/api/*      https://lucky-bunny-api.luckybunny-arg.workers.dev/:splat 200
