@@ -661,117 +661,142 @@
         }
         .confirmation .conf-cta:hover { background: var(--mint); color: var(--void); }
 
-        /* ── Product Detail Modal ── */
+        /* ── Product Detail Full Screen ── */
         #detail-overlay {
-            position: fixed; inset: 0; z-index: 70;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(12px);
-            display: flex; align-items: center; justify-content: center;
+            position: fixed; inset: 0; z-index: 80;
+            background: var(--void);
+            display: flex; align-items: stretch;
             opacity: 0; pointer-events: none;
-            transition: opacity 0.3s;
+            transition: opacity 0.35s ease;
         }
         #detail-overlay.open { opacity: 1; pointer-events: all; }
         #detail-modal {
-            background: var(--surface); border: 1px solid rgba(125,196,185,0.1);
-            border-radius: 16px; padding: 2rem; width: 100%; max-width: 640px;
-            max-height: 90vh; overflow-y: auto;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
+            display: grid; grid-template-columns: 96px 1fr 380px;
+            gap: 2rem; width: 100%; height: 100vh;
+            padding: 2rem; overflow: hidden;
             position: relative;
         }
         #detail-modal .detail-close {
-            position: absolute; top: 1rem; right: 1rem;
-            background: none; border: none; color: rgba(255,255,255,0.3);
-            font-size: 1.5rem; cursor: pointer; line-height: 1;
-            transition: color 0.3s;
+            position: absolute; top: 1.5rem; right: 1.5rem; z-index: 5;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.4); font-size: 1.2rem;
+            width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: color 0.3s, border-color 0.3s, background 0.3s;
         }
-        #detail-modal .detail-close:hover { color: var(--chalk); }
-        #detail-modal .detail-image {
-            aspect-ratio: 1; border-radius: 12px; overflow: hidden;
-            background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;
-            position: relative; cursor: pointer;
+        #detail-modal .detail-close:hover { color: var(--chalk); border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); }
+        #detail-thumbs {
+            display: flex; flex-direction: column; gap: 0.6rem;
+            overflow-y: auto; padding-right: 0.5rem;
         }
-        #detail-modal .detail-image img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; transition: opacity 0.3s; }
-        #detail-modal .detail-image img.hover-img { opacity: 0; }
-        #detail-modal .detail-image:hover img.cover-img { opacity: 0; }
-        #detail-modal .detail-image:hover img.hover-img { opacity: 1; }
-        #detail-modal .detail-image svg { width: 60%; height: 60%; opacity: 0.15; }
-        .detail-carousel-nav {
-            position: absolute; bottom: 0.5rem; left: 50%; transform: translateX(-50%);
-            display: flex; gap: 0.3rem; z-index: 3;
+        #detail-thumbs img {
+            width: 72px; height: 72px; object-fit: cover; border-radius: 8px;
+            border: 2px solid rgba(255,255,255,0.06); cursor: pointer;
+            transition: border-color 0.3s, opacity 0.3s; opacity: 0.5;
         }
-        .detail-carousel-nav span {
-            width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,0.2);
-            cursor: pointer; transition: background 0.3s;
+        #detail-thumbs img:hover { opacity: 0.8; }
+        #detail-thumbs img.active { border-color: var(--mint); opacity: 1; }
+        #detail-main-image {
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.15); border-radius: 12px;
+            overflow: hidden; min-height: 0;
         }
-        .detail-carousel-nav span.active { background: var(--mint); }
-        .detail-prev, .detail-next {
-            position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
-            background: rgba(0,0,0,0.5); color: var(--chalk); border: none;
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-            font-size: 1rem; display: none; align-items: center; justify-content: center;
-            transition: background 0.3s;
+        #detail-main-image img {
+            max-width: 100%; max-height: 100%; object-fit: contain;
         }
-        .detail-prev:hover, .detail-next:hover { background: rgba(0,0,0,0.8); }
-        .detail-prev { left: 0.5rem; }
-        .detail-next { right: 0.5rem; }
-        #detail-modal .detail-info { display: flex; flex-direction: column; }
-        #detail-modal .detail-cat {
-            font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase;
-            color: rgba(255,255,255,0.3); margin-bottom: 0.5rem;
+        #detail-main-image svg {
+            width: 30%; height: 30%; opacity: 0.12;
         }
-        #detail-modal .detail-name {
-            font-family: 'Anton', sans-serif; font-size: 1.4rem;
-            text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 0.5rem;
+        #detail-info {
+            display: flex; flex-direction: column; gap: 0.8rem;
+            overflow-y: auto; padding-right: 0.5rem;
         }
-        #detail-modal .detail-price-row { margin-bottom: 1rem; }
-        #detail-modal .detail-price {
-            font-family: 'Anton', sans-serif; font-size: 1.4rem; color: var(--mint);
+        #detail-info .breadcrumbs {
+            font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
+            color: rgba(255,255,255,0.2); margin-bottom: 0.2rem;
         }
-        #detail-modal .detail-price-ref {
-            font-size: 0.9rem; color: rgba(255,255,255,0.2);
-            text-decoration: line-through; margin-left: 0.5rem;
-        }
-        #detail-modal .detail-discount {
-            display: inline-block; background: var(--pink); color: var(--chalk);
-            font-size: 0.6rem; padding: 0.2rem 0.5rem; border-radius: 4px;
-            margin-left: 0.5rem; vertical-align: middle;
-        }
-        #detail-modal .detail-badge {
+        #detail-info .breadcrumbs a { color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.3s; }
+        #detail-info .breadcrumbs a:hover { color: var(--mint); }
+        #detail-info .detail-badge {
             display: inline-block; font-size: 0.55rem; padding: 0.25rem 0.6rem;
             border-radius: 4px; text-transform: uppercase; letter-spacing: 0.1em;
-            margin-bottom: 0.8rem;
+            width: fit-content;
         }
-        #detail-modal .detail-badge.new { background: var(--pink); color: var(--chalk); }
-        #detail-modal .detail-badge.limited { background: var(--gold); color: var(--void); }
-        #detail-modal .detail-desc {
-            font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.7;
-            margin-bottom: 1rem;
+        #detail-info .detail-badge.new { background: var(--pink); color: var(--chalk); }
+        #detail-info .detail-badge.limited { background: var(--gold); color: var(--void); }
+        #detail-info .detail-name {
+            font-family: 'Anton', sans-serif; font-size: clamp(1.6rem, 3vw, 2.2rem);
+            text-transform: uppercase; letter-spacing: 0.03em; line-height: 1.1;
         }
-        #detail-modal .detail-stock {
-            font-size: 0.7rem; margin-bottom: 0.8rem;
+        #detail-info .detail-price-row { display: flex; align-items: baseline; gap: 0.6rem; }
+        #detail-info .detail-price {
+            font-family: 'Anton', sans-serif; font-size: 1.5rem; color: var(--mint);
         }
-        #detail-modal .detail-stock.low { color: var(--pink); }
-        #detail-modal .detail-sizes {
-            display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+        #detail-info .detail-price-ref {
+            font-size: 0.9rem; color: rgba(255,255,255,0.2);
+            text-decoration: line-through;
         }
-        #detail-modal .detail-sizes button {
-            padding: 0.4rem 0.8rem; border: 1px solid rgba(255,255,255,0.12);
-            border-radius: 4px; background: transparent; color: rgba(255,255,255,0.3);
-            cursor: pointer; font-size: 0.7rem; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
+        #detail-info .detail-discount {
+            display: inline-block; background: var(--pink); color: var(--chalk);
+            font-size: 0.6rem; padding: 0.2rem 0.5rem; border-radius: 4px;
         }
-        #detail-modal .detail-sizes button:hover { border-color: var(--mint); color: var(--chalk); }
-        #detail-modal .detail-sizes button.selected { background: var(--mint); color: var(--void); border-color: var(--mint); }
-        #detail-modal .detail-add {
-            margin-top: auto; padding: 0.8rem; width: 100%;
-            font-family: 'Anton', sans-serif; font-size: 0.85rem;
-            letter-spacing: 0.1em; text-transform: uppercase;
+        #detail-info .detail-installments {
+            font-size: 0.65rem; color: rgba(255,255,255,0.3);
+        }
+        #detail-info .section-label {
+            font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: rgba(255,255,255,0.25); margin-top: 0.5rem;
+        }
+        #detail-info .detail-sizes {
+            display: flex; gap: 0.5rem; flex-wrap: wrap;
+        }
+        #detail-info .detail-sizes button {
+            padding: 0.6rem 1rem; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 6px; background: transparent; color: rgba(255,255,255,0.4);
+            cursor: pointer; font-size: 0.75rem; font-weight: 500;
+            transition: border-color 0.3s, color 0.3s, background 0.3s;
+        }
+        #detail-info .detail-sizes button:hover { border-color: var(--mint); color: var(--chalk); }
+        #detail-info .detail-sizes button.selected { background: var(--mint); color: var(--void); border-color: var(--mint); }
+        #detail-info .detail-stock {
+            font-size: 0.7rem; color: rgba(255,255,255,0.4);
+        }
+        #detail-info .detail-stock.low { color: var(--pink); }
+        #detail-info .detail-actions { display: flex; flex-direction: column; gap: 0.6rem; }
+        #detail-info .detail-add {
+            padding: 0.9rem; width: 100%; font-family: 'Anton', sans-serif;
+            font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
             background: var(--mint); color: var(--void);
             border: none; border-radius: 8px; cursor: pointer;
-            transition: opacity 0.3s, border-color 0.3s, color 0.3s;
+            transition: opacity 0.3s, background 0.3s;
         }
-        #detail-modal .detail-add:hover { opacity: 0.85; }
-        #detail-modal .detail-add.done { background: var(--gold); }
-        @media (max-width: 600px) {
-            #detail-modal { grid-template-columns: 1fr; gap: 1.5rem; padding: 1.5rem; }
+        #detail-info .detail-add:hover { opacity: 0.85; }
+        #detail-info .detail-add.done { background: var(--gold); }
+        #detail-info .detail-buy {
+            padding: 0.9rem; width: 100%; font-family: 'Anton', sans-serif;
+            font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+            background: transparent; color: var(--chalk);
+            border: 2px solid var(--chalk); border-radius: 8px; cursor: pointer;
+            transition: background 0.3s, color 0.3s;
+        }
+        #detail-info .detail-buy:hover { background: var(--chalk); color: var(--void); }
+        #detail-info .detail-desc {
+            font-size: 0.8rem; color: rgba(255,255,255,0.4); line-height: 1.7;
+        }
+        #detail-info .detail-share {
+            display: flex; gap: 0.8rem; margin-top: 0.5rem;
+        }
+        #detail-info .detail-share a {
+            color: rgba(255,255,255,0.25); font-size: 0.7rem; text-decoration: none;
+            transition: color 0.3s;
+        }
+        #detail-info .detail-share a:hover { color: var(--mint); }
+        @media (max-width: 900px) {
+            #detail-modal { grid-template-columns: 1fr; grid-template-rows: auto auto auto; overflow-y: auto; gap: 1.5rem; }
+            #detail-thumbs { flex-direction: row; overflow-x: auto; overflow-y: hidden; padding-bottom: 0.5rem; }
+            #detail-thumbs img { width: 56px; height: 56px; flex-shrink: 0; }
+            #detail-main-image { min-height: 50vh; }
+            #detail-info { overflow-y: visible; }
         }
 
         /* ── Toasts ── */
@@ -1054,21 +1079,32 @@
 
     <div id="detail-overlay" onclick="if(event.target===this){this.classList.remove('open');history.replaceState(null,'',window.location.pathname);}">
         <div id="detail-modal">
-            <button class="detail-close" onclick="document.getElementById('detail-overlay').classList.remove('open');history.replaceState(null,'',window.location.pathname);">×</button>
-            <div class="detail-image" id="detail-image"></div>
-            <div class="detail-info">
+            <button class="detail-close" onclick="document.getElementById('detail-overlay').classList.remove('open');history.replaceState(null,'',window.location.pathname);">✕</button>
+            <div id="detail-thumbs"></div>
+            <div id="detail-main-image"></div>
+            <div id="detail-info">
+                <div class="breadcrumbs" id="detail-breadcrumbs"></div>
                 <span class="detail-badge" id="detail-badge" style="display:none;"></span>
-                <div class="detail-cat" id="detail-cat"></div>
                 <div class="detail-name" id="detail-name"></div>
                 <div class="detail-price-row">
                     <span class="detail-price" id="detail-price"></span>
                     <span class="detail-price-ref" id="detail-price-ref" style="display:none;"></span>
                     <span class="detail-discount" id="detail-discount" style="display:none;"></span>
                 </div>
-                <p class="detail-desc" id="detail-desc"></p>
+                <div class="detail-installments" id="detail-installments"></div>
                 <div class="detail-stock" id="detail-stock"></div>
+                <div class="section-label">Talle</div>
                 <div class="detail-sizes" id="detail-sizes"></div>
-                <button class="detail-add" id="detail-add-btn" data-lang="store_add">Agregar al Carrito</button>
+                <div class="detail-actions">
+                    <button class="detail-add" id="detail-add-btn">Agregar al Carrito</button>
+                    <button class="detail-buy" id="detail-buy-btn">Comprar Ahora</button>
+                </div>
+                <p class="detail-desc" id="detail-desc"></p>
+                <div class="detail-share">
+                    <a href="#" id="share-ig" target="_blank" rel="noopener">Instagram</a>
+                    <a href="#" id="share-tt" target="_blank" rel="noopener">TikTok</a>
+                    <a href="#" id="share-mail">Email</a>
+                </div>
             </div>
         </div>
     </div>
@@ -1288,16 +1324,7 @@
                 socks: `<svg viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="%237DC4B9" stroke-width="0.5" opacity="0.3"/><path d="M30 65 Q25 80 35 80 Q40 80 48 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/><path d="M52 65 Q47 80 57 80 Q62 80 70 65" stroke="%237DC4B9" stroke-width="0.5" opacity="0.15" fill="none"/></svg>`
             };
 
-            const FALLBACK_PRODUCTS = [
-                { id:'hoodie-void', name:'Hoodie Void', category:'hoodies', price:18500, referencePrice:22000, image:'hoodie', badge:'new', sizes:['S','M','L','XL'], desc:'Hoodie oversized. Algodón peinado. Bolsillo canguro.', stock:12, salesCount:47, featured:true },
-                { id:'hoodie-logo', name:'Hoodie Logo', category:'hoodies', price:16500, referencePrice:19500, image:'hoodie2', sizes:['S','M','L','XL'], desc:'Hoodie clásico. Logo Lucky Bunny frontal.', stock:8, salesCount:34 },
-                { id:'tee-raw', name:'Tee Raw Cut', category:'tshirts', price:8200, referencePrice:9800, image:'tee', sizes:['S','M','L','XL'], desc:'Camiseta manga corta. Corte raw. Algodón 240g.', stock:25, salesCount:82, featured:true },
-                { id:'tee-mantra', name:'Tee Mantra', category:'tshirts', price:7800, referencePrice:9200, image:'tee2', badge:'new', sizes:['S','M','L','XL'], desc:'Be your own luck. Serigrafía espalda grande.', stock:18, salesCount:61 },
-                { id:'socks-crew', name:'Crew Socks', category:'socks', price:3500, referencePrice:4200, image:'socks', sizes:['Unico'], desc:'Medias caña alta. Algodón peinado. Logo bordado.', stock:22, salesCount:47, featured:true },
-                { id:'cap-signature', name:'Cap Signature', category:'accessories', price:6500, referencePrice:7800, image:'cap', badge:'limited', sizes:['Unico'], desc:'Gorra trucker. Frente estructurado. Malla transpirable.', stock:4, salesCount:55, featured:true },
-                { id:'bag-tote', name:'Tote Bag', category:'accessories', price:4800, referencePrice:5800, image:'bag', sizes:['Unico'], desc:'Bolso de tela cruda. Serigrafía frontal. Capacidad 15L.', stock:15, salesCount:38 },
-                { id:'sticker-set', name:'Sticker Pack', category:'accessories', price:2200, referencePrice:2800, image:'sticker', sizes:['Unico'], desc:'Pack de 6 stickers. Vinilo premium. 10cm c/u.', stock:40, salesCount:120 }
-            ];
+            const FALLBACK_PRODUCTS = [];
 
             let products = [];
             let currentFilter = 'all';
@@ -1915,7 +1942,10 @@
 
                 var catLabels = { tshirts: currentLang==='es'?'Camisetas':'T-Shirts', hoodies:'Hoodies', socks: currentLang==='es'?'Medias':'Socks', accessories: currentLang==='es'?'Accesorios':'Accessories' };
 
-                document.getElementById('detail-cat').textContent = catLabels[prod.category] || prod.category;
+                // Breadcrumbs
+                var bc = document.getElementById('detail-breadcrumbs');
+                bc.innerHTML = '<a href="/">Inicio</a> / <a href="#" onclick="document.getElementById(\'filter-pills\').querySelector(\'[data-filter=' + prod.category + ']\').click();return false;">' + (catLabels[prod.category] || prod.category) + '</a>';
+
                 document.getElementById('detail-name').textContent = prod.name;
 
                 var discountPct = prod.discount || storeSettings.storeDiscount || 0;
@@ -1924,19 +1954,15 @@
                 document.getElementById('detail-price').textContent = '$' + finalPrice.toLocaleString('es-AR');
                 var refEl = document.getElementById('detail-price-ref');
                 var discEl = document.getElementById('detail-discount');
+                if (prod.referencePrice) { refEl.textContent = '$' + prod.referencePrice.toLocaleString('es-AR'); refEl.style.display = 'inline'; }
+                else { refEl.style.display = 'none'; }
+                if (discountPct) { discEl.textContent = '-' + discountPct + '%'; discEl.style.display = 'inline-block'; }
+                else { discEl.style.display = 'none'; }
 
-                if (prod.referencePrice) {
-                    refEl.textContent = '$' + prod.referencePrice.toLocaleString('es-AR');
-                    refEl.style.display = 'inline';
-                } else {
-                    refEl.style.display = 'none';
-                }
-                if (discountPct) {
-                    discEl.textContent = '-' + discountPct + '%';
-                    discEl.style.display = 'inline-block';
-                } else {
-                    discEl.style.display = 'none';
-                }
+                // Installments
+                var instEl = document.getElementById('detail-installments');
+                var monthly = Math.round(finalPrice / 3);
+                instEl.textContent = '3 cuotas de $' + monthly.toLocaleString('es-AR') + ' sin interés';
 
                 document.getElementById('detail-desc').textContent = prod.desc || '';
 
@@ -1944,18 +1970,11 @@
                 if (prod.stock !== undefined) {
                     stockEl.textContent = (prod.stock <= 3 ? '⚠️ ' : '') + prod.stock + ' disponible' + (prod.stock !== 1 ? 's' : '');
                     stockEl.className = 'detail-stock' + (prod.stock <= 3 ? ' low' : '');
-                } else {
-                    stockEl.textContent = '';
-                }
+                } else { stockEl.textContent = ''; }
 
                 var badgeEl = document.getElementById('detail-badge');
-                if (prod.badge) {
-                    badgeEl.textContent = prod.badge === 'new' ? 'Nuevo' : 'Limitado';
-                    badgeEl.className = 'detail-badge ' + prod.badge;
-                    badgeEl.style.display = 'inline-block';
-                } else {
-                    badgeEl.style.display = 'none';
-                }
+                if (prod.badge) { badgeEl.textContent = prod.badge === 'new' ? 'Nuevo' : 'Limitado'; badgeEl.className = 'detail-badge ' + prod.badge; badgeEl.style.display = 'inline-block'; }
+                else { badgeEl.style.display = 'none'; }
 
                 var sizesEl = document.getElementById('detail-sizes');
                 if (prod.sizes && prod.sizes.length > 0) {
@@ -1966,11 +1985,9 @@
                             btn.classList.add('selected');
                         });
                     });
-                } else {
-                    sizesEl.innerHTML = '';
-                }
+                } else { sizesEl.innerHTML = ''; }
 
-                var imgEl = document.getElementById('detail-image');
+                // Images: build thumbnails + main image (NO hover)
                 var allImages = [];
                 if (prod.coverImage && prod.coverImage.trim().length > 4) allImages.push(prod.coverImage);
                 if (prod.hoverImage && prod.hoverImage.trim().length > 4) allImages.push(prod.hoverImage);
@@ -1978,43 +1995,31 @@
                     prod.extraImages.forEach(function(u){ if (u && u.trim().length > 4) allImages.push(u); });
                 }
 
+                var thumbsEl = document.getElementById('detail-thumbs');
+                var mainEl = document.getElementById('detail-main-image');
+
                 if (allImages.length > 0) {
-                    var currentImg = 0;
-                    function renderCarousel() {
-                        var html = '';
-                        var hasHover = prod.hoverImage && prod.hoverImage.trim().length > 4 && prod.coverImage && prod.coverImage.trim().length > 4;
-                        // Show cover + hover stacked for hover effect (only first two)
-                        if (hasHover && currentImg === 0) {
-                            html += '<img src="' + prod.coverImage + '" class="cover-img" alt="' + prod.name + '" loading="lazy">';
-                            html += '<img src="' + prod.hoverImage + '" class="hover-img" alt="' + prod.name + '" loading="lazy">';
-                        } else {
-                            html += '<img src="' + allImages[currentImg] + '" alt="' + prod.name + '" loading="lazy">';
-                        }
-                        // Nav dots
-                        if (allImages.length > 1) {
-                            html += '<div class="detail-carousel-nav">';
-                            for (var j = 0; j < allImages.length; j++) {
-                                html += '<span class="' + (j === currentImg ? 'active' : '') + '" data-idx="' + j + '"></span>';
-                            }
-                            html += '</div>';
-                            if (currentImg > 0) html += '<button class="detail-prev" style="display:flex;">◀</button>';
-                            if (currentImg < allImages.length - 1) html += '<button class="detail-next" style="display:flex;">▶</button>';
-                        }
-                        imgEl.innerHTML = html;
-                        // Bind events
-                        imgEl.querySelectorAll('.detail-carousel-nav span').forEach(function(dot){
-                            dot.addEventListener('click', function(e){ e.stopPropagation(); currentImg = parseInt(this.dataset.idx); renderCarousel(); });
+                    // Build thumbnails
+                    thumbsEl.innerHTML = allImages.map(function(src, i){
+                        return '<img src="' + src + '" data-idx="' + i + '" class="' + (i === 0 ? 'active' : '') + '" alt="' + prod.name + '" loading="lazy">';
+                    }).join('');
+                    // Show first image in main
+                    mainEl.innerHTML = '<img src="' + allImages[0] + '" alt="' + prod.name + '">';
+                    // Thumb click → change main
+                    thumbsEl.querySelectorAll('img').forEach(function(thumb){
+                        thumb.addEventListener('click', function(){
+                            var idx = parseInt(this.dataset.idx);
+                            mainEl.innerHTML = '<img src="' + allImages[idx] + '" alt="' + prod.name + '">';
+                            thumbsEl.querySelectorAll('img').forEach(function(t){ t.classList.remove('active'); });
+                            this.classList.add('active');
                         });
-                        var prev = imgEl.querySelector('.detail-prev');
-                        var next = imgEl.querySelector('.detail-next');
-                        if (prev) prev.addEventListener('click', function(e){ e.stopPropagation(); if (currentImg > 0) { currentImg--; renderCarousel(); } });
-                        if (next) next.addEventListener('click', function(e){ e.stopPropagation(); if (currentImg < allImages.length - 1) { currentImg++; renderCarousel(); } });
-                    }
-                    renderCarousel();
+                    });
                 } else {
-                    imgEl.innerHTML = SVG_SHAPES[prod.image] || SVG_SHAPES[prod.category] || SVG_SHAPES.hoodie;
+                    thumbsEl.innerHTML = '';
+                    mainEl.innerHTML = SVG_SHAPES[prod.image] || SVG_SHAPES[prod.category] || SVG_SHAPES.hoodie;
                 }
 
+                // Add to cart button
                 var addBtn = document.getElementById('detail-add-btn');
                 addBtn.onclick = function(){
                     var selected = document.querySelector('#detail-sizes .size-opt.selected');
@@ -2024,6 +2029,21 @@
                     addBtn.classList.add('done');
                     setTimeout(function(){ addBtn.textContent = 'Agregar al Carrito'; addBtn.classList.remove('done'); }, 1500);
                 };
+
+                // Buy now button
+                var buyBtn = document.getElementById('detail-buy-btn');
+                buyBtn.onclick = function(){
+                    var selected = document.querySelector('#detail-sizes .size-opt.selected');
+                    var size = prod.sizes && prod.sizes.length ? (selected ? selected.dataset.size : (prod.sizes[0] || 'Unico')) : 'Unico';
+                    addToCart(prod, size);
+                    openCheckout();
+                };
+
+                // Share links
+                var shareUrl = encodeURIComponent('https://luckybunny.ar/store#' + prod.id);
+                document.getElementById('share-ig').href = 'https://www.instagram.com/LUCKYBUNNY.ARG';
+                document.getElementById('share-tt').href = 'https://www.tiktok.com/@luckybunny.ar';
+                document.getElementById('share-mail').href = 'mailto:?subject=' + encodeURIComponent(prod.name) + '&body=' + shareUrl;
 
                 overlay.classList.add('open');
             }
