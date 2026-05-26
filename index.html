@@ -2014,11 +2014,9 @@
                 g.speed = Math.min(H.BASE_SPEED + g.frame * H.SPEED_INC, H.MAX_SPEED);
 
                 // 4-layer parallax
-                const sc = g.speed / 300;
                 sky.style.backgroundPosition = (-(g.frame * (g.speed / 1200)) % 800) + 'px 0';
                 far.style.backgroundPosition = (-(g.frame * (g.speed / 600)) % 1200) + 'px bottom';
                 near.style.backgroundPosition = (-(g.frame * (g.speed / 250)) % 1400) + 'px bottom';
-                if (gameGround) gameGround.style.backgroundPositionX = (-(g.frame * (g.speed / 100)) % 80) + 'px';
 
                 document.documentElement.style.setProperty('--game-tilt', Math.min(1.5 + g.speed * 0.003, 4) + 'deg');
                 updateParticles();
