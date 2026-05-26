@@ -653,7 +653,7 @@
 
     // API Adapter — auto-detect relative or absolute URL
     const API = (function(){
-        const W = 'https://luckybunny-api.luckybunny-arg.workers.dev';
+        const W = 'https://lucky-api.luckybunny-arg.workers.dev';
         function get(url) { return fetch(W + url).then(function(r){ return r.json(); }); }
         function post(body) { return fetch(W + '/', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) }).then(function(r){ return r.json(); }); }
         return {
@@ -1014,7 +1014,7 @@
         var pushed = 0, total = products.length;
         for (var i = 0; i < total; i++) {
             try {
-                var resp = await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/', {
+                var resp = await fetch('https://lucky-api.luckybunny-arg.workers.dev/', {
                     method:'POST', headers:{'Content-Type':'application/json'},
                     body: JSON.stringify({action:'save-product',product:products[i]})
                 });
@@ -1029,12 +1029,12 @@
         }
         // Delete orphans
         try {
-            var r = await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/?action=all-products');
+            var r = await fetch('https://lucky-api.luckybunny-arg.workers.dev/?action=all-products');
             var serverData = await r.json();
             var localIds = products.map(function(p){ return p.id; });
             for (var j = 0; j < serverData.length; j++) {
                 if (localIds.indexOf(serverData[j].id) === -1) {
-                    try { await fetch('https://luckybunny-api.luckybunny-arg.workers.dev/', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete-product',id:serverData[j].id})}); } catch(e) {}
+                    try { await fetch('https://lucky-api.luckybunny-arg.workers.dev/', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete-product',id:serverData[j].id})}); } catch(e) {}
                 }
             }
         } catch(e) {}
