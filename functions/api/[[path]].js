@@ -1,31 +1,48 @@
 // Cloudflare Pages Function — API proxy to Worker
-// Proxies /api/* → https://lucky-bunny-api.luckybunny-arg.workers.dev/*
+// Proxies /api/* → https://luckybunny-api.luckybunny-arg.workers.dev/*
 
 export async function onRequest(context) {
-  const { request } = context;
-  const url = new URL(request.url);
-  
-  // Reconstruct the target URL
-  const targetPath = url.pathname.replace(/^\/api/, '') + url.search;
-  const targetUrl = 'https://lucky-bunny-api.luckybunny-arg.workers.dev' + targetPath;
+  const CORS_HEADERS = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400'
+  };
 
-  // Fetch from the Worker with the same method, headers, and body
-  const modified = new Request(targetUrl, {
-    method: request.method,
-    headers: request.headers,
-    body: request.method !== 'GET' && request.method !== 'HEAD' ? request.body : undefined
-  });
+  // Handle CORS preflight
+  if (context.request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+  }
 
-  const response = await fetch(modified);
-  
-  // Add CORS headers
-  const newHeaders = new Headers(response.headers);
-  newHeaders.set('Access-Control-Allow-Origin', '*');
-  newHeaders.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  newHeaders.set('Access-Control-Allow-Headers', 'Content-Type');
+  try {
+    const url = new URL(context.request.url);
+    const targetPath = url.pathname.replace(/^\/api\/?/, '/') + url.search;
+    const targetUrl = 'https://lucky-bunny-api.luckybunny-arg.workers.dev' + targetPath;
 
-  return new Response(response.body, {
-    status: response.status,
-    headers: newHeaders
-  });
+    // Clone the request to preserve the body stream
+    const req = context.request.clone();
+    
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: req.headers,
+      body: req.method !== 'GET' && req.method !== 'HEAD' ? req.body : null
+    });
+
+    // Add CORS to response
+    const headers = new Headers(response.headers);
+    for (const [k, v] of Object.entries(CORS_HEADERS)) {
+      headers.set(k, v);
+    }
+
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: headers
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ error: 'Proxy error: ' + err.message }), {
+      status: 502,
+      headers: { 'Content-Type': 'application/json', ...CORS_HEADERS }
+    });
+  }
 }
