@@ -741,6 +741,14 @@
         renderProducts();
         loadSettings();
         loadOrders();
+        // Sync from R2 to unify across devices
+        API.getProducts().then(function(data){
+            if (Array.isArray(data) && data.length > 0) {
+                products = data;
+                saveToStorage();
+                renderProducts();
+            }
+        }).catch(function(){});
     }
 
     // ── Data ──
@@ -931,6 +939,7 @@
         if (!confirm('¿Eliminar este producto?')) return;
         products = products.filter(p => p.id !== id);
         saveToStorage();
+        API.deleteProduct(id).catch(function(){});
         renderProducts();
         showToast('Producto eliminado ✓');
     };
@@ -945,6 +954,7 @@
         });
         products.push(newProduct);
         saveToStorage();
+        API.saveProduct(newProduct).catch(function(){});
         renderProducts();
         showToast('Producto duplicado ✓');
     };
