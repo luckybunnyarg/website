@@ -969,9 +969,9 @@
 
             <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 40px rgba(0,0,0,0.6);">
                 <canvas id="gameCanvas" width="1000" height="600" style="display:block;width:100%;height:auto;background:#020202;"></canvas>
-                <div id="game-overlay-el" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;cursor:pointer;">
-                    <h3 id="overlay-title" style="font-family:'Anton',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:1rem;text-shadow:0 0 30px rgba(125,196,185,0.2);color:var(--mint);" data-lang="game_ready">EL SKATE 404</h3>
-                    <p style="font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--chalk);text-transform:uppercase;letter-spacing:0.2em;animation:pulse 1.5s infinite;" data-lang="game_tap">Toca para empezar</p>
+                <div id="game-overlay-el" onclick="window._startGame&&window._startGame()" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;cursor:pointer;">
+                    <h3 id="overlay-title" style="pointer-events:none;font-family:'Anton',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:1rem;text-shadow:0 0 30px rgba(125,196,185,0.2);color:var(--mint);" data-lang="game_ready">EL SKATE 404</h3>
+                    <p style="pointer-events:none;font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--chalk);text-transform:uppercase;letter-spacing:0.2em;animation:pulse 1.5s infinite;" data-lang="game_tap">Toca para empezar</p>
                 </div>
             </div>
 
@@ -1779,6 +1779,7 @@
                 if(gameOverlay)gameOverlay.style.display='none';
                 lastTime=performance.now();requestAnimationFrame(gameLoop);
             }
+            window._startGame = resetGame; // expose for onclick
 
             function gameLoop(time){
                 if(isGameOver){
