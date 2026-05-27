@@ -1,1734 +1,3336 @@
 <!DOCTYPE html>
+
     <html lang="es" style="color-scheme:dark;">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
     <meta name="theme-color" content="#020202">
+
     <title>Lucky Bunny | Skatewear Argentina — Be Your Own Luck</title>
+
     <meta name="description" content="Lucky Bunny es una marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Envíos a todo el país. Be your own luck. Tu eres tu propia suerte.">
+
     <link rel="canonical" href="https://luckybunny.ar/">
+
     <meta property="og:type" content="website">
+
     <meta property="og:url" content="https://luckybunny.ar/">
+
     <meta property="og:title" content="Lucky Bunny | Skatewear Argentina — Be Your Own Luck">
+
     <meta property="og:description" content="Marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Be your own luck.">
+
     <meta property="og:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
+
     <meta property="twitter:card" content="summary_large_image">
+
     <meta property="twitter:url" content="https://luckybunny.ar/">
+
     <meta property="twitter:title" content="Lucky Bunny | Skatewear Argentina — Be Your Own Luck">
+
     <meta property="twitter:description" content="Marca de skatewear argentina. Ropa de skater con suerte. Hoodies, camisetas y accesorios. Be your own luck.">
+
     <meta property="twitter:image" content="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
+
     <link rel="icon" type="image/png" href="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
+
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <script type="application/ld+json">
+
     {
+
       "@context": "https://schema.org",
+
       "@type": "Organization",
+
       "name": "Lucky Bunny",
+
       "url": "https://luckybunny.arg",
+
       "logo": "https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png",
+
       "description": "Marca de skatewear argentina. Be your own luck.",
+
       "sameAs": [
+
         "https://www.instagram.com/LUCKYBUNNY.ARG",
+
         "https://www.tiktok.com/@luckybunny.ar"
+
       ],
+
       "contactPoint": {
+
         "@type": "ContactPoint",
+
         "telephone": "+54-261-6886484",
+
         "email": "luckybunny.arg@gmail.com",
+
         "contactType": "customer service"
+
       }
+
     }
+
     </script>
 
+
+
     <style>
+
         ::selection { background-color: #7DC4B9; color: #000; }
+
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
         :focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; border-radius: 4px; }
+
         html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
         ::-webkit-scrollbar { width: 6px; }
+
         ::-webkit-scrollbar-track { background: transparent; }
+
         ::-webkit-scrollbar-thumb { background: rgba(125,196,185,0.15); border-radius: 3px; }
+
         ::-webkit-scrollbar-thumb:hover { background: rgba(125,196,185,0.3); }
 
+
+
         :root {
+
             --mint: #7DC4B9; --ice: #65B6ED; --gold: #F4D05C; --pink: #FF3366;
+
             --chalk: #FFF; --void: #020202; --surface: #0a0a0a;
+
         }
+
+
 
         body {
+
             background: var(--void); color: var(--chalk);
+
             font-family: 'Inter', sans-serif; overflow-x: hidden;
+
             -webkit-font-smoothing: antialiased;
+
             -webkit-tap-highlight-color: transparent;
+
             overscroll-behavior: none;
+
         }
+
+
 
         a { color: inherit; text-decoration: none; }
+
         img { max-width: 100%; display: block; }
 
+
+
         .film-grain {
+
             position: fixed; inset: 0; z-index: 50; pointer-events: none;
+
             background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.95" numOctaves="4" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+
             opacity: 0.08; mix-blend-mode: screen;
+
         }
+
+
 
         .bg-vignette {
+
             position: fixed; inset: 0; z-index: 5; pointer-events: none;
+
             background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.8) 100%);
+
         }
+
+
 
         #webgl-bg {
+
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+
             z-index: 1; pointer-events: none; opacity: 0.4;
+
         }
+
+
 
         #scan-lines {
+
             position: fixed; inset: 0; z-index: 9997; pointer-events: none;
+
             opacity: 0.035;
+
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,200,0.025) 2px, rgba(0,255,200,0.025) 4px);
+
         }
+
+
 
         button, #start-game-btn, #save-score-btn, #hamburger, .btn-primary, .nav-link {
+
             -webkit-tap-highlight-color: transparent;
+
             touch-action: manipulation;
+
         }
+
         button:active, #start-game-btn:active, #save-score-btn:active, .btn-primary:active {
+
             transform: scale(0.95);
+
             transition: transform 0.1s;
+
         }
+
         #wa-float {
+
             position: fixed; bottom: 24px; right: 24px; z-index: 99;
+
             width: 56px; height: 56px; border-radius: 50%;
+
             background: #25D366; color: #fff; display: flex;
+
             align-items: center; justify-content: center;
+
             font-size: 1.6rem; text-decoration: none;
+
             box-shadow: 0 4px 16px rgba(37,211,102,0.3);
+
             transition: transform 0.3s, box-shadow 0.3s;
+
             animation: waPulse 2s ease-in-out infinite;
+
         }
+
         #wa-float:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(37,211,102,0.5); }
+
         @keyframes waPulse { 0%,100% { box-shadow: 0 4px 16px rgba(37,211,102,0.3); } 50% { box-shadow: 0 4px 28px rgba(37,211,102,0.65); } }
+
         @media (max-width: 768px) { #wa-float { bottom: calc(16px + env(safe-area-inset-bottom, 0px)); right: 16px; width: 50px; height: 50px; font-size: 1.4rem; } }
+
         .cursor-dot {
+
             position: fixed; pointer-events: none; z-index: 9998;
+
             width: 5px; height: 5px; border-radius: 50%;
+
             transition: opacity 0.3s ease, transform 0.3s ease;
+
             will-change: transform, opacity; mix-blend-mode: screen;
+
         }
+
+
 
         #cursor-glow {
+
             position: fixed; width: 320px; height: 320px; border-radius: 50%;
+
             background: radial-gradient(circle at center, rgba(125,196,185,0.12) 0%, transparent 65%);
+
             pointer-events: none; z-index: 60;
+
             transform: translate(-50%, -50%);
+
             transition: opacity 0.4s;
+
             will-change: left, top;
+
         }
+
         #cursor-glow.is-hidden { opacity: 0; }
 
+
+
         #loading-overlay {
+
             position: fixed; inset: 0; z-index: 9999;
+
             background: var(--void);
+
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+
             transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.8, 0.3, 1);
+
             pointer-events: all;
+
         }
+
         #loading-overlay.done { opacity: 0; transform: scale(1.08); pointer-events: none; }
+
         #loading-overlay.hidden { display: none; }
+
         #load-logo {
+
             width: 70px; height: 70px; margin-bottom: 1.5rem;
+
             animation: loadPulse 1.8s ease-in-out infinite;
+
         }
+
         @keyframes loadPulse {
+
             0%,100% { transform: scale(0.85); }
+
             50% { transform: scale(1.1); }
+
         }
+
         #load-title {
+
             font-family: 'Anton', sans-serif; font-size: clamp(3.5rem, 10vw, 7rem);
+
             letter-spacing: 0.08em; text-transform: uppercase;
+
             color: transparent; -webkit-text-stroke: 2px var(--chalk);
+
             opacity: 0.9; animation: loadFlicker 2s ease-in-out infinite alternate;
+
         }
+
         @keyframes loadFlicker {
+
             0% { opacity: 0.85; transform: skew(0deg); }
+
             15% { opacity: 1; transform: skew(-1deg); text-shadow: 2px 0 var(--pink), -2px 0 var(--ice); }
+
             30% { opacity: 0.9; transform: skew(0deg); text-shadow: none; }
+
             100% { opacity: 1; }
+
         }
+
         #load-sub {
+
             font-family: 'Inter', sans-serif; font-weight: 300; font-size: 0.75rem;
+
             letter-spacing: 0.7em; text-transform: uppercase; color: var(--chalk);
+
             opacity: 0.4; margin-top: 1.2rem;
+
             animation: loadFade 1.5s ease 0.6s both;
+
         }
+
         @keyframes loadFade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 0.4; transform: translateY(0); } }
 
+
+
         #page-progress {
+
             position: fixed; left: 0; bottom: 0; width: 100%; height: 2px;
+
             z-index: 100; pointer-events: none; background: rgba(255,255,255,0.02);
+
         }
+
         #page-progress-bar {
+
             height: 100%; width: 0%;
+
             background: linear-gradient(90deg, var(--mint), var(--ice), var(--pink));
+
             box-shadow: 0 0 12px rgba(125,196,185,0.4);
+
             transition: width 0.1s ease-out;
+
         }
+
+
 
         .sticker-banner {
+
             position: fixed; top: 0; left: 0; width: 100%; z-index: 45;
+
             height: 28px; display: flex; align-items: center; justify-content: center;
+
             background: var(--void);
+
             border-bottom: 1px solid rgba(125,196,185,0.15);
+
             font-size: 0.6rem; letter-spacing: 0.1em; color: var(--mint);
+
             pointer-events: none;
+
         }
+
         nav {
+
             position: fixed; top: 28px; left: 0; width: 100%; z-index: 40;
+
             padding: 1.2rem 2rem;
+
             display: flex; justify-content: space-between; align-items: center;
+
         }
+
         nav .logo {
+
             display: flex; align-items: center; gap: 0.8rem;
+
             font-family: 'Anton', sans-serif; font-size: 1.1rem;
+
             letter-spacing: 0.15em; text-transform: uppercase; color: var(--chalk);
+
             text-decoration: none; cursor: pointer;
+
             transition: opacity 0.3s;
+
         }
+
         nav .logo:hover { opacity: 0.75; }
+
         nav .logo img { width: 28px; height: 28px; }
+
         nav .nav-links { display: flex; gap: 2rem; align-items: center; }
+
         nav .nav-links a {
+
             font-family: 'Inter', sans-serif; font-size: 0.7rem;
+
             font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase;
+
             color: var(--chalk); opacity: 0.5; transition: opacity 0.3s;
+
         }
+
         nav .nav-links a:hover { opacity: 1; }
+
         #lang-toggle {
+
             font-family: 'Inter', sans-serif; font-size: 0.6rem;
+
             font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+
             background: transparent; border: 1px solid rgba(255,255,255,0.15);
+
             color: var(--chalk); cursor: pointer; padding: 0.3rem 0.6rem;
+
             border-radius: 4px; transition: opacity 0.3s, border-color 0.3s, color 0.3s;
+
             display: flex; align-items: center; gap: 0.3rem;
+
         }
+
         #lang-toggle:hover { border-color: var(--mint); color: var(--mint); }
+
         #lang-toggle .active-lang { color: var(--mint); }
+
         #lang-toggle .sep { opacity: 0.3; }
+
         #hamburger {
+
             display: none; background: none; border: none; cursor: pointer;
+
             padding: 6px; z-index: 60;
+
         }
+
         #hamburger span {
+
             display: block; width: 22px; height: 2px; background: var(--chalk);
+
             margin: 5px 0; transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.3, 1), opacity 0.3s cubic-bezier(0.2, 0.8, 0.3, 1);
+
         }
+
         #hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+
         #hamburger.open span:nth-child(2) { opacity: 0; }
+
         #hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
         #mobile-drawer {
+
             position: fixed; inset: 0; z-index: 55;
+
             background: rgba(2,2,2,0.97); backdrop-filter: blur(20px);
+
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+
             opacity: 0; pointer-events: none;
+
             transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+
         }
+
         #mobile-drawer.open { opacity: 1; pointer-events: all; }
+
         #mobile-drawer a {
+
             font-family: 'Anton', sans-serif; font-size: 2.8rem;
+
             letter-spacing: 0.05em; text-transform: uppercase;
+
             color: rgba(255,255,255,0.15); padding: 1rem 2rem;
+
             transition: opacity 0.3s, border-color 0.3s, color 0.3s;
+
         }
+
         #mobile-drawer a:hover { color: var(--mint); }
 
+
+
         #hero {
+
             position: relative; width: 100%; min-height: 100vh;
+
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+
             text-align: center; z-index: 10; overflow: hidden;
+
             padding: 6.5rem 2rem 4rem;
+
         }
+
         #hero::before {
+
             content: ''; position: absolute; inset: 0;
+
             background: radial-gradient(ellipse at 50% 50%, rgba(125,196,185,0.04) 0%, transparent 60%);
+
             pointer-events: none;
+
         }
+
         #hero .brand-mark {
+
             font-family: 'Anton', sans-serif; font-size: clamp(5rem, 18vw, 14rem);
+
             line-height: 0.85; letter-spacing: 0.05em; text-transform: uppercase;
+
             color: var(--chalk); position: relative; z-index: 2;
+
             text-shadow: 0 0 60px rgba(125,196,185,0.15);
+
         }
+
         #hero .brand-mark .mint-highlight { color: var(--mint); }
+
         #hero .tagline {
+
             font-family: 'Inter', sans-serif; font-weight: 300;
+
             font-size: clamp(0.85rem, 1.5vw, 1.2rem);
+
             letter-spacing: 0.6em; text-transform: uppercase;
+
             color: var(--chalk); opacity: 0.35; margin-top: 1.5rem;
+
             position: relative; z-index: 2;
+
         }
+
         #hero .cta-row {
+
             margin-top: 2.8rem; display: flex; gap: 1rem;
+
             position: relative; z-index: 2; flex-wrap: wrap; justify-content: center;
+
         }
+
         .btn-primary {
+
             font-family: 'Anton', sans-serif; font-size: 1rem;
+
             letter-spacing: 0.15em; text-transform: uppercase;
+
             padding: 1rem 3rem; border: 2px solid var(--chalk);
+
             background: transparent; color: var(--chalk);
+
             cursor: pointer; transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), border-color 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), background-color 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+
             border-radius: 8px;
+
         }
+
         .btn-primary:hover {
+
             background: var(--mint); border-color: var(--mint); color: var(--void);
+
             box-shadow: 0 0 40px rgba(125,196,185,0.3);
+
         }
+
         .btn-ghost {
+
             font-family: 'Anton', sans-serif; font-size: 1rem;
+
             letter-spacing: 0.15em; text-transform: uppercase;
+
             padding: 1rem 3rem; border: 2px solid rgba(255,255,255,0.15);
+
             background: transparent; color: var(--chalk); opacity: 0.6;
+
             cursor: pointer; transition: opacity 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), border-color 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.3, 1), background-color 0.4s cubic-bezier(0.2, 0.8, 0.3, 1);
+
             border-radius: 8px;
+
         }
+
         .btn-ghost:hover { opacity: 1; border-color: var(--chalk); }
 
+
+
         .scroll-indicator {
+
             position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+
             z-index: 2; opacity: 0.25; animation: scrollBounce 2s ease-in-out infinite;
+
         }
+
         .scroll-indicator span {
+
             display: block; width: 1px; height: 40px;
+
             background: linear-gradient(180deg, var(--chalk), transparent);
+
         }
+
         @keyframes scrollBounce { 0%,100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(8px); } }
 
+
+
         section {
+
             position: relative; z-index: 10; padding: 7rem 2rem;
+
         }
+
         .section-label {
+
             font-family: 'Inter', sans-serif; font-size: 0.65rem;
+
             font-weight: 500; letter-spacing: 0.5em; text-transform: uppercase;
+
             color: var(--mint); opacity: 0.5; margin-bottom: 1rem;
+
         }
+
         .section-title {
+
             font-family: 'Anton', sans-serif; font-size: clamp(2.5rem, 6vw, 5rem);
+
             line-height: 0.9; text-transform: uppercase; letter-spacing: 0.02em;
+
             margin-bottom: 1.5rem;
+
         }
+
         .section-desc {
+
             font-family: 'Inter', sans-serif; font-weight: 300;
+
             font-size: clamp(0.9rem, 1.3vw, 1.1rem); line-height: 1.6;
+
             color: rgba(255,255,255,0.5); max-width: 600px;
+
         }
+
+
 
         .container { max-width: 1200px; margin: 0 auto; }
+
         .container-wide { max-width: 1400px; margin: 0 auto; }
 
+
+
         .product-grid {
+
             display: grid;
+
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+
             gap: 1.5rem; margin-top: 3rem;
+
         }
+
         .product-card {
+
             position: relative; aspect-ratio: 3/4;
+
             border-radius: 12px; overflow: hidden;
+
             background: rgba(10,10,10,0.5); backdrop-filter: blur(10px);
+
             border: 1px solid rgba(255,255,255,0.04);
+
             transition: border-color 0.5s cubic-bezier(0.2, 0.8, 0.3, 1), box-shadow 0.5s cubic-bezier(0.2, 0.8, 0.3, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1);
+
             cursor: pointer; display: flex; flex-direction: column;
+
         }
+
         .product-card:hover {
+
             border-color: rgba(125,196,185,0.25);
+
             box-shadow: 0 8px 40px rgba(125,196,185,0.1);
+
             transform: translateY(-6px);
+
         }
+
         .product-card .card-visual {
+
             flex: 1; display: flex; align-items: center; justify-content: center;
+
             position: relative; overflow: hidden;
+
         }
+
         .product-card .card-visual .placeholder-svg {
+
             opacity: 0.15; transition: opacity 0.5s;
+
             width: 60%; height: 60%;
+
         }
+
         .product-card:hover .card-visual .placeholder-svg { opacity: 0.3; }
+
         .product-card .card-info {
+
             padding: 1.2rem 1.2rem 1.5rem;
+
             border-top: 1px solid rgba(255,255,255,0.04);
+
         }
+
         .product-card .card-info .product-name {
+
             font-family: 'Anton', sans-serif; font-size: 1.1rem;
+
             letter-spacing: 0.03em; text-transform: uppercase;
+
         }
+
         .product-card .card-info .product-category {
+
             font-family: 'Inter', sans-serif; font-size: 0.65rem;
+
             font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase;
+
             color: rgba(255,255,255,0.3); margin-top: 0.3rem;
+
         }
+
         .product-card .card-info .product-price {
+
             font-family: 'Inter', sans-serif; font-size: 0.9rem;
+
             font-weight: 700; margin-top: 0.5rem; color: var(--mint);
+
         }
+
         .product-card .card-badge {
+
             position: absolute; top: 1rem; right: 1rem;
+
             font-family: 'Inter', sans-serif; font-size: 0.55rem;
+
             font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+
             padding: 0.3rem 0.7rem; border-radius: 8px;
+
             background: var(--pink); color: var(--chalk);
+
         }
+
+
 
         #ethos { background: linear-gradient(180deg, var(--void) 0%, var(--surface) 100%); }
+
         .ethos-grid {
+
             display: grid; grid-template-columns: 1fr 1fr;
+
             gap: 4rem; align-items: center;
+
         }
+
         .ethos-visual {
+
             position: relative; aspect-ratio: 1; border-radius: 8px;
+
             overflow: hidden; display: flex; align-items: center; justify-content: center;
+
             background: radial-gradient(ellipse at center, rgba(125,196,185,0.04), transparent);
+
             border: 1px solid rgba(255,255,255,0.04);
+
         }
+
         .ethos-visual .mascot {
+
             width: 55%;
+
             animation: float 6s ease-in-out infinite;
+
         }
+
         @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+
         .ethos-visual .ring {
+
             position: absolute; width: 80%; height: 80%; border-radius: 50%;
+
             border: 1px solid rgba(125,196,185,0.08);
+
             animation: spin 25s linear infinite;
+
         }
+
         .ethos-visual .ring-2 {
+
             position: absolute; width: 60%; height: 60%; border-radius: 50%;
+
             border: 1px dashed rgba(247,208,92,0.06);
+
             animation: spin 35s linear infinite reverse;
+
         }
+
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
+
+
         #final-cta {
+
             text-align: center; padding: 8rem 2rem;
+
             background: linear-gradient(180deg, var(--surface), var(--void));
+
         }
+
         #final-cta .section-title { color: var(--chalk); }
+
         #final-cta .section-desc { margin: 0 auto 2.5rem; }
 
+
+
         footer {
+
             position: relative; z-index: 10; padding: 3rem 2rem;
+
             border-top: 1px solid rgba(255,255,255,0.03);
+
         }
+
         .footer-grid {
+
             max-width: 1200px; margin: 0 auto;
+
             display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+
             gap: 3rem;
+
         }
+
         footer h4 {
+
             font-family: 'Anton', sans-serif; font-size: 0.85rem;
+
             letter-spacing: 0.12em; text-transform: uppercase;
+
             margin-bottom: 1rem; color: rgba(255,255,255,0.3);
+
         }
+
         footer a {
+
             display: block; font-family: 'Inter', sans-serif; font-size: 0.8rem;
+
             color: rgba(255,255,255,0.25); margin-bottom: 0.5rem;
+
             transition: color 0.3s;
+
         }
+
         footer a:hover { color: var(--mint); }
+
         .footer-bottom {
+
             max-width: 1200px; margin: 2rem auto 0; padding-top: 2rem;
+
             border-top: 1px solid rgba(255,255,255,0.03);
+
             font-family: 'Inter', sans-serif; font-size: 0.7rem;
+
             color: rgba(255,255,255,0.12);
+
             display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+
         }
+
+
 
         .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.3, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.3, 1); }
+
         .reveal.revealed { opacity: 1; transform: translateY(0); }
+
         .reveal-d1 { transition-delay: 0.1s; }
+
         .reveal-d2 { transition-delay: 0.2s; }
+
         .reveal-d3 { transition-delay: 0.3s; }
+
         .reveal-d4 { transition-delay: 0.4s; }
 
+
+
         .text-mint { color: var(--mint); }
+
         .text-gold { color: var(--gold); }
+
         .text-ice { color: var(--ice); }
+
         .text-pink { color: var(--pink); }
 
+
+
         ::-webkit-scrollbar { width: 3px; }
+
         ::-webkit-scrollbar-track { background: var(--void); }
+
         ::-webkit-scrollbar-thumb { background: var(--mint); border-radius: 4px; }
 
+
+
         #hero-city {
+
             position: absolute; bottom: 0; left: 0; width: 200%; height: 220px;
+
             z-index: 1; pointer-events: none; opacity: 0.12;
+
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="220"><rect x="15" y="100" width="45" height="120" fill="%23282828"/><rect x="80" y="70" width="70" height="150" fill="%231a1a1a"/><rect x="190" y="30" width="50" height="190" fill="%23333"/><rect x="280" y="85" width="55" height="135" fill="%23222"/><rect x="380" y="45" width="75" height="175" fill="%232a2a2a"/><rect x="500" y="95" width="45" height="125" fill="%23181818"/><rect x="590" y="55" width="60" height="165" fill="%23282828"/><rect x="25" y="115" width="4" height="4" fill="%2365B6ED" opacity=".4"/><rect x="35" y="115" width="4" height="4" fill="%2365B6ED" opacity=".4"/><rect x="45" y="115" width="4" height="4" fill="%2365B6ED" opacity=".4"/><rect x="55" y="115" width="4" height="4" fill="%2365B6ED" opacity=".4"/><rect x="95" y="80" width="5" height="5" fill="%23F4D05C" opacity=".35"/><rect x="110" y="80" width="5" height="5" fill="%23F4D05C" opacity=".35"/><rect x="125" y="80" width="5" height="5" fill="%23F4D05C" opacity=".35"/><rect x="140" y="80" width="5" height="5" fill="%23F4D05C" opacity=".35"/><rect x="95" y="100" width="5" height="5" fill="%23F4D05C" opacity=".35"/><rect x="140" y="100" width="5" height="5" fill="%23F4D05C" opacity=".35"/><rect x="200" y="48" width="5" height="5" fill="%2365B6ED" opacity=".4"/><rect x="212" y="48" width="5" height="5" fill="%2365B6ED" opacity=".4"/><rect x="224" y="48" width="5" height="5" fill="%2365B6ED" opacity=".4"/><rect x="200" y="68" width="5" height="5" fill="%2365B6ED" opacity=".4"/><rect x="224" y="68" width="5" height="5" fill="%2365B6ED" opacity=".4"/><rect x="295" y="100" width="4" height="4" fill="%23FF3366" opacity=".3"/><rect x="305" y="100" width="4" height="4" fill="%23FF3366" opacity=".3"/><rect x="315" y="100" width="4" height="4" fill="%23FF3366" opacity=".3"/><rect x="400" y="58" width="5" height="5" fill="%2365B6ED" opacity=".35"/><rect x="415" y="58" width="5" height="5" fill="%2365B6ED" opacity=".35"/><rect x="430" y="58" width="5" height="5" fill="%2365B6ED" opacity=".35"/><rect x="405" y="90" width="4" height="4" fill="%23FF3366" opacity=".25"/><rect x="418" y="90" width="4" height="4" fill="%23FF3366" opacity=".25"/><rect x="605" y="70" width="3" height="3" fill="%23F4D05C" opacity=".3"/><rect x="618" y="70" width="3" height="3" fill="%23F4D05C" opacity=".3"/><rect x="500" y="120" width="4" height="3" fill="%237DC4B9" opacity=".25"/><rect x="512" y="120" width="4" height="3" fill="%237DC4B9" opacity=".25"/><rect x="100" y="140" width="3" height="3" fill="%23FFF" opacity=".2"/><rect x="520" y="130" width="6" height="3" fill="%23F4D05C" opacity=".2"/></svg>');
+
             animation: heroCityScroll 30s linear infinite;
+
         }
+
         @keyframes heroCityScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
+
+
         #city-reflection {
+
             position: absolute; bottom: 0; left: 0; width: 100%; height: 40px;
+
             z-index: 1; pointer-events: none; opacity: 0.06;
+
             background: linear-gradient(180deg, rgba(125,196,185,0.08) 0%, transparent 100%);
+
         }
+
+
 
         #rain-canvas {
+
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+
             z-index: 2; pointer-events: none;
+
         }
+
+
 
         .neon-divider {
+
             position: relative; width: 100%; height: 50px; overflow: hidden;
+
             display: flex; align-items: center; justify-content: center; z-index: 10;
+
         }
+
         .neon-divider-inner {
+
             font-family: 'Inter', sans-serif; font-size: clamp(0.45rem, 1vw, 0.75rem);
+
             letter-spacing: 0.5em; text-transform: uppercase; font-weight: 500;
+
             color: rgba(255,255,255,0.2); position: relative;
+
             animation: dividerFlicker 3s ease-in-out infinite;
+
         }
+
         .neon-divider-inner::before, .neon-divider-inner::after {
+
             content: ''; position: absolute; top: 50%; height: 1px; width: 35vw;
+
             background: linear-gradient(90deg, transparent, rgba(125,196,185,0.25), transparent);
+
         }
+
         .neon-divider-inner::before { right: 100%; margin-right: 1.5rem; }
+
         .neon-divider-inner::after { left: 100%; margin-left: 1.5rem; }
+
         @keyframes dividerFlicker {
+
             0%,100% { opacity: 0.25; text-shadow: none; }
+
             5% { opacity: 0.7; text-shadow: 0 0 8px rgba(125,196,185,0.4); color: var(--mint); }
+
             10% { opacity: 0.25; text-shadow: none; color: rgba(255,255,255,0.2); }
+
             50% { opacity: 0.3; }
+
             55% { opacity: 0.8; text-shadow: 0 0 12px rgba(125,196,185,0.5), 0 0 25px rgba(125,196,185,0.15); color: var(--mint); }
+
             60% { opacity: 0.3; }
+
             100% { opacity: 0.25; color: rgba(255,255,255,0.2); }
+
         }
+
+
 
         .glitch-text {
+
             position: relative; display: inline-block;
+
         }
+
         .glitch-text::before, .glitch-text::after {
+
             content: attr(data-text); position: absolute; inset: 0;
+
             pointer-events: none;
+
         }
+
         .glitch-text::before {
+
             color: var(--pink); z-index: -1;
+
             animation: glitchOffset1 3s infinite linear alternate-reverse;
+
         }
+
         .glitch-text::after {
+
             color: var(--ice); z-index: -1;
+
             animation: glitchOffset2 2.8s infinite linear alternate-reverse;
+
         }
+
         @keyframes glitchOffset1 {
+
             0% { transform: translate(0); }
+
             20% { transform: translate(-2px, 1px); }
+
             40% { transform: translate(2px, -1px); }
+
             60% { transform: translate(-1px, 2px); }
+
             80% { transform: translate(3px, 0); }
+
             100% { transform: translate(0); }
+
         }
+
         @keyframes glitchOffset2 {
+
             0% { transform: translate(0); }
+
             15% { transform: translate(3px, -1px); }
+
             30% { transform: translate(-2px, 1px); }
+
             45% { transform: translate(1px, -2px); }
+
             60% { transform: translate(-3px, 0); }
+
             80% { transform: translate(2px, 1px); }
+
             100% { transform: translate(0); }
+
         }
+
+
 
         @keyframes borderPulse {
+
             0%,100% { border-color: rgba(125,196,185,0.25); box-shadow: 0 0 20px rgba(125,196,185,0.08); }
+
             50% { border-color: rgba(255, 51, 102, 0.45); box-shadow: 0 0 35px rgba(255, 51, 102, 0.15); }
+
         }
+
         #game-container.game-active {
+
             animation: borderPulse 4s ease-in-out infinite;
+
             touch-action: none;
+
             perspective: 600px;
+
             transform: rotateX(var(--game-tilt, 1.5deg));
+
             transform-origin: bottom center;
+
             transition: perspective 0.3s;
+
         }
+
+
 
         #game-container {
+
             position: relative; width: 100%; height: clamp(300px, 55vh, 450px);
+
             touch-action: manipulation;
+
             background: radial-gradient(circle at center, #0f0f20 0%, #030308 70%, #000 100%);
+
             border: 2px solid rgba(125,196,185,0.2); overflow: hidden; border-radius: 12px;
+
             -webkit-user-select: none; user-select: none;
+
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+
         }
+
         #sky-bg {
+
             position: absolute; top: 0; left: 0; width: 200%; height: 100%;
+
             background: linear-gradient(180deg, #0a0a14 0%, #0d0d1a 40%, #111122 70%, #0f0f1a 100%);
+
             z-index: 1; overflow: hidden;
+
         }
+
         #sky-bg::before {
+
             content: ''; position: absolute; inset: 0;
+
             background: radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.4) 0%, transparent 100%),
+
                         radial-gradient(1px 1px at 30% 10%, rgba(255,255,255,0.3) 0%, transparent 100%),
+
                         radial-gradient(1px 1px at 50% 30%, rgba(255,255,255,0.5) 0%, transparent 100%),
+
                         radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,0.2) 0%, transparent 100%),
+
                         radial-gradient(1px 1px at 90% 25%, rgba(255,255,255,0.4) 0%, transparent 100%),
+
                         radial-gradient(1px 1px at 15% 35%, rgba(125,196,185,0.3) 0%, transparent 100%),
+
                         radial-gradient(2px 2px at 60% 40%, rgba(255,255,255,0.15) 0%, transparent 100%),
+
                         radial-gradient(2px 2px at 80% 8%, rgba(255,255,255,0.2) 0%, transparent 100%),
+
                         radial-gradient(1px 1px at 40% 45%, rgba(125,196,185,0.25) 0%, transparent 100%);
+
             background-size: 200px 200px, 250px 250px, 180px 180px, 220px 220px, 190px 190px, 210px 210px, 240px 240px, 200px 200px, 260px 260px;
+
             animation: twinkle 3s ease-in-out infinite alternate;
+
         }
+
         @keyframes twinkle { 0% { opacity: 0.6; } 100% { opacity: 1; } }
+
         #far-bg {
+
             position: absolute; bottom: 0; left: 0; width: 200%; height: 70%;
+
             z-index: 2; opacity: 0.25;
+
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='300'%3E%3Crect x='0' y='180' width='40' height='120' fill='%23111'/%3E%3Crect x='55' y='140' width='30' height='160' fill='%231a1a1a'/%3E%3Crect x='100' y='160' width='55' height='140' fill='%23151515'/%3E%3Crect x='170' y='100' width='25' height='200' fill='%23181818'/%3E%3Crect x='210' y='150' width='45' height='150' fill='%23111'/%3E%3Crect x='270' y='120' width='35' height='180' fill='%231a1a1a'/%3E%3Crect x='320' y='170' width='50' height='130' fill='%23151515'/%3E%3Crect x='385' y='90' width='30' height='210' fill='%23181818'/%3E%3Crect x='430' y='140' width='55' height='160' fill='%23111'/%3E%3Crect x='500' y='110' width='25' height='190' fill='%231a1a1a'/%3E%3Crect x='540' y='160' width='40' height='140' fill='%23151515'/%3E%3Crect x='600' y='130' width='35' height='170' fill='%23111'/%3E%3Crect x='650' y='180' width='50' height='120' fill='%23181818'/%3E%3Crect x='715' y='100' width='30' height='200' fill='%231a1a1a'/%3E%3Crect x='760' y='150' width='45' height='150' fill='%23111'/%3E%3Crect x='820' y='120' width='55' height='180' fill='%23151515'/%3E%3Crect x='890' y='170' width='25' height='130' fill='%23181818'/%3E%3Crect x='930' y='140' width='40' height='160' fill='%23111'/%3E%3Crect x='985' y='90' width='35' height='210' fill='%231a1a1a'/%3E%3Crect x='1040' y='160' width='50' height='140' fill='%23151515'/%3E%3Crect x='1105' y='110' width='30' height='190' fill='%23111'/%3E%3C/svg%3E");
+
             background-repeat: repeat-x; background-position: 0 bottom; background-size: 1200px 300px;
+
         }
+
         #near-bg {
+
             position: absolute; bottom: 0; left: 0; width: 200%; height: 80%;
+
             z-index: 3; opacity: 0.45;
+
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='350'%3E%3Crect x='0' y='200' width='65' height='150' fill='%230f0f0f'/%3E%3Crect x='5' y='230' width='8' height='6' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='25' y='250' width='8' height='6' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='45' y='220' width='8' height='6' fill='%23F4D05C' opacity='.3'/%3E%3Crect x='80' y='140' width='45' height='210' fill='%23181818'/%3E%3Crect x='90' y='160' width='6' height='6' fill='%237DC4B9' opacity='.5'/%3E%3Crect x='105' y='200' width='6' height='6' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='140' y='170' width='70' height='180' fill='%23151515'/%3E%3Crect x='150' y='190' width='7' height='7' fill='%23FF3366' opacity='.4'/%3E%3Crect x='175' y='230' width='7' height='5' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='230' y='120' width='50' height='230' fill='%230f0f0f'/%3E%3Crect x='240' y='145' width='6' height='6' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='260' y='200' width='7' height='5' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='300' y='190' width='60' height='160' fill='%23181818'/%3E%3Crect x='315' y='210' width='8' height='6' fill='%23FF3366' opacity='.3'/%3E%3Crect x='380' y='150' width='55' height='200' fill='%23151515'/%3E%3Crect x='395' y='180' width='6' height='6' fill='%237DC4B9' opacity='.5'/%3E%3Crect x='455' y='100' width='40' height='250' fill='%230f0f0f'/%3E%3Crect x='460' y='130' width='7' height='7' fill='%23F4D05C' opacity='.4'/%3E%3Crect x='480' y='220' width='7' height='5' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='515' y='180' width='70' height='170' fill='%23181818'/%3E%3Crect x='530' y='195' width='6' height='6' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='605' y='130' width='50' height='220' fill='%23151515'/%3E%3Crect x='620' y='155' width='8' height='6' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='675' y='160' width='65' height='190' fill='%230f0f0f'/%3E%3Crect x='690' y='180' width='7' height='5' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='760' y='110' width='45' height='240' fill='%23181818'/%3E%3Crect x='770' y='140' width='6' height='6' fill='%23FF3366' opacity='.3'/%3E%3Crect x='825' y='200' width='55' height='150' fill='%23151515'/%3E%3Crect x='840' y='225' width='7' height='5' fill='%237DC4B9' opacity='.5'/%3E%3Crect x='900' y='140' width='60' height='210' fill='%230f0f0f'/%3E%3Crect x='915' y='170' width='8' height='6' fill='%23F4D05C' opacity='.4'/%3E%3Crect x='980' y='180' width='50' height='170' fill='%23181818'/%3E%3Crect x='995' y='200' width='6' height='6' fill='%237DC4B9' opacity='.3'/%3E%3Crect x='1050' y='120' width='55' height='230' fill='%23151515'/%3E%3Crect x='1065' y='150' width='7' height='7' fill='%23F4D05C' opacity='.5'/%3E%3Crect x='1120' y='190' width='70' height='160' fill='%230f0f0f'/%3E%3Crect x='1140' y='210' width='6' height='6' fill='%237DC4B9' opacity='.4'/%3E%3Crect x='1210' y='150' width='50' height='200' fill='%23181818'/%3E%3Crect x='1225' y='175' width='7' height='5' fill='%23FF3366' opacity='.3'/%3E%3Crect x='1280' y='130' width='60' height='220' fill='%23151515'/%3E%3Crect x='1300' y='160' width='8' height='6' fill='%237DC4B9' opacity='.5'/%3E%3C/svg%3E");
+
             background-repeat: repeat-x; background-position: 0 bottom; background-size: 1400px 350px;
+
         }
+
         #game-ground {
+
             position: absolute; bottom: 0; left: 0; width: 200%; height: 40px;
+
             background: linear-gradient(180deg, rgba(255, 51, 102, 0.35) 0%, rgba(125,196,185,0.03) 8px, #040409 100%);
+
             z-index: 4; border-top: 2px solid var(--pink);
+
             box-shadow: 0 -10px 25px rgba(255, 51, 102, 0.25);
+
         }
+
         #game-ground::after {
+
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+
             background-image: linear-gradient(90deg, rgba(125,196,185,0.12) 1px, transparent 1px);
+
             background-size: 80px 100%;
+
         }
+
         .mobile-game-btn {
+
             display: none; position: absolute; bottom: 50px; z-index: 22;
+
             width: 72px; height: 72px; border-radius: 50%;
+
             border: 2px solid rgba(255,255,255,0.1);
+
             background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+
             color: var(--chalk); font-family: 'Anton', sans-serif;
+
             font-size: 0.5rem; text-transform: uppercase;
+
             letter-spacing: 0.08em; cursor: pointer;
+
             touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+
             flex-direction: column; align-items: center;
+
             justify-content: center; gap: 1px; line-height: 1;
+
             transition: transform 0.1s, background 0.1s;
+
         }
+
         .mobile-game-btn:active {
+
             transform: scale(0.88);
+
             background: rgba(125,196,185,0.25);
+
             border-color: var(--mint);
+
         }
+
         #btn-jump { left: 12px; }
+
         #btn-duck { right: 12px; }
+
         #player-rig {
+
             position: absolute; bottom: 40px; left: 60px; width: 70px; height: 140px;
+
             z-index: 20; transform-origin: bottom center; will-change: transform;
+
         }
+
+
 
         #bunny-group {
+
             position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%);
+
             width: 52px; height: 116px; margin: 0; padding: 0;
+
         }
+
         #player-rig.is-ducking #bunny-group {
+
             transform: translateX(-50%) scaleY(0.55);
+
             transform-origin: bottom center;
+
             transition: transform 0.1s;
+
         }
+
+
 
         #bunny-face {
+
             position: absolute; top: 0; left: 0;
+
             width: 52px; height: 52px; z-index: 3; display: block;
+
         }
+
+
 
         #bunny-torso {
+
             position: absolute; top: 46px; left: 8px;
+
             width: 36px; height: 44px;
+
             background: linear-gradient(135deg, #181824 0%, #0d0d15 100%);
+
             border: 2px solid var(--mint);
+
             border-radius: 10px 10px 18px 18px; z-index: 2;
+
             box-shadow: 0 0 15px rgba(125, 196, 185, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1);
+
             box-sizing: border-box;
+
             overflow: hidden;
+
         }
+
         #bunny-torso::before {
+
             content: '⚡'; position: absolute; top: 45%; left: 50%; transform: translate(-50%, -50%);
+
             font-size: 0.85rem; color: var(--gold);
+
             text-shadow: 0 0 8px var(--gold);
+
             font-family: 'Inter', sans-serif; font-weight: 900;
+
         }
+
+
 
         .bunny-arm {
+
             position: absolute; top: 58px; height: 3px;
+
             background: var(--mint); z-index: 4;
+
             box-shadow: 0 0 6px var(--mint);
+
         }
+
         #bunny-arm-l { right: 44px; width: 16px; }
+
         #bunny-arm-r { left: 44px; width: 16px; }
 
+
+
         #bunny-tail {
+
             position: absolute; top: 72px; left: 34px;
+
             width: 14px; height: 14px;
+
             background: #181824; border: 2px solid var(--mint);
+
             border-radius: 50%; z-index: 1;
+
             box-shadow: 0 0 8px rgba(125,196,185,0.3);
+
         }
+
+
 
         .bunny-leg {
+
             position: absolute; top: 90px; width: 3px; height: 26px;
+
             background: var(--mint); z-index: 1;
+
             box-shadow: 0 0 6px var(--mint);
+
         }
+
         #bunny-leg-l { left: 18px; }
+
         #bunny-leg-r { left: 31px; }
+
         .bunny-leg::after {
+
             content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+
             width: 14px; height: 7px; background: #000; border-radius: 4px;
+
             border-bottom: 3px solid var(--mint);
+
         }
+
+
 
         #skate-deck {
+
             position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+
             width: 76px; height: 6px;
+
             background: linear-gradient(90deg, var(--pink) 0%, var(--ice) 50%, var(--pink) 100%);
+
             border: 1px solid var(--chalk);
+
             border-radius: 6px; z-index: 8;
+
             box-shadow: 0 0 20px var(--pink), 0 8px 16px rgba(255, 51, 102, 0.4);
+
         }
+
         .skate-truck { position: absolute; bottom: -4px; width: 8px; height: 4px; background: #555; border-radius: 0 0 3px 3px; }
+
         .skate-truck.front { right: 10px; } .skate-truck.back { left: 10px; }
+
         .skate-wheel { 
+
             position: absolute; bottom: -5px; left: -5px; width: 18px; height: 10px; 
+
             background: radial-gradient(circle at center, var(--mint) 30%, #111 80%); 
+
             border: 1px solid var(--mint); 
+
             border-radius: 50%; 
+
             box-shadow: 0 0 8px var(--mint); 
+
         }
+
         .spin-wheels .skate-wheel { animation: spinFast 0.15s linear infinite; }
+
         @keyframes spinFast { 100% { transform: rotate(360deg); } }
 
+
+
         .game-obstacle { position: absolute; z-index: 15; will-change: transform; }
+
         .obs-briefcase { 
+
             width: 40px; height: 30px; 
+
             background: linear-gradient(135deg, #151520 0%, #0a0a0f 100%); 
+
             border: 2px solid var(--mint); 
+
             border-radius: 6px; bottom: 40px; 
+
             box-shadow: 0 0 15px rgba(125, 196, 185, 0.4), inset 0 0 8px rgba(125, 196, 185, 0.2); 
+
             display: flex; align-items: center; justify-content: center; 
+
         }
+
         .obs-briefcase::before { 
+
             content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); 
+
             width: 16px; height: 8px; border: 2px solid var(--mint); border-bottom: none; border-radius: 4px 4px 0 0; 
+
         }
+
         .obs-briefcase::after { 
+
             content: ''; position: absolute; top: -2px; left: 50%; transform: translateX(-50%); 
+
             width: 20px; height: 5px; background: var(--gold); border-radius: 2px; box-shadow: 0 0 8px var(--gold); 
+
         }
+
         .obs-flyer { 
+
             width: 65px; height: 35px; 
+
             background: rgba(255,51,102,0.12); 
+
             border: 2px solid var(--pink); 
+
             bottom: 130px; display: flex; align-items: center; justify-content: center; 
+
             color: var(--chalk); font-family: 'Anton', sans-serif; font-size: 14px; letter-spacing: 2px; 
+
             box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), inset 0 0 10px rgba(255, 51, 102, 0.25); 
+
             text-shadow: 0 0 8px var(--pink); 
+
             backdrop-filter: blur(2px);
+
             animation: floatObs 2s ease-in-out infinite, holoGlitch 4s linear infinite; 
+
         }
+
         .obs-sign { 
+
             width: 50px; height: 50px; 
+
             background: linear-gradient(135deg, #1a1505 0%, #0a0802 100%); 
+
             border: 2px solid var(--gold); border-radius: 10px; bottom: 120px; 
+
             display: flex; align-items: center; justify-content: center; 
+
             color: var(--gold); font-family: 'Anton', sans-serif; font-size: 11px; letter-spacing: 1px; 
+
             box-shadow: 0 0 20px rgba(244, 208, 92, 0.4), inset 0 0 10px rgba(244, 208, 92, 0.15); 
+
             text-shadow: 0 0 6px var(--gold); 
+
             animation: floatObs 2.5s ease-in-out infinite, neonFlickerObs 3s linear infinite; 
+
         }
+
+
 
         @keyframes floatObs { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+
         @keyframes holoGlitch {
+
             0%, 100% { transform: skew(0deg) scale(1); filter: hue-rotate(0deg); }
+
             92% { transform: skew(0deg) scale(1); }
+
             94% { transform: skew(-5deg) scaleX(1.05); filter: hue-rotate(90deg); }
+
             96% { transform: skew(5deg) scaleX(0.95); }
+
             98% { transform: skew(0deg) scale(1); filter: hue-rotate(0deg); }
-        }
-        @keyframes neonFlickerObs {
-            0%, 100% { opacity: 1; }
-            41% { opacity: 1; }
-            42% { opacity: 0.85; }
-            43% { opacity: 1; }
-            45% { opacity: 0.3; }
-            46% { opacity: 1; }
+
         }
 
+        @keyframes neonFlickerObs {
+
+            0%, 100% { opacity: 1; }
+
+            41% { opacity: 1; }
+
+            42% { opacity: 0.85; }
+
+            43% { opacity: 1; }
+
+            45% { opacity: 0.3; }
+
+            46% { opacity: 1; }
+
+        }
+
+
+
         .shake-board { animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+
         @keyframes shake { 10%,90% { transform: translate3d(-4px,0,0); } 20%,80% { transform: translate3d(6px,0,0); } 30%,50%,70% { transform: translate3d(-10px,0,0); } 40%,60% { transform: translate3d(10px,0,0); } }
 
 
 
+
+
+
+
         @media (max-width: 768px) {
+
             nav .nav-links { display: none; }
+
             #hamburger { display: block; }
+
             #hero .brand-mark { font-size: clamp(4rem, 15vw, 8rem); }
+
             .ethos-grid { grid-template-columns: 1fr; gap: 2rem; }
+
             .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+
             .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+
             .product-card .card-info .product-name { font-size: 0.85rem; }
+
             .cursor-dot { display: none; }
+
             section { padding: 4rem 1.5rem; }
+
             #hero-city { height: 150px; opacity: 0.08; }
+
             #game-container.game-active .mobile-game-btn { display: flex; }
+
         }
+
         @media (max-width: 480px) {
+
             .product-grid { grid-template-columns: 1fr; }
+
             .game-controls { flex-direction: column; align-items: stretch; gap: 0.5rem; }
+
             .game-controls > div:last-child { text-align: center; }
+
             #game-container { height: clamp(240px, 40vh, 340px); }
+
             #start-game-btn { padding: 0.75rem 1.5rem; font-size: 1rem; width: 90%; max-width: 280px; }
+
             #overlay-title { font-size: clamp(1.4rem, 6vw, 2rem) !important; }
+
             #player-name { width: 64px !important; font-size: 1.2rem !important; }
+
             #save-score-btn { padding: 0.4rem 0.75rem !important; font-size: 0.8rem !important; }
+
         }
+
         @media (max-width: 374px) {
+
             section { padding: 3rem 1rem; }
+
             .brand-mark { font-size: clamp(3rem, 12vw, 5rem) !important; }
+
             #game-container { height: clamp(200px, 35vh, 280px); }
+
             .game-controls span { font-size: 0.55rem !important; }
+
             #game-container .neon-divider { margin: 10vh auto; }
+
             .mobile-game-btn { width: 60px; height: 60px; bottom: 40px; }
+
         }
+
         @media (orientation: landscape) and (max-height: 500px) {
+
             #game-container { height: clamp(180px, 70vh, 320px); }
+
             section { padding: 2rem 1.5rem; }
+
             .mobile-game-btn { bottom: 28px; width: 56px; height: 56px; }
+
         }
+
         @media (prefers-reduced-motion: reduce) {
+
             *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+
         }
+
         /* ── Polish: nav glass, smooth modals, will-change ── */
+
         nav.scrolled { background: rgba(2,2,2,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(125,196,185,0.08); }
+
         .product-card { will-change: transform; }
+
         .reveal { will-change: transform, opacity; }
+
         #cart-drawer.open, #detail-overlay.open { animation: none; }
+
         section { content-visibility: auto; contain-intrinsic-size: 500px; }
+
         @keyframes skeletonPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 0.6; } }
+
         .skeleton { animation: skeletonPulse 1.5s ease-in-out infinite; background: rgba(125,196,185,0.06); border-radius: 8px; }
 
+
+
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
         .game-controls { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem; }
 
+
+
     </style>
+
 </head>
+
 <body>
 
+
+
     <div id="scan-lines"></div>
+
     <div class="film-grain"></div>
+
     <div class="bg-vignette"></div>
+
     <div id="webgl-bg"></div>
+
     <div id="cursor-glow" class="is-hidden"></div>
 
+
+
     <div id="loading-overlay">
+
         <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" id="load-logo" alt="Lucky Bunny">
+
         <h1 id="load-title">LUCKY BUNNY</h1>
+
         <p id="load-sub" data-lang="load_sub">Skateware</p>
+
     </div>
+
+
 
     <div id="page-progress"><div id="page-progress-bar"></div></div>
 
+
+
     <div class="sticker-banner" data-lang="store_sticker_banner">🎁 Llevate un sticker gratis con tu primer compra</div>
 
+
+
     <nav>
+
         <a href="/" class="logo">
+
             <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" alt="Lucky Bunny">
+
             <span>Lucky Bunny</span>
+
         </a>
+
         <div class="nav-links">
+
             <a href="#drops" data-lang="nav_drops">Lanzamientos</a>
+
             <a href="/store" data-lang="nav_store">Tienda</a>
+
             <a href="/about" data-lang="nav_about">Nosotros</a>
+
             <a href="#game-section" data-lang="nav_arcade">Arcade</a>
+
             <a href="#final-cta" data-lang="nav_connect">Contacto</a>
+
             <button id="lang-toggle"><span class="active-lang">ES</span><span class="sep">/</span>EN</button>
+
         </div>
+
         <button id="hamburger" aria-label="Menu">
+
             <span></span><span></span><span></span>
+
         </button>
+
     </nav>
+
     <div id="mobile-drawer">
+
         <a href="#drops" data-lang="nav_drops">Lanzamientos</a>
+
         <a href="/store" data-lang="nav_store">Tienda</a>
+
         <a href="/about" data-lang="nav_about">Nosotros</a>
+
         <a href="#game-section" data-lang="nav_arcade">Arcade</a>
+
         <a href="#final-cta" data-lang="nav_connect">Contacto</a>
+
     </div>
 
+
+
     <section id="hero">
+
         <canvas id="rain-canvas"></canvas>
+
         <div id="hero-city"></div>
+
         <div id="city-reflection"></div>
+
         <div class="brand-mark glitch-text" data-text="LUCKY BUNNY">
+
             LUCKY<br>
+
             <span class="mint-highlight">BUNNY</span>
+
         </div>
+
         <p class="tagline" data-lang="hero_tagline">Skatewear para los inquietos</p>
+
         <div class="cta-row">
+
             <button class="btn-primary" onclick="document.getElementById('drops').scrollIntoView({behavior:'smooth'})" data-lang="hero_shop">
+
                 Nueva Colección
+
             </button>
+
             <button class="btn-ghost" onclick="window.location.href='/store'" data-lang="hero_store">
+
                 Tienda Completa
+
             </button>
+
         </div>
+
         <div class="scroll-indicator"><span></span></div>
+
     </section>
+
+
 
     <div class="neon-divider"><span class="neon-divider-inner" data-lang="divider1">Entra</span></div>
 
+
+
     <section id="drops">
+
         <div class="container-wide">
+
             <p class="section-label reveal" data-lang="drops_label">Últimos Lanzamientos</p>
+
             <h2 class="section-title reveal reveal-d1" data-lang-html="drops_title">Nueva <span class="text-mint">Colección</span></h2>
+
             <p class="section-desc reveal reveal-d2" data-lang="drops_desc">Equipo fresco. Lanzamientos limitados. Cuando se acaba, se acaba.</p>
+
             <div class="product-grid" id="drops-grid">
+
                 <div class="product-card reveal revealed" onclick="window.location.href='/store#hoodie-test'" style="cursor:pointer;">
+
                     <div class="card-visual"><svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="#7DC4B9" stroke-width="0.5"/></svg></div>
+
                     <div class="card-info">
+
                         <div class="product-name">hoodie test</div>
+
                         <div class="product-category">Hoodies</div>
+
                         <div class="product-price">$5.000</div>
+
                     </div>
+
                 </div>
+
                 <div class="product-card reveal revealed" onclick="window.location.href='/store#hoodie-test'" style="cursor:pointer;">
+
                     <div class="card-visual"><svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="#7DC4B9" stroke-width="0.5"/></svg></div>
+
                     <div class="card-info">
+
                         <div class="product-name">hoodie test</div>
+
                         <div class="product-category">Hoodies</div>
+
                         <div class="product-price">$5.000</div>
+
                     </div>
+
                 </div>
+
                 <div class="product-card reveal revealed" onclick="window.location.href='/store#test'" style="cursor:pointer;">
+
                     <div class="card-visual"><svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5"/></svg></div>
+
                     <div class="card-info">
+
                         <div class="product-name">test</div>
+
                         <div class="product-category">Medias</div>
+
                         <div class="product-price">$3.000</div>
+
                     </div>
+
                 </div>
+
             </div>
+
             <div style="text-align:center;margin-top:2rem;">
+
                 <a href="/store" class="btn-ghost reveal reveal-d3" style="display:inline-flex;font-size:0.75rem;padding:0.7rem 2rem;" data-lang="drops_cta">Ver Tienda Completa →</a>
+
             </div>
+
         </div>
+
     </section>
+
+
 
     <div class="neon-divider"><span class="neon-divider-inner" data-lang="divider2">Nacido del Concreto</span></div>
 
+
+
     <section id="ethos">
+
         <div class="container">
+
             <div class="ethos-grid">
+
                 <div class="ethos-visual reveal">
+
                     <div class="ring"></div>
+
                     <div class="ring-2"></div>
+
                     <img src="https://i.ibb.co/FkrdRLDf/lb-sin-fondo-cara.png" class="mascot" alt="LB Mascot">
+
                 </div>
+
                 <div>
+
                     <p class="section-label reveal" data-lang="ethos_label">El Origen</p>
+
                     <h2 class="section-title reveal reveal-d1" data-lang-html="ethos_title">El Feliz<br>Accidente.</h2>
+
                     <p class="section-desc reveal reveal-d2" style="max-width: none;" data-lang="ethos_p1">
+
                         Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, 
+
                         cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida 
+
                         a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches 
+
                         en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte 
+
                         ocurre cuando decides que el universo está de tu lado.
+
                     </p>
+
                     <a href="/about" class="btn-ghost" style="display:inline-flex;margin-top:1.5rem;font-size:0.7rem;padding:0.6rem 1.5rem;" data-lang="ethos_cta">Conocé más sobre nosotros →</a>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
+
+
 
     <div class="neon-divider"><span class="neon-divider-inner" data-lang="divider3">Arcade</span></div>
+
     <section id="game-section">
+
         <div class="container-wide">
+
             <p class="section-label reveal" data-lang="game_label">Prueba Tu Suerte</p>
+
             <h2 class="section-title reveal reveal-d1" data-lang-html="game_title">El <span class="text-pink">Skate</span> 404</h2>
+
             <p class="section-desc reveal reveal-d2" style="margin-bottom:1rem;" data-lang="game_desc">Esquiva, dispara, colecciona. Be your own luck.</p>
 
+
+
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;font-size:0.65rem;font-family:'Inter',sans-serif;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.15em;">
+
                 <div style="display:flex;gap:1rem;">
+
                     <span style="border:1px solid rgba(255,255,255,0.1);padding:0.25rem 0.5rem;" data-lang="game_ctrl1">[ESPACIO] SALTAR</span>
+
                     <span style="border:1px solid rgba(255,255,255,0.1);padding:0.25rem 0.5rem;" data-lang="game_ctrl2">[ABAJO] AGACHARSE</span>
+
                     <span style="border:1px solid rgba(125,196,185,0.2);padding:0.25rem 0.5rem;color:var(--mint);">[DERECHA] DISPARAR</span>
+
                 </div>
+
                 <div style="font-family:'Anton',sans-serif;font-size:1.2rem;font-weight:700;display:flex;align-items:center;gap:1rem;">
+
                     <span data-lang="game_score">SUERTE</span>: <span id="score-display" style="color:var(--mint);">0000</span>
+
                     <span id="ammo-display" style="font-size:0.7rem;color:var(--gold);">🥕🥕🥕</span>
+
                 </div>
+
             </div>
+
+
 
             <div style="position:relative;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);box-shadow:0 10px 40px rgba(0,0,0,0.6);">
+
                 <canvas id="gameCanvas" width="1000" height="600" style="display:block;width:100%;height:auto;background:#020202;"></canvas>
+
                 <div id="game-overlay-el" onclick="window._startGame&&window._startGame()" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;cursor:pointer;">
+
                     <h3 id="overlay-title" style="pointer-events:none;font-family:'Anton',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);text-transform:uppercase;letter-spacing:0.02em;margin-bottom:1rem;text-shadow:0 0 30px rgba(125,196,185,0.2);color:var(--mint);" data-lang="game_ready">EL SKATE 404</h3>
+
                     <p style="pointer-events:none;font-family:'Inter',sans-serif;font-size:0.9rem;color:var(--chalk);text-transform:uppercase;letter-spacing:0.2em;animation:pulse 1.5s infinite;" data-lang="game_tap">Toca para empezar</p>
+
                 </div>
+
             </div>
 
+
+
             <div style="margin-top:1.5rem;max-width:300px;">
+
                 <h3 style="font-size:0.65rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--mint);margin-bottom:0.5rem;" data-lang="game_leaderboard">Mejores Puntajes</h3>
+
                 <div id="leaderboard-container" style="font-size:0.85rem;"></div>
+
             </div>
+
         </div>
+
     </section>
+
+
 
     <div class="neon-divider"><span class="neon-divider-inner" data-lang="divider4">Mantente Gold</span></div>
 
+
+
     <section id="final-cta">
+
         <div class="container">
+
             <p class="section-label reveal" data-lang="cta_label">Contactanos</p>
+
             <h2 class="section-title reveal reveal-d1" data-lang-html="cta_title">¿<span class="text-mint">Hablamos</span>?</h2>
+
             <p class="section-desc reveal reveal-d2" data-lang="cta_desc">
+
                 Charlamos de lo que necesites. Sin vueltas. — 5:55
+
             </p>
+
             <div class="cta-row" style="justify-content: center;">
+
                 <a href="/contacto" class="btn-primary reveal reveal-d3" style="text-decoration:none;display:inline-block;" data-lang="cta_btn">
+
                     Ir a Contacto
+
                 </a>
+
             </div>
+
         </div>
+
     </section>
 
+
+
     <footer>
+
         <div class="footer-grid">
+
             <div>
+
                 <h4>Lucky Bunny</h4>
+
                 <p style="font-family:'Inter',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.2);line-height:1.6;" data-lang="footer_tagline">
+
                     Skateware para los inquietos. Nacido en concreto, hecho para durar.
+
                 </p>
+
             </div>
+
             <div>
+
                 <h4 data-lang="footer_shop">Tienda</h4>
+
                 <a href="#" data-lang="footer_all">Todos los Lanzamientos</a>
+
                 <a href="#">Hoodies</a>
+
                 <a href="#" data-lang="footer_tees">Camisetas</a>
+
                 <a href="#" data-lang="footer_acc">Accesorios</a>
+
             </div>
+
         <div>
+
             <h4 data-lang="footer_connect">Redes</h4>
+
             <a href="https://www.instagram.com/LUCKYBUNNY.ARG" target="_blank" rel="noopener">Instagram</a>
+
             <a href="https://www.tiktok.com/@luckybunny.ar?_r=1&_t=ZS-96dYMLuPPOx" target="_blank" rel="noopener">TikTok</a>
+
             <a href="mailto:luckybunny.arg@gmail.com">Email</a>
+
         </div>
+
             <div>
+
                 <h4 data-lang="footer_info">Info</h4>
+
                 <a href="#" data-lang="footer_ship">Envíos</a>
+
                 <a href="#" data-lang="footer_returns">Devoluciones</a>
+
                 <a href="#" data-lang="footer_size">Guía de Tallas</a>
+
             <a href="/ayuda" data-lang="footer_help">Ayuda</a>
+
             <a href="/privacidad" data-lang="footer_privacy">Privacidad</a>
+
             </div>
+
         </div>
+
         <div class="footer-bottom">
+
             <span>&copy; 2026 Lucky Bunny. Todos los derechos reservados.</span>
+
             <span data-lang="footer_motto">Everything always works out. // Todo sale bien.</span>
+
         </div>
+
     </footer>
 
+
+
     <script>
+
         (function() {
+
             'use strict';
 
+
+
             const $ = (s) => document.querySelector(s);
+
             const $$ = (s) => document.querySelectorAll(s);
+
             const isMobile = window.innerWidth < 768;
 
+
+
             let currentLang = 'es';
+
             const i18n = {
+
                 store_sticker_banner: { es: '🎁 Llevate un sticker gratis con tu primer compra', en: '🎁 Free sticker with your first purchase' },
+
                 nav_drops: { es: 'Lanzamientos', en: 'Drops' },
+
                 nav_store: { es: 'Tienda', en: 'Store' },
+
                 nav_about: { es: 'Nosotros', en: 'About' },
+
                 nav_story: { es: 'Historia', en: 'Story' },
+
                 nav_arcade: { es: 'Arcade', en: 'Arcade' },
+
                 nav_connect: { es: 'Contacto', en: 'Connect' },
+
                 hero_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
+
                 hero_shop: { es: 'Nueva Colección', en: 'New Collection' },
+
                 hero_store: { es: 'Tienda Completa', en: 'Full Store' },
+
                 divider1: { es: 'Entra', en: 'Drop In' },
+
                 divider2: { es: 'El Feliz Accidente', en: 'The Happy Accident' },
+
                 divider3: { es: 'Arcade', en: 'Arcade' },
+
                 divider4: { es: 'Mantente Gold', en: 'Stay Gold' },
+
                 drops_label: { es: 'Últimos Lanzamientos', en: 'Latest Drops' },
+
                 drops_title: { es: 'Nueva <span class="text-mint">Colección</span>', en: 'New <span class="text-mint">Collection</span>' },
+
                 drops_desc: { es: 'Equipo fresco. Lanzamientos limitados. Cuando se acaba, se acaba.', en: 'Fresh gear. Limited drops. When it\'s gone, it\'s gone.' },
+
                 drops_cta: { es: 'Ver Tienda Completa →', en: 'See Full Store →' },
+
                 cat_outerwear: { es: 'Ropa Exterior', en: 'Outerwear' },
+
                 cat_tops: { es: 'Camisetas', en: 'Tops' },
+
                 cat_accessories: { es: 'Accesorios', en: 'Accessories' },
+
                 cat_bottoms: { es: 'Pantalones', en: 'Bottoms' },
+
                 ethos_label: { es: 'El Origen', en: 'The Origin' },
+
                 ethos_title: { es: 'El Feliz<br>Accidente.', en: 'The Happy<br>Accident.' },
+
                 ethos_p1: { es: 'Lucky Bunny no nació en una sala de juntas corporativa. Apareció de un error en 2014, cuando una mano se resbaló intentando dibujar un símbolo de paz universal y le dio vida a nuestro protagonista. Pasó de ser el compañero silencioso de los exámenes y las noches en vela en Mendoza, a convertirse en una cábala real: la prueba viviente de que la suerte ocurre cuando decides que el universo está de tu lado.', en: 'Lucky Bunny wasn\'t born in a corporate boardroom. It appeared from a mistake in 2014, when a hand slipped trying to draw a universal peace symbol and brought our protagonist to life. It went from being the silent companion of exams and late nights in Mendoza, to becoming a real good luck charm: the living proof that luck happens when you decide the universe is on your side.' },
+
                 ethos_cta: { es: 'Conocé más sobre nosotros →', en: 'Get to know us →' },
+
                 game_label: { es: 'Prueba Tu Suerte', en: 'Prove Your Luck' },
+
                 game_title: { es: 'El <span class="text-pink">Drop</span> Game', en: 'The <span class="text-pink">Drop</span> Game' },
+
                 game_desc: { es: 'Esquiva los obstáculos. ¿Qué tan lejos podés llegar?', en: 'Dodge the obstacles. How far can you roll?' },
+
                 game_ctrl1: { es: '[ESPACIO / ARRIBA] SALTAR', en: '[SPACE / UP] JUMP' },
+
                 game_ctrl2: { es: '[ABAJO] AGACHARSE', en: '[DOWN] DUCK' },
+
                 game_ctrl1_short: { es: 'SALTAR', en: 'JUMP' },
+
                 game_ctrl2_short: { es: 'AGACHARSE', en: 'DUCK' },
+
                 game_score: { es: 'SUERTE', en: 'LUCK' },
+
                 game_ready: { es: 'EL SKATE 404', en: 'THE SKATE 404' },
+
                 game_tap: { es: 'Toca para empezar', en: 'Tap to start' },
+
                 game_crash: { es: 'La suerte se fue.', en: 'Luck slipped.' },
+
                 game_retry: { es: 'Otra chance', en: 'Another roll' },
+
                 game_playagain: { es: 'Jugar de nuevo', en: 'Play again' },
+
                 game_record: { es: 'La suerte es tuya. Ingresá tu nombre.', en: 'The luck is yours. Enter your name.' },
+
                 game_save: { es: 'Guardar', en: 'Save' },
+
                 game_start: { es: 'PROBAR SUERTE', en: 'TEST YOUR LUCK' },
+
                 game_placeholder: { es: 'AAA', en: 'AAA' },
+
                 game_leaderboard: { es: 'Mejores Puntajes', en: 'Live Records' },
+
                 cta_label: { es: 'Contactanos', en: 'Contact Us' },
+
                 cta_title: { es: '¿<span class="text-mint">Hablamos</span>?', en: 'Let\'s <span class="text-mint">Talk</span>?' },
+
                 cta_desc: { es: 'Charlamos de lo que necesites. Sin vueltas. — 5:55', en: 'Let\'s chat about what you need. No BS. — 5:55' },
+
                 cta_btn: { es: 'Ir a Contacto', en: 'Go to Contact' },
+
                 footer_tagline: { es: 'Be your own luck. // Tu eres tu propia suerte.', en: 'Be your own luck. // Tu eres tu propia suerte.' },
+
                 footer_shop: { es: 'Tienda', en: 'Shop' },
+
                 footer_all: { es: 'Todos los Lanzamientos', en: 'All Drops' },
+
                 footer_tees: { es: 'Camisetas', en: 'Tees' },
+
                 footer_acc: { es: 'Accesorios', en: 'Accessories' },
+
                 footer_connect: { es: 'Redes', en: 'Connect' },
+
                 footer_info: { es: 'Info', en: 'Info' },
+
                 footer_ship: { es: 'Envíos', en: 'Shipping' },
+
                 footer_returns: { es: 'Devoluciones', en: 'Returns' },
+
                 footer_size: { es: 'Guía de Tallas', en: 'Size Guide' },
+
                 footer_help: { es: 'Ayuda', en: 'Help' },
+
                 footer_privacy: { es: 'Privacidad', en: 'Privacy' },
+
                 footer_motto: { es: 'Everything always works out. // Todo sale bien.', en: 'Everything always works out. // Todo sale bien.' },
+
                 load_sub: { es: 'Skateware', en: 'Skatewear' }
+
             };
 
+
+
             function setLang(lang) {
+
                 currentLang = lang;
+
                 document.querySelectorAll('[data-lang]').forEach(el => {
+
                     const key = el.getAttribute('data-lang');
+
                     if (i18n[key] && i18n[key][lang]) {
+
                         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+
                             el.placeholder = i18n[key][lang];
+
                         } else {
+
                             el.textContent = i18n[key][lang];
+
                         }
+
                     }
+
                 });
+
                 document.querySelectorAll('[data-lang-html]').forEach(el => {
+
                     const key = el.getAttribute('data-lang-html');
+
                     if (i18n[key] && i18n[key][lang]) {
+
                         el.innerHTML = i18n[key][lang];
+
                     }
+
                 });
+
                 const toggle = $('#lang-toggle');
+
                 if (toggle) toggle.innerHTML = lang === 'es'
+
                     ? '<span class="active-lang">ES</span><span class="sep">/</span>EN'
+
                     : 'ES<span class="sep">/</span><span class="active-lang">EN</span>';
+
                 document.documentElement.lang = lang;
+
             }
+
+
 
             const toggle = $('#lang-toggle');
+
             if (toggle) {
+
                 toggle.addEventListener('click', () => {
+
                     setLang(currentLang === 'es' ? 'en' : 'es');
+
                 });
+
             }
+
+
 
             /* ── Loading Overlay ── */
+
             const loadOverlay = $('#loading-overlay');
+
             if (loadOverlay) {
+
                 setTimeout(() => {
+
                     loadOverlay.classList.add('done');
+
                     setTimeout(() => loadOverlay.classList.add('hidden'), 800);
+
                 }, 2200);
+
             }
+
+
 
             /* ── Scroll Progress ── */
+
             const progressBar = $('#page-progress-bar');
+
             if (progressBar) {
+
                 window.addEventListener('scroll', () => {
+
                     const scrollTop = window.scrollY;
+
                     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+
                     progressBar.style.width = docHeight > 0 ? (scrollTop / docHeight * 100) + '%' : '0%';
+
                 }, { passive: true });
+
             }
+
+
 
             /* ── Scroll Reveal ── */
+
             const revealEls = $$('.reveal');
+
             if (revealEls.length && 'IntersectionObserver' in window) {
+
                 const obs = new IntersectionObserver((entries) => {
+
                     entries.forEach(e => {
+
                         if (e.isIntersecting) { e.target.classList.add('revealed'); obs.unobserve(e.target); }
+
                     });
+
                 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
                 revealEls.forEach(el => obs.observe(el));
+
             } else {
+
                 revealEls.forEach(el => el.classList.add('revealed'));
+
             }
+
+
 
             /* ── Cursor Glow ── */
+
             const cursorGlow = $('#cursor-glow');
+
             if (!isMobile && cursorGlow) {
+
                 let glowTimer;
+
                 window.addEventListener('mousemove', (e) => {
+
                     cursorGlow.classList.remove('is-hidden');
+
                     cursorGlow.style.left = e.clientX + 'px';
+
                     cursorGlow.style.top = e.clientY + 'px';
+
                     clearTimeout(glowTimer);
+
                     glowTimer = setTimeout(() => cursorGlow.classList.add('is-hidden'), 3000);
+
                 }, { passive: true });
+
                 window.addEventListener('mouseleave', () => cursorGlow.classList.add('is-hidden'));
+
             }
+
+
 
             /* ── Cursor Trail ── */
+
             if (!isMobile) {
+
                 const trailColors = ['#7DC4B9', '#65B6ED', '#F4D05C', '#FF3366', '#FFF'];
+
                 const trailDots = [];
+
                 const COUNT = 10;
+
                 for (let i = 0; i < COUNT; i++) {
+
                     const dot = document.createElement('div');
+
                     dot.className = 'cursor-dot';
+
                     const sz = 3 + Math.random() * 3;
+
                     dot.style.width = sz + 'px';
+
                     dot.style.height = sz + 'px';
+
                     dot.style.background = trailColors[i % trailColors.length];
+
                     dot.style.opacity = '0';
+
                     document.body.append(dot);
+
                     trailDots.push({ el: dot, x: 0, y: 0 });
+
                 }
+
                 const positions = [];
+
                 let raf = null;
+
                 window.addEventListener('mousemove', (e) => {
+
                     positions.push({ x: e.clientX, y: e.clientY, t: Date.now() });
+
                     if (positions.length > COUNT) positions.shift();
+
                     if (!raf) {
+
                         raf = requestAnimationFrame(function tick() {
+
                             raf = null;
+
                             const now = Date.now();
+
                             for (let i = 0; i < COUNT; i++) {
+
                                 const idx = Math.max(0, positions.length - 1 - i);
+
                                 const p = positions[idx];
+
                                 if (!p) { trailDots[i].el.style.opacity = '0'; continue; }
+
                                 const age = now - p.t;
+
                                 trailDots[i].el.style.left = p.x + 'px';
+
                                 trailDots[i].el.style.top = p.y + 'px';
+
                                 trailDots[i].el.style.opacity = String(Math.max(0, 1 - age / 200) * 0.5);
+
                                 trailDots[i].el.style.transform = `scale(${1 - i * 0.07}) translate(${-i * 0.4}px, ${i * 0.2}px)`;
+
                             }
+
                             if (positions.length > 0) raf = requestAnimationFrame(tick);
+
                         });
+
                     }
+
                 }, { passive: true });
+
             }
+
+
 
             /* ── Rain ── */
+
             function initRain(canvasId, layers) {
+
                 const canvas = $(canvasId);
+
                 if (!canvas) return;
+
                 const ctx = canvas.getContext('2d');
+
                 const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
                 let w, h, drops = [], splashes = [], rafId;
 
+
+
                 function resize() {
+
                     const pw = canvas.parentElement.clientWidth;
+
                     const ph = canvas.parentElement.clientHeight;
+
                     w = pw; h = ph;
+
                     canvas.width = pw * dpr;
+
                     canvas.height = ph * dpr;
+
                     canvas.style.width = pw + 'px';
+
                     canvas.style.height = ph + 'px';
+
                     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
                 }
+
                 resize();
+
                 window.addEventListener('resize', resize, { passive: true });
 
+
+
                 layers.forEach(layer => {
+
                     for (let i = 0; i < layer.count; i++) {
+
                         drops.push({
+
                             x: Math.random() * (w + 200),
+
                             y: Math.random() * (h + 100) - 100,
+
                             speed: layer.speed + Math.random() * layer.speed * 0.4,
+
                             len: layer.minLen + Math.random() * (layer.maxLen - layer.minLen),
+
                             headR: layer.headR + Math.random() * 1.2,
+
                             wind: layer.wind,
+
                             opacity: layer.opacityBase + Math.random() * 0.12,
+
                             color: layer.color
+
                         });
+
                     }
+
                 });
+
+
 
                 function drawTeardrop(d) {
+
                     const tailTipX = d.x - d.wind * d.len * 0.08;
+
                     const tailTipY = d.y - d.len;
+
                     // Tail — main stroke
+
                     ctx.beginPath();
+
                     ctx.moveTo(d.x, d.y - d.headR);
+
                     ctx.lineTo(tailTipX, tailTipY);
+
                     ctx.strokeStyle = d.color;
+
                     ctx.lineWidth = d.headR * 1.4;
+
                     ctx.stroke();
+
                     // Tail overlay — thinner taper
+
                     ctx.beginPath();
+
                     ctx.moveTo(d.x, d.y - d.len * 0.4);
+
                     ctx.lineTo(tailTipX, tailTipY);
+
                     ctx.strokeStyle = d.color;
+
                     ctx.lineWidth = d.headR * 0.45;
+
                     ctx.stroke();
+
                     // Head
+
                     const hx = d.x;
+
                     const hy = d.y - d.headR * 0.3;
+
                     ctx.beginPath();
+
                     ctx.arc(hx, hy, d.headR, 0, Math.PI * 2);
+
                     ctx.fillStyle = d.color;
+
                     ctx.fill();
+
                     // Head glow on medium/large drops
+
                     if (d.headR > 1.4) {
+
                         ctx.shadowColor = d.color;
+
                         ctx.shadowBlur = d.headR * 2;
+
                         ctx.fill();
+
                         ctx.shadowBlur = 0;
+
                     }
+
                 }
+
+
 
                 function drawRain() {
+
                     ctx.clearRect(0, 0, w, h);
+
                     // Splashes
+
                     for (let i = splashes.length - 1; i >= 0; i--) {
+
                         const s = splashes[i];
+
                         s.opacity -= 0.012;
+
                         s.radius += 0.5;
+
                         if (s.opacity <= 0) { splashes.splice(i, 1); continue; }
+
                         ctx.beginPath();
+
                         ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+
                         ctx.strokeStyle = s.color;
+
                         ctx.globalAlpha = s.opacity;
+
                         ctx.lineWidth = 0.6;
+
                         ctx.stroke();
+
                     }
+
                     // Drops
+
                     for (const d of drops) {
+
                         d.x += d.wind;
+
                         d.y += d.speed;
+
                         if (d.y > h + 20) {
+
                             d.y = -20 - Math.random() * 100;
+
                             d.x = Math.random() * (w + 100);
+
                             if (Math.random() < 0.25) {
+
                                 splashes.push({
+
                                     x: d.x, y: h - 3 - Math.random() * 12,
+
                                     radius: 1 + Math.random() * 2.5,
+
                                     opacity: 0.25 + Math.random() * 0.3,
+
                                     color: d.color
+
                                 });
+
                             }
+
                         }
+
                         if (d.x > w + 20) d.x = -20 - Math.random() * 100;
+
                         ctx.globalAlpha = d.opacity;
+
                         drawTeardrop(d);
+
                     }
+
                     rafId = requestAnimationFrame(drawRain);
+
                 }
+
                 drawRain();
+
             }
+
+
 
             // Hero — 3 depth layers
+
             initRain('#rain-canvas', [
+
                 { count: 60, speed: 3.2, wind: 1.0, minLen: 6, maxLen: 14, headR: 1.0, opacityBase: 0.04, color: '#65B6ED' },
+
                 { count: 70, speed: 4.8, wind: 1.3, minLen: 10, maxLen: 20, headR: 1.6, opacityBase: 0.07, color: '#7DC4B9' },
+
                 { count: 40, speed: 6.5, wind: 1.7, minLen: 14, maxLen: 26, headR: 2.2, opacityBase: 0.10, color: '#8ad0ff' }
+
             ]);
+
             // Game rain
+
             initRain('#rain-canvas-game', [
+
                 { count: 35, speed: 2, wind: 0.5, minLen: 5, maxLen: 12, headR: 0.9, opacityBase: 0.06, color: '#7DC4B9' }
+
             ]);
+
+
 
             /* ── Mobile Nav ── */
+
             const hamburger = $('#hamburger');
+
             const drawer = $('#mobile-drawer');
+
             if (hamburger && drawer) {
+
                 hamburger.addEventListener('click', () => {
+
                     const open = drawer.classList.toggle('open');
+
                     hamburger.classList.toggle('open', open);
+
                 });
+
                 drawer.querySelectorAll('a').forEach(a => {
+
                     a.addEventListener('click', () => {
+
                         drawer.classList.remove('open');
+
                         hamburger.classList.remove('open');
+
                     });
+
                 });
+
             }
+
+
 
             /* ── THREE.JS BACKGROUND ── */
+
             const container = $('#webgl-bg');
+
             if (container && typeof THREE !== 'undefined') {
+
                 const scene = new THREE.Scene();
+
                 scene.fog = new THREE.FogExp2(0x020202, 0.02);
+
                 const isMobileBG = window.innerWidth < 768;
+
                 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+
                 camera.position.set(0, 2, 12);
+
                 camera.lookAt(0, 0, 0);
+
                 const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: !isMobileBG });
+
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobileBG ? 1 : 1.5));
+
                 renderer.setSize(window.innerWidth, window.innerHeight);
+
                 renderer.setClearColor(0x000000, 0);
+
                 container.append(renderer.domElement);
 
+
+
                 const grid = new THREE.GridHelper(20, 20, 0x7DC4B9, 0x65B6ED);
+
                 grid.position.y = -1.5;
+
                 grid.material.opacity = 0.08;
+
                 grid.material.transparent = true;
+
                 scene.add(grid);
 
+
+
                 const PARTICLE_COUNT = isMobileBG ? 300 : 1200;
+
                 const geo = new THREE.BufferGeometry();
+
                 const pos = new Float32Array(PARTICLE_COUNT * 3);
+
                 const sizes = new Float32Array(PARTICLE_COUNT);
+
                 for (let i = 0; i < PARTICLE_COUNT; i++) {
+
                     const radius = 5 + Math.random() * 15;
+
                     const theta = Math.random() * Math.PI * 2;
+
                     const phi = Math.acos(2 * Math.random() - 1);
+
                     pos[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+
                     pos[i*3+1] = (Math.random() - 0.5) * 8;
+
                     pos[i*3+2] = radius * Math.sin(phi) * Math.sin(theta) - 5;
+
                     sizes[i] = 0.02 + Math.random() * 0.06;
+
                 }
+
                 geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+
                 geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
+
+
                 const dotCanvas = document.createElement('canvas');
+
                 dotCanvas.width = 32; dotCanvas.height = 32;
+
                 const ctx = dotCanvas.getContext('2d');
+
                 const gradient = ctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+
                 gradient.addColorStop(0, 'rgba(255,255,255,1)');
+
                 gradient.addColorStop(0.3, 'rgba(255,255,255,0.6)');
+
                 gradient.addColorStop(1, 'rgba(255,255,255,0)');
+
                 ctx.fillStyle = gradient; ctx.fillRect(0, 0, 32, 32);
+
                 const dotTex = new THREE.CanvasTexture(dotCanvas);
+
                 const pMat = new THREE.PointsMaterial({
+
                     size: 0.15, map: dotTex, transparent: true, opacity: 0.4,
+
                     blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true
+
                 });
+
                 const particles = new THREE.Points(geo, pMat);
+
                 scene.add(particles);
 
+
+
                 scene.add(new THREE.AmbientLight(0x222244, 0.3));
+
                 const light = new THREE.DirectionalLight(0x7DC4B9, 0.15);
+
                 light.position.set(5, 10, 5);
+
                 scene.add(light);
 
+
+
                 const shapes = [];
+
                 if (!isMobileBG) {
+
                     const wireMat = new THREE.MeshBasicMaterial({ color: 0x7DC4B9, wireframe: true, transparent: true, opacity: 0.04 });
+
                     for (let i = 0; i < 5; i++) {
+
                         const isTorus = Math.random() > 0.5;
+
                         const mesh = isTorus
+
                             ? new THREE.Mesh(new THREE.TorusGeometry(0.5 + Math.random() * 0.5, 0.15, 8, 16), wireMat)
+
                             : new THREE.Mesh(new THREE.IcosahedronGeometry(0.5 + Math.random() * 0.3, 0), wireMat);
+
                         mesh.position.set((Math.random() - 0.5) * 12, (Math.random() - 0.5) * 4, -3 - Math.random() * 6);
+
                         mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, 0);
+
                         mesh.userData = { rotSpeed: 0.1 + Math.random() * 0.3, floatAmp: 0.1 + Math.random() * 0.2 };
+
                         scene.add(mesh); shapes.push(mesh);
+
                     }
+
                 }
+
+
 
                 const mouse = new THREE.Vector2(0, 0);
+
                 if (!isMobileBG) {
+
                     window.addEventListener('mousemove', (e) => {
+
                         mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+
                         mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
                 }, { passive: true });
+
             }
+
+
 
             // Nav glass on scroll
+
             var navEl = document.querySelector('nav');
+
             if (navEl) {
+
                 window.addEventListener('scroll', function() {
+
                     navEl.classList.toggle('scrolled', window.scrollY > 50);
+
                 }, { passive: true });
+
             }
+
                 window.addEventListener('resize', () => {
+
                     camera.aspect = window.innerWidth / window.innerHeight;
+
                     camera.updateProjectionMatrix();
+
                     renderer.setSize(window.innerWidth, window.innerHeight);
+
                 }, { passive: true });
+
+
 
                 const fogDensity = isMobileBG ? 0.008 : 0.015;
+
                 scene.fog = new THREE.FogExp2(0x020202, fogDensity);
 
+
+
                 const clock = new THREE.Clock();
+
                 function animate() {
+
                     requestAnimationFrame(animate);
+
                     const t = clock.getElapsedTime();
+
                     particles.rotation.y = t * 0.008 + mouse.x * 0.05;
+
                     particles.rotation.x = mouse.y * 0.03;
+
                     shapes.forEach((s, i) => {
+
                         s.rotation.x += s.userData.rotSpeed * 0.005;
+
                         s.rotation.y += s.userData.rotSpeed * 0.008;
+
                         s.position.y += Math.sin(t * 0.5 + i) * s.userData.floatAmp * 0.003;
+
                     });
+
                     grid.material.opacity = 0.06 + Math.sin(t * 0.3) * 0.02;
+
                     camera.position.x += (mouse.x * 0.3 - camera.position.x) * 0.02;
+
                     camera.position.y += (mouse.y * 0.2 + 2 - camera.position.y) * 0.02;
+
                     camera.lookAt(0, 0, 0);
+
                     renderer.render(scene, camera);
+
                 }
+
                 animate();
+
             }
 
+
+
             /* ── Render Top Drops ── */
+
             (function(){
+
                 var VG = { hoodies:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="20" y="25" width="60" height="80" rx="6" stroke="#7DC4B9" stroke-width="0.5"/></svg>', tshirts:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="22" y="30" width="56" height="75" rx="4" stroke="#65B6ED" stroke-width="0.5"/></svg>', socks:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><rect x="30" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5"/><rect x="52" y="30" width="18" height="50" rx="4" stroke="#7DC4B9" stroke-width="0.5"/></svg>', accessories:'<svg class="placeholder-svg" viewBox="0 0 100 120" fill="none"><circle cx="50" cy="40" r="22" stroke="#F4D05C" stroke-width="0.5"/><rect x="36" y="55" width="28" height="35" rx="4" stroke="#F4D05C" stroke-width="0.5"/></svg>' };
+
                 var LB = { tshirts:'Camisetas', hoodies:'Hoodies', socks:'Medias', accessories:'Accesorios' };
+
                 var API_BASE = 'https://lucky-api.luckybunny-arg.workers.dev';
 
+
+
                 function renderGrid(items) {
+
                     var grid = document.getElementById('drops-grid');
+
                     if (!grid) return;
+
                     if (!items.length) return; // keep HTML fallback
 
+
+
                     grid.innerHTML = items.slice(0, 3).map(function(p, i){
+
                         var img = (p.coverImage && p.coverImage.trim().length > 4) ? '<img src="' + p.coverImage + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover;" loading="lazy">' : (VG[p.image] || VG[p.category] || VG.hoodies);
+
                         return '<div class="product-card reveal revealed" onclick="window.location.href=\'/store#' + (p.id||'') + '\'" style="cursor:pointer;"><div class="card-visual">' + img + '</div><div class="card-info"><div class="product-name">' + p.name + '</div><div class="product-category">' + (LB[p.category]||p.category) + '</div><div class="product-price">$' + (p.price||0).toLocaleString('es-AR') + '</div></div></div>';
+
                     }).join('');
+
                 }
+
+
 
                 function processAndRender(prods) {
+
                     var active = prods.filter(function(p){ return p.active !== false; });
+
                     // First try featured products
+
                     var featured = active.filter(function(p){ return p.featured === true; });
+
                     if (featured.length > 0) {
+
                         renderGrid(featured);
+
                     } else {
+
                         // Fallback: top 3 by sales
+
                         active.sort(function(a,b){ return (b.salesCount||0) - (a.salesCount||0); });
+
                         renderGrid(active);
+
                     }
+
                 }
 
+
+
                 // 1. Try localStorage first
+
                 try {
+
                     var raw = localStorage.getItem('lb-products');
+
                     if (raw) {
+
                         var arr = JSON.parse(raw);
+
                         if (Array.isArray(arr) && arr.length > 0) {
+
                             processAndRender(arr);
+
                             return;
+
                         }
+
                     }
+
                 } catch(e) {}
 
+
+
                 // 2. Fetch from API (R2) and sync localStorage
+
                 fetch(API_BASE + '/?action=all-products')
+
                     .then(function(r){ return r.json(); })
+
                     .then(function(data){
+
                         if (Array.isArray(data) && data.length > 0) {
+
                             localStorage.setItem('lb-products', JSON.stringify(data));
+
                             processAndRender(data);
+
                         }
+
                     })
+
                     .catch(function(){});
+
             })();
 
-                        /* ── GAME ENGINE ── */
+
+
+            /* ── GAME ENGINE — Elite 404 Skate ── */
             try {
-            const gameCanvas = document.getElementById('gameCanvas');
-            if (!gameCanvas) throw new Error('No canvas');
-            const gctx = gameCanvas.getContext('2d');
+            const canvas = document.getElementById('gameCanvas');
+            if (!canvas) throw new Error('Canvas not found');
+            const ctx = canvas.getContext('2d');
             const gameOverlay = document.getElementById('game-overlay-el');
             const scoreDisplay = document.getElementById('score-display');
             const ammoDisplay = document.getElementById('ammo-display');
             const leaderboardContainer = document.getElementById('leaderboard-container');
 
-            var isGameOver = true;
-            var score = 0;
-            var speed = 6;
-            var groundY = 520;
-            var bunny = { x:100, y:groundY-160, w:70, h:140, vy:0, grounded:true, ducking:false };
+            const BRAND = { MINT: "#7DC4B9", ICE: "#65B6ED", GOLD: "#F4D05C", PINK: "#FF3366", CHALK: "#FFF", VOID: "#020202" };
+            const DAY = { SKY: "#E0F2FE", STREET: "#555", L0: "#999", L1: "#b3b3b3", L2: "#ccc", L3: "#e6e6e6" };
+            const NIGHT = { SKY: "#020202", STREET: "#111", L0: "#1a1a1a", L1: "#222", L2: "#2d2d2d", L3: "#383838" };
 
-            function resetGame() {
-                score = 0; speed = 6; bunny.y = groundY-160; bunny.vy = 0; bunny.grounded = true;
-                obstacles = []; isGameOver = false;
-                scoreDisplay.textContent = '0000';
-                if (gameOverlay) gameOverlay.style.display = 'none';
-                lastTime = performance.now();
-                requestAnimationFrame(gameLoop);
+            var dayProgress = 0, baseSpeed = 7.0, gameSpeed = baseSpeed, score = 0, carrotAmmo = 3;
+            var isGameOver = true;
+            const groundY = 520;
+            var keys = { jump: false, duck: false };
+            var lastTime = performance.now(), dt = 1;
+            var distanceTraveled = 0, distanceSinceLastObstacle = 0, nextObstacleDistance = 600;
+            var wantsToSpawnCollectible = false, lastCollectibleScore = 0, nextCollectibleTarget = 200;
+            var lastDayCycleScore = 0;
+            var floatingTexts = [], particles = [], clouds = [], projectiles = [], obstacles = [], collectibles = [], easterEggs = [];
+            var cameraShake = 0;
+            var stars = [];
+            for (var i=0; i<15; i++) stars.push({x:Math.random()*1000, y:Math.random()*300, s:1+Math.random()*2});
+
+            function lerpColor(a,b,t){
+                var ah=parseInt(a.slice(1),16),ar=ah>>16,ag=(ah>>8)&0xff,ab=ah&0xff;
+                var bh=parseInt(b.slice(1),16),br=bh>>16,bg=(bh>>8)&0xff,bb=bh&0xff;
+                return 'rgb('+Math.round(ar+t*(br-ar))+','+Math.round(ag+t*(bg-ag))+','+Math.round(ab+t*(bb-ab))+')';
+            }
+
+            function spawnParticles(x,y,type){
+                var n=type==='collect'?15:(type==='destroy'?30:8);
+                for(var i=0;i<n;i++){
+                    var c="rgba(200,200,200,0.4)";
+                    if(type==='collect')c=dayProgress<0.5?(Math.random()>0.5?BRAND.GOLD:BRAND.MINT):(Math.random()>0.5?BRAND.CHALK:BRAND.ICE);
+                    else if(type==='destroy')c=Math.random()>0.5?BRAND.PINK:BRAND.GOLD;
+                    particles.push({x:x+Math.random()*20-10,y:y+Math.random()*10-5,vx:Math.random()*10-5,vy:(Math.random()-1)*5,life:1,s:Math.random()*6+2,color:c,cf:(type==='collect'||type==='destroy')});
+                }
+            }
+
+            function shootCarrot(){if(carrotAmmo>0&&!isGameOver){carrotAmmo--;projectiles.push({x:bunny.x+160,y:keys.duck?bunny.y+160:bunny.y+100,w:30,h:12});}}
+
+            // CityLayer
+            function CL(speed,nc,dc,yo,mh,win){
+                this.speed=speed;this.nc=nc;this.dc=dc;this.yo=yo;this.mh=mh;this.win=win;this.blds=[];this.x=0;
+                var cx=0;
+                while(cx<canvas.width*3){this.addB();var l=this.blds[this.blds.length-1];cx+=l.w;}
+                this.addB=function(){var w=60+Math.random()*80,h=80+Math.random()*this.mh;var ws=[];if(this.win&&Math.random()>0.3){var cs=Math.floor(w/25),rs=Math.floor(h/35);for(var r=0;r<rs;r++)for(var c=0;c<cs;c++){if(Math.random()>0.5){var wc=BRAND.VOID;var r2=Math.random();if(r2>0.9)wc=BRAND.MINT;else if(r2>0.8)wc=BRAND.GOLD;ws.push({x:c*25+12,y:r*35+20,c:wc});}}}this.blds.push({x:this.blds.length?this.blds[this.blds.length-1].x+this.blds[this.blds.length-1].w:0,w:w,h:h,ws:ws});};
+                this.update=function(){this.x-=gameSpeed*this.speed*dt;while(this.blds.length>0&&this.blds[0].x+this.blds[0].w+this.x<0){var l=this.blds[this.blds.length-1];this.blds.shift();this.addB();}};
+                this.draw=function(){var c=lerpColor(this.nc,this.dc,dayProgress);var bg=lerpColor(BRAND.VOID,DAY.SKY,dayProgress);for(var i=0;i<this.blds.length;i++){var b=this.blds[i];var bx=b.x+this.x,by=groundY-b.h+this.yo;var g=ctx.createLinearGradient(0,by,0,groundY);g.addColorStop(0,c);g.addColorStop(1,bg);ctx.fillStyle=g;ctx.fillRect(bx,by,b.w,b.h);if(this.win&&dayProgress<0.5){ctx.globalAlpha=1-dayProgress*2;for(var j=0;j<b.ws.length;j++){var wb=b.ws[j];ctx.fillStyle=wb.c;if(wb.c!==BRAND.VOID){ctx.shadowColor=wb.c;ctx.shadowBlur=8;}ctx.fillRect(bx+wb.x,by+wb.y,8,12);}ctx.shadowBlur=0;ctx.globalAlpha=1;}}};
+            }
+            var layers=[new CL(0.05,NIGHT.L0,DAY.L0,120,350,false),new CL(0.15,NIGHT.L1,DAY.L1,70,250,false),new CL(0.45,NIGHT.L2,DAY.L2,30,150,true),new CL(0.85,NIGHT.L3,DAY.L3,0,90,true)];
+
+            // Bunny
+            var bunny={x:100,y:groundY-210,w:160,h:160,vy:0,gravity:1.25,js:-22,grounded:true,
+                update:function(){this.x=100;if(keys.duck&&!this.grounded)this.vy+=this.gravity*3*dt;else this.vy+=this.gravity*dt;this.y+=this.vy*dt;if(this.y+this.h>=groundY){this.y=groundY-this.h;this.vy=0;this.grounded=true;}else{this.grounded=false;}},
+                getHitbox:function(){if(keys.duck&&this.grounded)return{x:this.x+60,y:this.y+125,w:40,h:35};return{x:this.x+65,y:this.y+100,w:30,h:55};},
+                draw:function(){
+                    ctx.fillStyle=BRAND.MINT;var bx=this.x+65,by=this.y+90,bw=30,bh=70;
+                    if(keys.duck&&this.grounded){bx=this.x+60;by=this.y+110;bw=40;bh=50;}
+                    ctx.fillRect(bx,by,bw,bh);
+                    // Head
+                    ctx.fillStyle=BRAND.PINK;ctx.beginPath();ctx.arc(bx+bw/2,by-8,12,0,Math.PI*2);ctx.fill();
+                    // Eyes
+                    ctx.fillStyle=BRAND.CHALK;ctx.beginPath();ctx.arc(bx+bw/2-3,by-12,2.5,0,Math.PI*2);ctx.fill();
+                    ctx.beginPath();ctx.arc(bx+bw/2+3,by-12,2.5,0,Math.PI*2);ctx.fill();
+                    // Ears
+                    ctx.fillStyle=BRAND.PINK;ctx.beginPath();ctx.ellipse(bx+bw/2-6,by-22,4,12,0.2,0,Math.PI*2);ctx.fill();
+                    ctx.beginPath();ctx.ellipse(bx+bw/2+6,by-22,4,12,-0.2,0,Math.PI*2);ctx.fill();
+                    ctx.fillStyle=BRAND.MINT;ctx.beginPath();ctx.ellipse(bx+bw/2-6,by-24,2,8,0.2,0,Math.PI*2);ctx.fill();
+                    ctx.beginPath();ctx.ellipse(bx+bw/2+6,by-24,2,8,-0.2,0,Math.PI*2);ctx.fill();
+                    // Arms
+                    ctx.fillStyle=BRAND.MINT;ctx.fillRect(bx-5,by+10,6,25);ctx.fillRect(bx+bw-1,by+10,6,25);
+                    // Legs
+                    ctx.fillStyle=BRAND.MINT;ctx.fillRect(bx+2,by+bh-2,8,25);ctx.fillRect(bx+bw-10,by+bh-2,8,25);
+                    // Wheels
+                    ctx.fillStyle=BRAND.GOLD;ctx.beginPath();ctx.arc(bx+2,by+bh+20,8,0,Math.PI*2);ctx.fill();
+                    ctx.beginPath();ctx.arc(bx+bw-2,by+bh+20,8,0,Math.PI*2);ctx.fill();
+                    ctx.fillStyle=BRAND.VOID;ctx.beginPath();ctx.arc(bx+2,by+bh+20,3,0,Math.PI*2);ctx.fill();
+                    ctx.beginPath();ctx.arc(bx+bw-2,by+bh+20,3,0,Math.PI*2);ctx.fill();
+                    // Shadow
+                    var sx=this.x+this.w/2;ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.ellipse(sx,groundY+4,30,6,0,0,Math.PI*2);ctx.fill();
+                }
+            };
+
+            // Obstacles
+            function spawnObstacle(){
+                var r=Math.random();var t=r>0.7?'high':(r>0.35?'police':'low');
+                var o;
+                if(t==='high')o={x:canvas.width,y:groundY-110,w:80,h:45,ty:'high'};
+                else if(t==='police')o={x:canvas.width,y:groundY-75,w:165,h:75,ty:'police'};
+                else o={x:canvas.width,y:groundY-75,w:45,h:75,ty:'low'};
+                obstacles.push(o);
+            }
+
+            function drawObstacle(o){
+                if(o.ty==='high'){
+                    ctx.fillStyle='#333';ctx.fillRect(o.x+35,0,10,o.y+10);
+                    ctx.fillStyle=BRAND.MINT;ctx.fillRect(o.x,o.y,o.w,o.h);
+                    ctx.strokeStyle=BRAND.CHALK;ctx.lineWidth=4;ctx.strokeRect(o.x,o.y,o.w,o.h);
+                    ctx.fillStyle=BRAND.CHALK;ctx.fillRect(o.x+15,o.y+12,50,4);
+                    ctx.fillStyle=BRAND.GOLD;ctx.fillRect(o.x+25,o.y+22,30,4);
+                }else if(o.ty==='police'){
+                    ctx.fillStyle=BRAND.VOID;ctx.fillRect(o.x,o.y+27,o.w,36);
+                    ctx.fillStyle=BRAND.CHALK;ctx.fillRect(o.x+25,o.y+27,115,36);
+                    ctx.fillStyle=BRAND.ICE;ctx.fillRect(o.x+15,o.y+7,40,20);
+                    ctx.fillStyle=BRAND.ICE;ctx.fillRect(o.x+o.w-55,o.y+7,40,20);
+                    ctx.fillStyle=BRAND.GOLD;ctx.beginPath();ctx.ellipse(o.x+15,o.y+32,4,7,0,0,Math.PI*2);ctx.fill();
+                    ctx.fillStyle=BRAND.PINK;ctx.beginPath();ctx.ellipse(o.x+o.w-15,o.y+32,4,7,0,0,Math.PI*2);ctx.fill();
+                    ctx.fillStyle=BRAND.CHALK;ctx.font="bold 14px Anton, sans-serif";ctx.fillText("L.B.P.D.",o.x+30,o.y+52);
+                    var fl=Math.floor(Date.now()/100)%2===0;
+                    ctx.fillStyle=fl?BRAND.PINK:BRAND.ICE;ctx.fillRect(o.x+40,o.y-3,30,6);
+                }else{
+                    ctx.fillStyle='#b31f44';ctx.fillRect(o.x+2,o.y+o.h-10,o.w-4,10);
+                    ctx.fillStyle=BRAND.PINK;ctx.beginPath();ctx.moveTo(o.x+o.w/2,o.y);ctx.lineTo(o.x+o.w-5,o.y+o.h-5);ctx.lineTo(o.x+5,o.y+o.h-5);ctx.fill();
+                    ctx.fillStyle=BRAND.CHALK;ctx.fillRect(o.x+2,o.y+25,o.w-4,8);
+                    ctx.fillStyle=BRAND.CHALK;ctx.fillRect(o.x+2,o.y+42,o.w-4,10);
+                }
+                ctx.fillStyle='rgba(0,0,0,0.5)';ctx.beginPath();ctx.ellipse(o.x+o.w/2,groundY+3,o.w/2.2,6,0,0,Math.PI*2);ctx.fill();
+            }
+
+            function getObsHitbox(o){
+                if(o.ty==='high')return{x:o.x+5,y:o.y+5,w:o.w-10,h:o.h-10};
+                if(o.ty==='police')return{x:o.x+10,y:o.y+15,w:o.w-20,h:o.h-15};
+                return{x:o.x+10,y:o.y+30,w:o.w-20,h:o.h-35};
+            }
+
+            function spawnCollectible(){collectibles.push({x:canvas.width+50,y:groundY-140-Math.random()*40,w:24,h:36,hover:Math.random()*Math.PI*2});}
+            function checkHit(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;}
+
+            function drawCollectible(c){
+                var cy=c.y+Math.sin(c.hover)*5;ctx.save();ctx.translate(c.x,cy);
+                ctx.fillStyle=BRAND.GOLD;ctx.beginPath();ctx.moveTo(-10,-6);ctx.lineTo(10,-6);ctx.lineTo(0,18);ctx.fill();
+                ctx.fillStyle=BRAND.MINT;ctx.beginPath();ctx.arc(-4,-10,4,0,Math.PI*2);ctx.arc(4,-10,4,0,Math.PI*2);ctx.fill();
+                ctx.restore();
+            }
+
+            function manageEntities(){
+                distanceTraveled+=gameSpeed*dt;
+                if(distanceTraveled>45){score++;distanceTraveled-=45;scoreDisplay.textContent=String(score).padStart(4,'0');
+                    var cn=Math.floor(score/500);dayProgress+=(cn%2===1?1:0-dayProgress)*0.05*dt;
+                    if(score>0&&score%500===0&&score!==lastDayCycleScore)lastDayCycleScore=score;}
+                gameSpeed=baseSpeed+score*0.015;
+                ammoDisplay.textContent='🥕'.repeat(carrotAmmo);
+                // Projectiles
+                for(var i=0;i<projectiles.length;i++){
+                    var p=projectiles[i];p.x+=25*dt;ctx.fillStyle=BRAND.GOLD;ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill();
+                    var hit=false;
+                    for(var j=0;j<obstacles.length;j++){var hb=getObsHitbox(obstacles[j]);if(p.x>hb.x&&p.x<hb.x+hb.w&&p.y>hb.y&&p.y<hb.y+hb.h){spawnParticles(obstacles[j].x+obstacles[j].w/2,obstacles[j].y+obstacles[j].h/2,'destroy');obstacles.splice(j,1);score+=10;hit=true;break;}}
+                    if(hit||p.x>canvas.width+100){projectiles.splice(i,1);i--;}
+                }
+                distanceSinceLastObstacle+=gameSpeed*dt;
+                if(distanceSinceLastObstacle>nextObstacleDistance){spawnObstacle();distanceSinceLastObstacle=0;nextObstacleDistance=Math.max(400,750-gameSpeed*12)+Math.random()*300;}
+                if(score>=lastCollectibleScore+nextCollectibleTarget&&obstacles.every(function(o){return Math.abs(o.x-(canvas.width+100))>250;})){spawnCollectible();lastCollectibleScore=score;nextCollectibleTarget=150+Math.floor(Math.random()*100);}
+                var bb=bunny.getHitbox();
+                for(var i=0;i<obstacles.length;i++){var o=obstacles[i];o.x-=gameSpeed*dt;drawObstacle(o);if(checkHit(bb,getObsHitbox(o))){isGameOver=true;}if(o.x+o.w<0){obstacles.splice(i,1);i--;}}
+                for(var i=0;i<collectibles.length;i++){var c=collectibles[i];c.x-=gameSpeed*dt;c.hover+=0.1*dt;drawCollectible(c);var cb={x:c.x-12,y:c.y-18+Math.sin(c.hover)*5,w:24,h:36};if(checkHit(bb,cb)){score+=25;if(carrotAmmo<3)carrotAmmo++;spawnParticles(c.x,c.y,'collect');floatingTexts.push({x:bunny.x+130,y:bunny.y+40,text:"+25",life:40});collectibles.splice(i,1);i--;}else if(c.x+c.w<0){collectibles.splice(i,1);i--;}}
+                if(Math.random()<0.01&&dayProgress>0.1){clouds.push({x:canvas.width+100,y:50+Math.random()*80,s:gameSpeed*0.15,t:0.5+Math.random()*0.6});}
+                for(var i=0;i<clouds.length;i++){var cl=clouds[i];cl.x-=cl.s*dt;cl.t+=0.01*dt;if(dayProgress>0.1){ctx.save();ctx.globalAlpha=(dayProgress-0.1)*0.8;ctx.fillStyle=BRAND.CHALK;ctx.translate(cl.x,cl.y+Math.sin(cl.t)*5);ctx.beginPath();ctx.arc(0,0,20,0,Math.PI*2);ctx.fill();ctx.restore();}if(cl.x<-100){clouds.splice(i,1);i--;}}
+                // Floating texts
+                for(var i=0;i<floatingTexts.length;i++){var ft=floatingTexts[i];ft.y-=1.5*dt;ft.life-=dt;ctx.globalAlpha=Math.max(0,ft.life/40);ctx.fillStyle=BRAND.MINT;ctx.font="bold 22px Anton, sans-serif";ctx.fillText(ft.text,ft.x,ft.y);ctx.globalAlpha=1;if(ft.life<=0){floatingTexts.splice(i,1);i--;}}
+                // Particles
+                for(var i=0;i<particles.length;i++){var pt=particles[i];pt.x+=pt.vx*dt;pt.y+=pt.vy*dt;if(pt.cf)pt.vy+=0.3*dt;pt.life-=0.04*dt;if(pt.life<=0){particles.splice(i,1);i--;continue;}ctx.globalAlpha=pt.life;ctx.fillStyle=pt.color;if(pt.cf)ctx.fillRect(pt.x,pt.y,pt.s,pt.s);else{ctx.beginPath();ctx.arc(pt.x,pt.y,pt.s,0,Math.PI*2);ctx.fill();}}ctx.globalAlpha=1;
+            }
+
+            function drawSky(){
+                var sk=lerpColor(NIGHT.SKY,DAY.SKY,dayProgress);ctx.fillStyle=sk;ctx.fillRect(0,0,canvas.width,canvas.height);
+                if(dayProgress<0.8){ctx.fillStyle='rgba(255,255,255,'+Math.max(0,(1-dayProgress)*0.5)+')';for(var i=0;i<stars.length;i++){var s=stars[i];ctx.beginPath();ctx.arc(s.x,s.y,s.s,0,Math.PI*2);ctx.fill();}}
+            }
+
+            function resetGame(){
+                gameSpeed=baseSpeed;score=0;distanceTraveled=0;distanceSinceLastObstacle=0;nextObstacleDistance=600;carrotAmmo=3;
+                lastCollectibleScore=0;lastDayCycleScore=0;dayProgress=0;wantsToSpawnCollectible=false;
+                obstacles=[];collectibles=[];easterEggs=[];particles=[];floatingTexts=[];clouds=[];projectiles=[];
+                bunny.y=groundY-210;bunny.vy=0;isGameOver=false;cameraShake=0;scoreDisplay.textContent='0000';
+                if(gameOverlay)gameOverlay.style.display='none';
+                lastTime=performance.now();requestAnimationFrame(gameLoop);
             }
             window._startGame = resetGame;
 
-            var obstacles = [];
-            function spawnObstacle() {
-                var h = 40 + Math.random() * 60;
-                obstacles.push({ x: gameCanvas.width, y: groundY-h, w: 30, h: h });
-            }
-
-            var lastTime = performance.now();
-            var spawnTimer = 0;
-            var stars = [];
-            for (var i=0; i<20; i++) stars.push({ x:Math.random()*1000, y:Math.random()*groundY, s:1+Math.random()*2 });
-
-            // Buildings background
-            var buildings = [];
-            var bx = 0;
-            while (bx < gameCanvas.width * 2) {
-                var bw = 40 + Math.random() * 80;
-                var bh = 80 + Math.random() * 200;
-                buildings.push({ x: bx, w: bw, h: bh });
-                bx += bw + 10;
-            }
-
-            // Controls
-            document.addEventListener('keydown', function(e) {
-                if (isGameOver) { resetGame(); return; }
-                if (e.code === 'Space' || e.code === 'ArrowUp') {
-                    e.preventDefault();
-                    if (bunny.grounded) { bunny.vy = -18; bunny.grounded = false; }
-                }
-                if (e.code === 'ArrowDown') { e.preventDefault(); bunny.ducking = true; }
-            });
-            document.addEventListener('keyup', function(e) {
-                if (e.code === 'ArrowDown') bunny.ducking = false;
-            });
-
-            // Touch
-            gameCanvas.addEventListener('touchstart', function(e) {
-                e.preventDefault();
-                if (isGameOver) { resetGame(); return; }
-                if (bunny.grounded) { bunny.vy = -18; bunny.grounded = false; }
-            }, { passive: false });
-
-            function gameLoop(time) {
-                if (isGameOver) {
-                    gctx.fillStyle = '#020202';
-                    gctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-                    gctx.fillStyle = '#FF3366';
-                    gctx.font = "40px 'Anton', sans-serif";
-                    gctx.fillText("GAME OVER", 300, gameCanvas.height/2);
-                    gctx.fillStyle = '#FFF';
-                    gctx.font = "16px 'Inter', sans-serif";
-                    gctx.fillText("SCORE: " + score + " — ESPACIO / TOCA PARA JUGAR", 250, gameCanvas.height/2+40);
-                    if (gameOverlay) {
-                        gameOverlay.style.display = 'flex';
-                        var ot = document.getElementById('overlay-title');
-                        if (ot) ot.textContent = 'SCORE: ' + score;
-                    }
+            function gameLoop(time){
+                if(isGameOver){
+                    ctx.fillStyle='rgba(2,2,2,0.85)';ctx.fillRect(0,0,canvas.width,canvas.height);
+                    ctx.fillStyle=BRAND.PINK;ctx.font="36px 'Anton', sans-serif";ctx.fillText("LA SUERTE SE FUE.",60,canvas.height/2-20);
+                    ctx.fillStyle=BRAND.CHALK;ctx.font="16px 'Inter', sans-serif";ctx.fillText("SCORE: "+score,180,canvas.height/2+15);
+                    ctx.fillText("ESPACIO / TOCA PARA OTRA CHANCE",120,canvas.height/2+40);
+                    if(gameOverlay){gameOverlay.style.display='flex';var ot=document.getElementById('overlay-title');if(ot)ot.textContent='SCORE: '+score;}
                     return;
                 }
                 requestAnimationFrame(gameLoop);
-
-                var dt = Math.min((time - lastTime) / (1000/60), 2);
-                lastTime = time;
-
-                // Update bunny
-                bunny.vy += 1.2 * dt;
-                if (bunny.ducking && !bunny.grounded) bunny.vy += 3 * dt;
-                bunny.y += bunny.vy * dt;
-                if (bunny.y + (bunny.ducking ? 60 : 140) >= groundY) {
-                    bunny.y = groundY - (bunny.ducking ? 60 : 140);
-                    bunny.vy = 0;
-                    bunny.grounded = true;
-                }
-
-                // Spawn obstacles
-                spawnTimer -= dt;
-                if (spawnTimer <= 0) {
-                    spawnObstacle();
-                    spawnTimer = Math.max(40, 120 - speed * 2);
-                }
-
-                // Update obstacles
-                for (var i = obstacles.length-1; i >= 0; i--) {
-                    obstacles[i].x -= speed * dt;
-                    if (obstacles[i].x < -100) { obstacles.splice(i, 1); continue; }
-                    // Collision
-                    var bh = bunny.ducking ? 60 : 140;
-                    var by = bunny.y + (bunny.ducking ? 80 : 0);
-                    if (bunny.x+40 < obstacles[i].x+obstacles[i].w &&
-                        bunny.x+bunny.w-10 > obstacles[i].x &&
-                        by < obstacles[i].y+obstacles[i].h &&
-                        by+bh > obstacles[i].y) {
-                        isGameOver = true;
-                        // Save score
-                        leaderboard.push({name:'BNY',score:score});
-                        renderLB();
-                        return;
-                    }
-                }
-
-                // Score
-                score += Math.floor(speed * 0.1);
-                scoreDisplay.textContent = String(Math.floor(score)).padStart(4, '0');
-                speed = 6 + score * 0.01;
-
-                // Draw
-                gctx.fillStyle = '#020202';
-                gctx.fillRect(0, 0, gameCanvas.width, gameCanvas.height);
-
-                // Stars
-                gctx.fillStyle = 'rgba(255,255,255,0.5)';
-                for (var i=0; i<stars.length; i++) {
-                    gctx.fillRect(stars[i].x, stars[i].y, stars[i].s, stars[i].s);
-                }
-
-                // Buildings
-                for (var i=0; i<buildings.length; i++) {
-                    buildings[i].x -= speed * 0.3 * dt;
-                    if (buildings[i].x + buildings[i].w < 0) buildings[i].x = gameCanvas.width + 40;
-                    var bh = Math.max(40, buildings[i].h);
-                    gctx.fillStyle = '#111';
-                    gctx.fillRect(Math.floor(buildings[i].x), groundY-bh, buildings[i].w, bh);
-                }
-                // Ground
-                gctx.fillStyle = '#222';
-                gctx.fillRect(0, groundY, gameCanvas.width, gameCanvas.height-groundY);
-                gctx.fillStyle = '#7DC4B9';
-                gctx.fillRect(0, groundY, gameCanvas.width, 2);
-
-                // Bunny
-                var bx = bunny.x + 20;
-                var by2 = bunny.y + (bunny.ducking ? 80 : 0);
-                var bw2 = 30;
-                var bh2 = bunny.ducking ? 30 : 60;
-                gctx.fillStyle = '#7DC4B9';
-                gctx.fillRect(bx, by2, bw2, bh2);
-                gctx.fillStyle = '#FF3366';
-                gctx.beginPath(); gctx.arc(bx+bw2/2, by2-6, 8, 0, Math.PI*2); gctx.fill();
-                // Shadow
-                gctx.fillStyle = 'rgba(0,0,0,0.4)';
-                gctx.beginPath(); gctx.ellipse(bx+bw2/2, groundY+3, 20, 5, 0, 0, Math.PI*2); gctx.fill();
-
-                // Obstacles
-                for (var i=0; i<obstacles.length; i++) {
-                    gctx.fillStyle = '#FF3366';
-                    gctx.fillRect(obstacles[i].x, obstacles[i].y, obstacles[i].w, obstacles[i].h);
-                }
+                dt=Math.min((time-lastTime)/(1000/60),2);lastTime=time;
+                ctx.save();
+                if(cameraShake>0){ctx.translate((Math.random()-0.5)*cameraShake,(Math.random()-0.5)*cameraShake);cameraShake-=0.5*dt;if(cameraShake<0)cameraShake=0;}
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                drawSky();
+                for(var i=0;i<layers.length;i++){layers[i].update();layers[i].draw();}
+                ctx.fillStyle=lerpColor(NIGHT.STREET,DAY.STREET,dayProgress);ctx.fillRect(0,groundY,canvas.width,canvas.height-groundY);
+                ctx.fillStyle=dayProgress>0.5?'rgba(0,0,0,0.08)':BRAND.CHALK;ctx.fillRect(0,groundY,canvas.width,2);
+                bunny.update();bunny.draw();manageEntities();ctx.restore();
             }
+
+            // Controls
+            document.addEventListener('keydown',function(e){
+                if(isGameOver){resetGame();return;}
+                if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(bunny.grounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.js;bunny.grounded=false;}}
+                if(e.code==='ArrowDown'||e.code==='KeyS'){e.preventDefault();keys.duck=true;}
+                if(e.code==='ArrowRight'||e.code==='KeyD'){e.preventDefault();shootCarrot();}
+            });
+            document.addEventListener('keyup',function(e){
+                if(e.code==='Space'||e.code==='ArrowUp'){keys.jump=false;if(bunny.vy<-8)bunny.vy=-8;}
+                if(e.code==='ArrowDown'||e.code==='KeyS')keys.duck=false;
+            });
+            // Touch/Mouse
+            if(gameOverlay){gameOverlay.addEventListener('click',function(){resetGame();});gameOverlay.addEventListener('touchend',function(e){e.preventDefault();resetGame();});}
+            canvas.addEventListener('click',function(){if(isGameOver)resetGame();});
+            canvas.addEventListener('touchstart',function(e){e.preventDefault();if(isGameOver){resetGame();return;}var r=canvas.getBoundingClientRect();var tx=e.touches[0].clientX-r.left,ty=e.touches[0].clientY-r.top;if(ty<r.height*0.5){if(bunny.grounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.js;bunny.grounded=false;}}else keys.duck=true;if(tx>r.width*0.7)shootCarrot();},{passive:false});
+            canvas.addEventListener('touchend',function(e){e.preventDefault();keys.jump=false;keys.duck=false;},{passive:false});
+            canvas.addEventListener('mousedown',function(e){if(isGameOver)return;var r=canvas.getBoundingClientRect(),ty=e.clientY-r.top;if(ty<r.height*0.5){if(bunny.grounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.js;bunny.grounded=false;}}else keys.duck=true;});
+            canvas.addEventListener('mouseup',function(){keys.jump=false;keys.duck=false;});
+
+            // Responsive canvas
+            function resizeCanvas(){var w=canvas.parentElement.clientWidth;canvas.style.width=w+'px';canvas.style.height=(w*(600/1000))+'px';}
+            resizeCanvas();window.addEventListener('resize',resizeCanvas);
 
             // Leaderboard
             var DEFAULT_RECORDS = [{name:'LKY',score:500},{name:'BNY',score:300},{name:'ARG',score:10}];
-            function loadLeaderboard(){try{var d=localStorage.getItem('lbNewRecords');return d?JSON.parse(d):DEFAULT_RECORDS;}catch(_){return DEFAULT_RECORDS;}}
-            var leaderboard = loadLeaderboard();
+            function loadLB(){try{var d=localStorage.getItem('lbNewRecords');return d?JSON.parse(d):DEFAULT_RECORDS;}catch(_){return DEFAULT_RECORDS;}}
+            var leaderboard = loadLB();
             (function(){fetch('https://lucky-api.luckybunny-arg.workers.dev/?action=leaderboard').then(function(r){return r.json()}).then(function(data){if(Array.isArray(data)&&data.length>0){leaderboard=data;try{localStorage.setItem('lbNewRecords',JSON.stringify(data))}catch(_){}renderLB();}}).catch(function(){});})();
-            function renderLB(){if(!leaderboard)leaderboard=loadLeaderboard();leaderboard.sort(function(a,b){return b.score-a.score});leaderboard=leaderboard.slice(0,3);leaderboardContainer.innerHTML='';for(var i=0;i<leaderboard.length;i++){var rec=leaderboard[i];var div=document.createElement('div');div.style.cssText='display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding:0.5rem 0;font-size:0.85rem;';div.innerHTML='<span>'+(i+1)+'. '+rec.name+'</span><span style="color:'+(i===0?'var(--gold)':i===1?'var(--chalk)':'rgba(255,255,255,0.4)')+'">'+String(rec.score).padStart(4,'0')+'</span>';leaderboardContainer.append(div);}}
+            function saveLB(){try{localStorage.setItem('lbNewRecords',JSON.stringify(leaderboard));}catch(_){}var top=leaderboard.slice(0,3);for(var i=0;i<top.length;i++){(function(r){if(r.score>0){(new Image()).src='https://lucky-api.luckybunny-arg.workers.dev/?action=save-score&data='+encodeURIComponent(JSON.stringify({name:r.name,score:r.score}));}})(top[i]);}}
+            function renderLB(){if(!leaderboard)leaderboard=loadLB();leaderboard.sort(function(a,b){return b.score-a.score});leaderboard=leaderboard.slice(0,3);saveLB();leaderboardContainer.innerHTML='';for(var i=0;i<leaderboard.length;i++){var rec=leaderboard[i];var div=document.createElement('div');div.style.cssText='display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.08);padding:0.5rem 0;font-size:0.85rem;';div.innerHTML='<span>'+(i+1)+'. '+rec.name+'</span><span style="color:'+(i===0?'var(--gold)':i===1?'var(--chalk)':'rgba(255,255,255,0.4)')+'">'+String(rec.score).padStart(4,'0')+'</span>';leaderboardContainer.append(div);}}
             renderLB();
 
-            // Start
             requestAnimationFrame(gameLoop);
 
             } catch(e) { console.warn('Game init failed:', e); }
 
 
+
+
+
+
             window.addEventListener('storage', function(e){ if (e.key === 'lb-products') location.reload(); });
 
+
+
         })();
+
     </script>
 
+
+
 <a id="wa-float" href="https://wa.me/542616886484" target="_blank" rel="noopener" aria-label="WhatsApp">💬</a>
+
 <script>if(location.protocol==='file:')document.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(!a)return;var h=a.getAttribute('href');if(h==='/')a.href='index.html';else if(h.startsWith('/#'))a.href='index.html'+h.slice(1);else if(!h.startsWith('/api/')&&!h.includes('.'))a.href=h.slice(1)+'/index.html'},true);</script>
+
 </body>
+
 </html>
