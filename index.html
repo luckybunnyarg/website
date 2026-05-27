@@ -1585,7 +1585,8 @@
                 }
             }
 
-            // Controls — keyboard + touch
+            // === CONTROLS ===
+            // Start: Space, Click overlay, Touch overlay
             document.addEventListener('keydown',function(e){
                 if(isGameOver){resetGame();return;}
                 if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
@@ -1597,40 +1598,30 @@
                 if(e.code==='ArrowDown'||e.code==='KeyS')keys.duck=false;
             });
 
-            // Mobile touch controls (ingame)
+            if(gameOverlay){
+                gameOverlay.addEventListener('click',function(){resetGame();});
+                gameOverlay.addEventListener('touchend',function(e){e.preventDefault();resetGame();});
+            }
+            gameCanvas.addEventListener('click',function(){if(isGameOver)resetGame();});
+
+            // Ingame: touch/mouse controls
             gameCanvas.addEventListener('touchstart',function(e){
                 e.preventDefault();
                 if(isGameOver){resetGame();return;}
-                var rect=gameCanvas.getBoundingClientRect();
-                var tx=e.touches[0].clientX-rect.left;
-                var ty=e.touches[0].clientY-rect.top;
-                if(ty<rect.height*0.5){if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
-                else{keys.duck=true;}
-                if(tx>rect.width*0.7)shootCarrot();
+                var r=gameCanvas.getBoundingClientRect();
+                var tx=e.touches[0].clientX-r.left, ty=e.touches[0].clientY-r.top;
+                if(ty<r.height*0.5){if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
+                else keys.duck=true;
+                if(tx>r.width*0.7)shootCarrot();
             },{passive:false});
-            gameCanvas.addEventListener('touchend',function(e){
-                e.preventDefault();
-                keys.jump=false;if(bunny.vy<-8)bunny.vy=-8;
-                keys.duck=false;
-            },{passive:false});
-            // Mouse controls (ingame)
+            gameCanvas.addEventListener('touchend',function(e){e.preventDefault();keys.jump=false;keys.duck=false;},{passive:false});
             gameCanvas.addEventListener('mousedown',function(e){
                 if(isGameOver)return;
-                var rect=gameCanvas.getBoundingClientRect();
-                var ty=e.clientY-rect.top;
-                if(ty<rect.height*0.5){if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
-                else{keys.duck=true;}
+                var r=gameCanvas.getBoundingClientRect(), ty=e.clientY-r.top;
+                if(ty<r.height*0.5){if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
+                else keys.duck=true;
             });
-            gameCanvas.addEventListener('mouseup',function(){keys.jump=false;if(bunny.vy<-8)bunny.vy=-8;keys.duck=false;});
-
-            // Game overlay start — click anywhere on overlay or canvas
-            if(gameOverlay){
-                gameOverlay.addEventListener('click',function(e){e.stopPropagation();resetGame();});
-                gameOverlay.addEventListener('touchend',function(e){e.preventDefault();e.stopPropagation();resetGame();});
-            }
-            // Also start on space/click on canvas
-            gameCanvas.addEventListener('click',function(e){if(isGameOver)resetGame();});
-            gameCanvas.addEventListener('touchend',function(e){if(isGameOver){e.preventDefault();resetGame();}});
+            gameCanvas.addEventListener('mouseup',function(){keys.jump=false;keys.duck=false;});
 
             // Responsive canvas
             function resizeCanvas(){
