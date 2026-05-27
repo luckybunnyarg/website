@@ -1550,7 +1550,7 @@
             const NIGHT = { SKY: "#020202", STREET: "#111", L0: "#1a1a1a", L1: "#222", L2: "#2d2d2d", L3: "#383838" };
 
             let dayProgress = 0, baseSpeed = 7.0, gameSpeed = baseSpeed, score = 0, carrotAmmo = 3;
-            let isGameOver = true, isGameStarted = false;
+            let isGameOver = true;
             const groundY = 520;
             let keys = { jump: false, duck: false };
             let lastTime = performance.now(), dt = 1;
@@ -1587,7 +1587,7 @@
 
             // Controls — keyboard + touch
             document.addEventListener('keydown',function(e){
-                if(isGameOver&&!isGameStarted){resetGame();isGameStarted=true;return;}
+                if(isGameOver){resetGame();return;}
                 if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
                 if(e.code==='ArrowDown'||e.code==='KeyS'){e.preventDefault();keys.duck=true;}
                 if(e.code==='ArrowRight'||e.code==='KeyD'){e.preventDefault();shootCarrot();}
@@ -1597,10 +1597,10 @@
                 if(e.code==='ArrowDown'||e.code==='KeyS')keys.duck=false;
             });
 
-            // Mobile touch controls
+            // Mobile touch controls (ingame)
             gameCanvas.addEventListener('touchstart',function(e){
                 e.preventDefault();
-                if(isGameOver){resetGame();isGameStarted=true;return;}
+                if(isGameOver){resetGame();return;}
                 var rect=gameCanvas.getBoundingClientRect();
                 var tx=e.touches[0].clientX-rect.left;
                 var ty=e.touches[0].clientY-rect.top;
@@ -1613,8 +1613,9 @@
                 keys.jump=false;if(bunny.vy<-8)bunny.vy=-8;
                 keys.duck=false;
             },{passive:false});
+            // Mouse controls (ingame)
             gameCanvas.addEventListener('mousedown',function(e){
-                if(isGameOver){resetGame();isGameStarted=true;return;}
+                if(isGameOver)return;
                 var rect=gameCanvas.getBoundingClientRect();
                 var ty=e.clientY-rect.top;
                 if(ty<rect.height*0.5){if(bunny.isGrounded&&!keys.jump){keys.jump=true;bunny.vy=bunny.jumpStrength;bunny.isGrounded=false;}}
@@ -1622,11 +1623,14 @@
             });
             gameCanvas.addEventListener('mouseup',function(){keys.jump=false;if(bunny.vy<-8)bunny.vy=-8;keys.duck=false;});
 
-            // Game overlay start
+            // Game overlay start — click anywhere on overlay or canvas
             if(gameOverlay){
-                gameOverlay.addEventListener('click',function(){resetGame();isGameStarted=true;});
-                gameOverlay.addEventListener('touchend',function(e){e.preventDefault();resetGame();isGameStarted=true;});
+                gameOverlay.addEventListener('click',function(e){e.stopPropagation();resetGame();});
+                gameOverlay.addEventListener('touchend',function(e){e.preventDefault();e.stopPropagation();resetGame();});
             }
+            // Also start on space/click on canvas
+            gameCanvas.addEventListener('click',function(e){if(isGameOver)resetGame();});
+            gameCanvas.addEventListener('touchend',function(e){if(isGameOver){e.preventDefault();resetGame();}});
 
             // Responsive canvas
             function resizeCanvas(){
@@ -1650,6 +1654,9 @@
             }
 
             var layers=[new CityLayer(0.05,NIGHT.L0,DAY.L0,120,350,false),new CityLayer(0.15,NIGHT.L1,DAY.L1,70,250,false),new CityLayer(0.45,NIGHT.L2,DAY.L2,30,150,true),new CityLayer(0.85,NIGHT.L3,DAY.L3,0,90,true)];
+
+            // Start the game loop (shows initial screen)
+            requestAnimationFrame(gameLoop);
 
             // Bunny
             var bunny={x:100,y:groundY-210,w:160,h:160,vy:0,gravity:1.25,jumpStrength:-22,isGrounded:true,update:function(){this.x=100;if(keys.duck&&!this.isGrounded)this.vy+=this.gravity*3*dt;else this.vy+=this.gravity*dt;this.y+=this.vy*dt;if(this.y+this.h>=groundY){this.y=groundY-this.h;this.vy=0;this.isGrounded=true;}else{this.isGrounded=false;}},getHitbox:function(){if(keys.duck&&this.isGrounded)return{x:this.x+60,y:this.y+125,w:40,h:35};return{x:this.x+65,y:this.y+100,w:30,h:55};},draw:function(){ctx.fillStyle=BRAND.MINT;var bx,by,bw,bh;if(keys.duck&&this.isGrounded){bx=this.x+60;by=this.y+110;bw=40;bh=50;}else{bx=this.x+65;by=this.y+90;bw=30;bh=70;}ctx.fillRect(bx,by,bw,bh);ctx.fillStyle=BRAND.PINK;ctx.beginPath();ctx.arc(bx+bw/2,by-8,12,0,Math.PI*2);ctx.fill();ctx.fillStyle=BRAND.CHALK;ctx.beginPath();ctx.arc(bx+bw/2-3,by-12,2,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(bx+bw/2+3,by-12,2,0,Math.PI*2);ctx.fill();if(!keys.duck||!this.isGrounded){ctx.fillStyle=BRAND.CHALK;ctx.fillRect(bx+4,by+10,6,4);ctx.fillRect(bx+bw-10,by+10,6,4);ctx.fillRect(bx+4,by+22,6,5);ctx.fillRect(bx+bw-10,by+22,6,5);ctx.fillStyle=BRAND.GOLD;ctx.beginPath();ctx.arc(bx+bw/2,by+bh-6,6,0,Math.PI*2);ctx.fill();}var sx=Math.floor(this.x+this.w/2);ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.ellipse(sx,groundY+4,30,6,0,0,Math.PI*2);ctx.fill();}};
@@ -1745,7 +1752,7 @@
                 var bb=bunny.getHitbox();
                 for(var i=0;i<obstacles.length;i++){
                     var o=obstacles[i];o.x-=gameSpeed*dt;drawObstacle(o);
-                    if(checkHit(bb,getObsHitbox(o))){isGameOver=true;isGameStarted=false;
+                    if(checkHit(bb,getObsHitbox(o))){isGameOver=true;
                         leaderboard.push({name:'BNY',score:score});renderLB();}
                     if(o.x+o.w<0){obstacles.splice(i,1);i--;}
                 }
